@@ -19,7 +19,13 @@ export class ReviewController {
    */
   public getReviews = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { productId } = req.params;
+      const rawProdId = req.params.productId;
+      const productId = Array.isArray(rawProdId) ? rawProdId[0] : rawProdId;
+
+      if (!productId) {
+        res.status(400).json(createResponse(null, 'Thiếu mã sản phẩm.', null));
+        return;
+      }
 
       const product = await prisma.product.findFirst({
         where: { OR: [{ id: productId }, { slug: productId }], deletedAt: null },
@@ -79,7 +85,13 @@ export class ReviewController {
         return;
       }
 
-      const { productId } = req.params;
+      const rawProdId = req.params.productId;
+      const productId = Array.isArray(rawProdId) ? rawProdId[0] : rawProdId;
+
+      if (!productId) {
+        res.status(400).json(createResponse(null, 'Thiếu mã sản phẩm.', null));
+        return;
+      }
 
       // Kiểm tra product tồn tại (tìm theo id hoặc slug)
       const product = await prisma.product.findFirst({
@@ -116,7 +128,7 @@ export class ReviewController {
       // Validate body
       const parsed = CreateReviewSchema.safeParse(req.body);
       if (!parsed.success) {
-        const msg = parsed.error.errors[0]?.message ?? 'Dữ liệu không hợp lệ.';
+        const msg = parsed.error.issues[0]?.message ?? 'Dữ liệu không hợp lệ.';
         res.status(422).json(createResponse(null, msg, null));
         return;
       }
@@ -200,7 +212,13 @@ export class ReviewController {
   public deleteReview = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userId = req.user?.sub;
-      const { id } = req.params;
+      const rawId = req.params.id;
+      const id = Array.isArray(rawId) ? rawId[0] : rawId;
+
+      if (!id) {
+        res.status(400).json(createResponse(null, 'Thiếu mã bình luận.', null));
+        return;
+      }
 
       const review = await prisma.review.findUnique({ where: { id } });
       if (!review || review.deletedAt) {

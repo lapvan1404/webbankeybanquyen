@@ -1,0 +1,516 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+  DELETED
+}
+
+enum ProductKeyStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  DISABLED
+}
+
+enum ProductKeyAlgorithm {
+  AES_256_GCM
+}
+
+model address {
+  id         String    @id @map("id")
+  userId     String    @map("nguoi_dung_id")
+  label      String?   @map("nhan")
+  street     String    @map("duong")
+  city       String    @map("thanh_pho")
+  state      String    @map("tinh")
+  postalCode String    @map("ma_buu_dien")
+  country    String    @map("quoc_gia")
+  isPrimary  Boolean   @default(false) @map("la_mac_dinh")
+  createdAt  DateTime  @default(now()) @map("ngay_tao")
+  updatedAt  DateTime  @map("ngay_cap_nhat")
+  deletedAt  DateTime? @map("ngay_xoa")
+  user       user      @relation(fields: [userId], references: [id], map: "Address_userId_fkey")
+
+  @@index([userId], map: "Address_userId_idx")
+  @@map("DiaChi")
+}
+
+model auditlog {
+  id        String   @id @map("id")
+  userId    String?  @map("nguoi_dung_id")
+  event     String   @map("su_kien")
+  metadata  String?  @db.LongText @map("metadata")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  user      user?    @relation(fields: [userId], references: [id], map: "AuditLog_userId_fkey")
+
+  @@index([userId], map: "AuditLog_userId_idx")
+  @@map("NhatKyHeThong")
+}
+
+model banner {
+  id        String    @id @map("id")
+  title     String    @map("tieu_de")
+  subtitle  String?   @map("tieu_de_phu")
+  imageUrl  String    @map("url_hinh_anh")
+  linkUrl   String?   @map("url_lien_ket")
+  isActive  Boolean   @default(true) @map("hoat_dong")
+  createdAt DateTime  @default(now()) @map("ngay_tao")
+  updatedAt DateTime  @map("ngay_cap_nhat")
+  deletedAt DateTime? @map("ngay_xoa")
+
+  @@map("Banner")
+}
+
+model brand {
+  id             String    @id @map("id")
+  name           String    @unique(map: "Brand_name_key") @map("ten")
+  slug           String    @unique(map: "Brand_slug_key") @map("slug")
+  logoUrl        String?   @map("url_logo")
+  website        String?   @map("website")
+  description    String?   @map("mo_ta")
+  sortOrder      Int       @default(0) @map("thu_tu_sap_xep")
+  isActive       Boolean   @default(true) @map("hoat_dong")
+  seoTitle       String?   @map("tieu_de_seo")
+  seoDescription String?   @map("mo_ta_seo")
+  seoKeywords    String?   @map("tu_khoa_seo")
+  createdAt      DateTime  @default(now()) @map("ngay_tao")
+  updatedAt      DateTime  @map("ngay_cap_nhat")
+  deletedAt      DateTime? @map("ngay_xoa")
+  product        product[]
+
+  @@map("ThuongHieu")
+}
+
+model cart {
+  id        String     @id @map("id")
+  userId    String     @map("nguoi_dung_id")
+  createdAt DateTime   @default(now()) @map("ngay_tao")
+  updatedAt DateTime   @map("ngay_cap_nhat")
+  user      user       @relation(fields: [userId], references: [id], map: "Cart_userId_fkey")
+  cartitem  cartitem[]
+
+  @@index([userId], map: "Cart_userId_idx")
+  @@map("GioHang")
+}
+
+model cartitem {
+  id        String   @id @map("id")
+  cartId    String   @map("gio_hang_id")
+  productId String   @map("san_pham_id")
+  quantity  Int      @default(1) @map("so_luong")
+  price     Decimal  @map("gia")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  updatedAt DateTime @map("ngay_cap_nhat")
+  cart      cart     @relation(fields: [cartId], references: [id], map: "CartItem_cartId_fkey")
+  product   product  @relation(fields: [productId], references: [id], map: "CartItem_productId_fkey")
+
+  @@index([cartId], map: "CartItem_cartId_idx")
+  @@index([productId], map: "CartItem_productId_idx")
+  @@map("ChiTietGioHang")
+}
+
+model category {
+  id             String    @id @map("id")
+  name           String    @unique(map: "Category_name_key") @map("ten")
+  slug           String    @unique(map: "Category_slug_key") @map("slug")
+  description    String?   @map("mo_ta")
+  imageUrl       String?   @map("url_hinh_anh")
+  sortOrder      Int       @default(0) @map("thu_tu_sap_xep")
+  isActive       Boolean   @default(true) @map("hoat_dong")
+  seoTitle       String?   @map("tieu_de_seo")
+  seoDescription String?   @map("mo_ta_seo")
+  seoKeywords    String?   @map("tu_khoa_seo")
+  createdAt      DateTime  @default(now()) @map("ngay_tao")
+  updatedAt      DateTime  @map("ngay_cap_nhat")
+  deletedAt      DateTime? @map("ngay_xoa")
+  product        product[]
+
+  @@map("DanhMuc")
+}
+
+model favorite {
+  id        String   @id @map("id")
+  userId    String   @map("nguoi_dung_id")
+  productId String   @map("san_pham_id")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  product   product  @relation(fields: [productId], references: [id], map: "Favorite_productId_fkey")
+  user      user     @relation(fields: [userId], references: [id], map: "Favorite_userId_fkey")
+
+  @@unique([userId, productId], map: "Favorite_userId_productId_key")
+  @@index([productId], map: "Favorite_productId_idx")
+  @@index([userId], map: "Favorite_userId_idx")
+  @@map("YeuThich")
+}
+
+model loginattempt {
+  id        String   @id @map("id")
+  userId    String?  @map("nguoi_dung_id")
+  success   Boolean  @default(false) @map("thanh_cong")
+  ipAddress String?  @map("dia_chi_ip")
+  userAgent String?  @map("user_agent")
+  reason    String?  @map("ly_do")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  user      user?    @relation(fields: [userId], references: [id], map: "LoginAttempt_userId_fkey")
+
+  @@index([userId], map: "LoginAttempt_userId_idx")
+  @@map("NhatKyDangNhap")
+}
+
+model notification {
+  id        String   @id @map("id")
+  userId    String   @map("nguoi_dung_id")
+  title     String   @map("tieu_de")
+  message   String   @map("thong_diep")
+  read      Boolean  @default(false) @map("da_doc")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  updatedAt DateTime @map("ngay_cap_nhat")
+  user      user     @relation(fields: [userId], references: [id], map: "Notification_userId_fkey")
+
+  @@index([userId], map: "Notification_userId_idx")
+  @@map("ThongBao")
+}
+
+model order {
+  id           String       @id @map("id")
+  orderNumber  String       @unique(map: "Order_orderNumber_key") @map("so_don_hang")
+  userId       String       @map("nguoi_dung_id")
+  status       order_status @default(PENDING) @map("trang_thai")
+  paymentStatus payment_status @default(UNPAID) @map("trang_thai_thanh_toan")
+  totalAmount  Decimal      @map("tong_tien")
+  shippingCost Decimal      @default(0.000000000000000000000000000000) @map("phi_van_chuyen")
+  placedAt     DateTime     @default(now()) @map("ngay_dat")
+  createdAt    DateTime     @default(now()) @map("ngay_tao")
+  updatedAt    DateTime     @map("ngay_cap_nhat")
+  deletedAt    DateTime?    @map("ngay_xoa")
+  user         user         @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
+  orderitem    orderitem[]
+  payment      payment[]
+
+  @@index([userId], map: "Order_userId_idx")
+  @@map("DonHang")
+}
+
+model orderitem {
+  id           String      @id @map("id")
+  orderId      String      @map("don_hang_id")
+  productId    String      @map("san_pham_id")
+  productName  String      @map("ten_san_pham")
+  sku          String      @map("sku")
+  unitPrice    Decimal     @map("gia_don_vi")
+  quantity     Int         @default(1) @map("so_luong")
+  totalPrice   Decimal     @map("tong_gia")
+  createdAt    DateTime    @default(now()) @map("ngay_tao")
+  updatedAt    DateTime    @map("ngay_cap_nhat")
+  order        order       @relation(fields: [orderId], references: [id], map: "OrderItem_orderId_fkey")
+  product      product     @relation(fields: [productId], references: [id], map: "OrderItem_productId_fkey")
+  productkey   productkey[] @relation(name: "ProductKeyOrderItem")
+
+  @@index([orderId], map: "OrderItem_orderId_idx")
+  @@index([productId], map: "OrderItem_productId_idx")
+  @@map("ChiTietDonHang")
+}
+
+model passwordresettoken {
+  id        String   @id @map("id")
+  userId    String   @map("nguoi_dung_id")
+  tokenHash String   @map("ma_hash_token")
+  expiresAt DateTime @map("ngay_het_han")
+  used      Boolean  @default(false) @map("da_su_dung")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  updatedAt DateTime @map("ngay_cap_nhat")
+  user      user     @relation(fields: [userId], references: [id], map: "PasswordResetToken_userId_fkey")
+
+  @@index([userId], map: "PasswordResetToken_userId_idx")
+  @@map("MaKhoiPhucMatKhau")
+}
+
+model payment {
+  id                 String               @id @map("id")
+  orderId            String               @map("don_hang_id")
+  amount             Decimal              @map("so_tien")
+  method             payment_method       @map("phuong_thuc")
+  status             payment_status       @default(UNPAID) @map("trang_thai")
+  createdAt          DateTime             @default(now()) @map("ngay_tao")
+  updatedAt          DateTime             @map("ngay_cap_nhat")
+  order              order                @relation(fields: [orderId], references: [id], map: "Payment_orderId_fkey")
+  paymenttransaction paymenttransaction[]
+
+  @@index([orderId], map: "Payment_orderId_idx")
+  @@map("ThanhToan")
+}
+
+model paymenttransaction {
+  id            String                      @id @map("id")
+  paymentId     String                      @map("thanh_toan_id")
+  transactionId String                      @unique(map: "PaymentTransaction_transactionId_key") @map("ma_giao_dich")
+  amount        Decimal                     @map("so_tien")
+  status        paymenttransaction_status   @map("trang_thai")
+  provider      paymenttransaction_provider @map("nha_cung_cap")
+  createdAt     DateTime                    @default(now()) @map("ngay_tao")
+  updatedAt     DateTime                    @map("ngay_cap_nhat")
+  payment       payment                     @relation(fields: [paymentId], references: [id], map: "PaymentTransaction_paymentId_fkey")
+
+  @@index([paymentId], map: "PaymentTransaction_paymentId_idx")
+  @@map("GiaoDichThanhToan")
+}
+
+model product {
+  id              String         @id @map("id")
+  sku             String         @unique(map: "Product_sku_key") @map("sku")
+  name            String         @map("ten")
+  slug            String         @unique(map: "Product_slug_key") @map("slug")
+  shortDescription String?        @map("mo_ta_ngan")
+  description     String?        @map("mo_ta")
+  thumbnailUrl    String?        @map("url_hinh_dai_dien")
+  price           Decimal        @map("gia")
+  salePrice       Decimal?       @map("gia_khuyen_mai")
+  costPrice       Decimal?       @map("gia_goc")
+  stock           Int            @default(0) @map("ton_kho")
+  soldCount       Int            @default(0) @map("so_luong_ban")
+  viewCount       Int            @default(0) @map("so_luong_xem")
+  status          ProductStatus  @default(ACTIVE) @map("trang_thai")
+  isFeatured      Boolean        @default(false) @map("noi_bat")
+  isDigital       Boolean        @default(false) @map("la_so_hoa")
+  licenseType     String?        @map("loai_giay_phep")
+  licenseDuration Int?           @map("thoi_han_giay_phep")
+  deviceLimit     Int?           @map("gioi_han_thiet_bi")
+  deliveryMethod  String?        @map("phuong_thuc_giao_hang")
+  seoTitle        String?        @map("tieu_de_seo")
+  seoDescription  String?        @map("mo_ta_seo")
+  seoKeywords     String?        @map("tu_khoa_seo")
+  publishedAt     DateTime?      @map("ngay_xuat_ban")
+  isPublished     Boolean        @default(false) @map("da_xuat_ban")
+  categoryId      String?        @map("danh_muc_id")
+  brandId         String?        @map("thuong_hieu_id")
+  createdAt       DateTime       @default(now()) @map("ngay_tao")
+  updatedAt       DateTime       @map("ngay_cap_nhat")
+  deletedAt       DateTime?      @map("ngay_xoa")
+  cartitem        cartitem[]
+  favorite        favorite[]
+  orderitem       orderitem[]
+  brand           brand?         @relation(fields: [brandId], references: [id], map: "Product_brandId_fkey")
+  category        category?      @relation(fields: [categoryId], references: [id], map: "Product_categoryId_fkey")
+  productimage    productimage[]
+  productkey      productkey[]
+  review          review[]
+
+  @@index([brandId], map: "Product_brandId_idx")
+  @@index([categoryId], map: "Product_categoryId_idx")
+  @@index([status], map: "Product_status_idx")
+  @@index([price], map: "Product_price_idx")
+  @@index([publishedAt], map: "Product_publishedAt_idx")
+  @@index([isFeatured], map: "Product_isFeatured_idx")
+  @@map("SanPham")
+}
+
+model productimage {
+  id        String   @id @map("id")
+  productId String   @map("san_pham_id")
+  url       String   @map("url")
+  altText   String?  @map("alt_text")
+  position  Int      @default(0) @map("vi_tri")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  updatedAt DateTime @map("ngay_cap_nhat")
+  product   product  @relation(fields: [productId], references: [id], map: "ProductImage_productId_fkey")
+
+  @@index([productId], map: "ProductImage_productId_idx")
+  @@map("HinhAnhSanPham")
+}
+
+model productkey {
+  id            String              @id @map("id")
+  productId     String              @map("san_pham_id")
+  orderItemId   String?             @map("chi_tiet_don_hang_id")
+  encryptedKey  String              @db.Text @map("khoa_ma_hoa")
+  keyHash       String              @db.VarChar(64) @map("hash_khoa")
+  iv            String              @db.VarChar(32) @map("iv")
+  algorithm     ProductKeyAlgorithm @default(AES_256_GCM) @map("giai_thuat")
+  keyVersion    Int?                @map("phien_ban_khoa")
+  status        ProductKeyStatus    @default(AVAILABLE) @map("trang_thai")
+  reservedUntil DateTime?           @map("ngay_giu_cho")
+  assignedAt    DateTime?           @map("ngay_gan")
+  batchId       String?             @db.VarChar(191) @map("batch_id")
+  importedAt    DateTime?           @map("ngay_nhap")
+  createdAt     DateTime            @default(now()) @map("ngay_tao")
+  updatedAt     DateTime            @map("ngay_cap_nhat")
+  product       product             @relation(fields: [productId], references: [id], map: "ProductKey_productId_fkey")
+  orderItem     orderitem?          @relation(name: "ProductKeyOrderItem", fields: [orderItemId], references: [id], map: "ProductKey_orderItemId_fkey")
+
+  @@index([productId], map: "ProductKey_productId_idx")
+  @@index([orderItemId], map: "ProductKey_orderItemId_idx")
+  @@index([productId, status])
+  @@index([status])
+  @@index([productId, keyHash])
+  @@unique([productId, keyHash])
+  @@map("KhoaBanQuyen")
+}
+
+model refreshtoken {
+  id        String   @id @map("id")
+  tokenHash String   @map("hash_token")
+  userId    String   @map("nguoi_dung_id")
+  revoked   Boolean  @default(false) @map("bi_huy")
+  expiresAt DateTime @map("ngay_het_han")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  updatedAt DateTime @map("ngay_cap_nhat")
+  user      user     @relation(fields: [userId], references: [id], map: "RefreshToken_userId_fkey")
+
+  @@index([userId], map: "RefreshToken_userId_idx")
+  @@map("TokenLamMoi")
+}
+
+model review {
+  id        String    @id @map("id")
+  userId    String    @map("nguoi_dung_id")
+  productId String    @map("san_pham_id")
+  rating    Int       @map("xep_hang")
+  title     String?   @map("tieu_de")
+  body      String?   @map("noi_dung")
+  createdAt DateTime  @default(now()) @map("ngay_tao")
+  updatedAt DateTime  @map("ngay_cap_nhat")
+  deletedAt DateTime? @map("ngay_xoa")
+  product   product   @relation(fields: [productId], references: [id], map: "Review_productId_fkey")
+  user      user      @relation(fields: [userId], references: [id], map: "Review_userId_fkey")
+
+  @@unique([userId, productId], map: "Review_userId_productId_key")
+  @@index([productId], map: "Review_productId_idx")
+  @@index([userId], map: "Review_userId_idx")
+  @@map("DanhGia")
+}
+
+model role {
+  id          String   @id @map("id")
+  name        String   @unique(map: "Role_name_key") @map("ten")
+  description String?  @map("mo_ta")
+  createdAt   DateTime @default(now()) @map("ngay_tao")
+  updatedAt   DateTime @map("ngay_cap_nhat")
+  user        user[]
+
+  @@map("VaiTro")
+}
+
+model systemsetting {
+  id        String   @id @map("id")
+  key       String   @unique(map: "SystemSetting_key_key") @map("khoa")
+  value     String   @map("gia_tri")
+  createdAt DateTime @default(now()) @map("ngay_tao")
+  updatedAt DateTime @map("ngay_cap_nhat")
+
+  @@map("CauHinhHeThong")
+}
+
+model uploadedfile {
+  id           String    @id @map("id")
+  originalName String    @map("ten_goc")
+  fileName     String    @map("ten_tep")
+  mimeType     String    @map("loai_mime")
+  size         Int       @map("kich_thuoc")
+  bucket       String    @map("bucket")
+  objectKey    String    @map("object_key")
+  url          String    @map("url")
+  uploadedById String?   @map("nguoi_tai_len_id")
+  createdAt    DateTime  @default(now()) @map("ngay_tao")
+  updatedAt    DateTime  @map("ngay_cap_nhat")
+  deletedAt    DateTime? @map("ngay_xoa")
+  user         user?     @relation(fields: [uploadedById], references: [id], map: "UploadedFile_uploadedById_fkey")
+
+  @@index([uploadedById], map: "UploadedFile_uploadedById_idx")
+  @@map("TepTaiLen")
+}
+
+model user {
+  id                 String               @id @map("id")
+  email              String               @unique(map: "User_email_key") @map("email")
+  passwordHash       String               @map("hash_mat_khau")
+  firstName          String?              @map("ten")
+  lastName           String?              @map("ho")
+  roleId             String               @map("vai_tro_id")
+  createdAt          DateTime             @default(now()) @map("ngay_tao")
+  updatedAt          DateTime             @map("ngay_cap_nhat")
+  deletedAt          DateTime?            @map("ngay_xoa")
+  avatarUrl          String?              @map("url_avatar")
+  emailVerified      Boolean              @default(false) @map("da_xac_thuc_email")
+  failedLoginCount   Int                  @default(0) @map("so_lan_dang_nhap_that_bai")
+  lastLoginAt        DateTime?            @map("ngay_dang_nhap_cuoi")
+  lockedUntil        DateTime?            @map("ngay_khoa_den")
+  phone              String?              @unique(map: "User_phone_key") @map("dien_thoai")
+  status             user_status          @default(ACTIVE) @map("trang_thai")
+  address            address[]
+  auditlog           auditlog[]
+  cart               cart[]
+  favorite           favorite[]
+  loginattempt       loginattempt[]
+  notification       notification[]
+  order              order[]
+  passwordresettoken passwordresettoken[]
+  refreshtoken       refreshtoken[]
+  review             review[]
+  uploadedfile       uploadedfile[]
+  role               role                 @relation(fields: [roleId], references: [id], map: "User_roleId_fkey")
+  usersession        usersession[]
+
+  @@index([deletedAt], map: "User_deletedAt_idx")
+  @@index([phone], map: "User_phone_idx")
+  @@index([roleId], map: "User_roleId_idx")
+  @@index([status], map: "User_status_idx")
+  @@map("NguoiDung")
+}
+
+model usersession {
+  id           String   @id @map("id")
+  userId       String   @map("nguoi_dung_id")
+  ipAddress    String?  @map("dia_chi_ip")
+  userAgent    String?  @map("user_agent")
+  lastActiveAt DateTime @default(now()) @map("ngay_hoat_dong_cuoi")
+  createdAt    DateTime @default(now()) @map("ngay_tao")
+  updatedAt    DateTime @map("ngay_cap_nhat")
+  revoked      Boolean  @default(false) @map("bi_huy")
+  user         user     @relation(fields: [userId], references: [id], map: "UserSession_userId_fkey")
+
+  @@index([userId], map: "UserSession_userId_idx")
+  @@map("PhienNguoiDung")
+}
+
+enum order_status {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+enum payment_method {
+  MOMO
+  BANK_TRANSFER
+}
+
+enum payment_status {
+  UNPAID
+  PAID
+}
+
+enum paymenttransaction_status {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum paymenttransaction_provider {
+  MOMO
+  BANK_TRANSFER
+}
+
+enum user_status {
+  ACTIVE
+  LOCKED
+  INACTIVE
+  DELETED
+}

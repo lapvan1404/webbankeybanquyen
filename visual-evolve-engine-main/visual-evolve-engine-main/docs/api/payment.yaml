@@ -1,0 +1,161 @@
+openapi: 3.0.3
+info:
+  title: Payment API Contract
+  version: 1.0.0
+paths:
+  /api/payments:
+    post:
+      summary: Initiate a payment for an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '200':
+          description: Payment initiation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Payment required / payment failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: none
+  /api/payments/{id}:
+    get:
+      summary: Retrieve payment details by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Payment details returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDto'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: owner_or_admin
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    PaymentDto:
+      type: object
+      required:
+        - id
+        - orderId
+        - amount
+        - currency
+        - status
+        - provider
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique payment identifier
+        orderId:
+          type: string
+          description: Associated order identifier
+        amount:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          description: Currency code, e.g. USD or VND
+        status:
+          type: string
+          enum: [pending, completed, failed, cancelled]
+        provider:
+          type: string
+          description: Payment gateway or method name
+        referenceId:
+          type: string
+          description: External gateway reference identifier
+        redirectUrl:
+          type: string
+          format: uri
+          description: Optional redirect URL for client-side payment flows
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaymentRequest:
+      type: object
+      required:
+        - orderId
+        - amount
+        - currency
+        - provider
+      properties:
+        orderId:
+          type: string
+        amount:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+        provider:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string

@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: Order API Contract
+  version: 1.0.0
+paths:
+  /api/orders:
+    get:
+      summary: List orders for authenticated user or admin
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+          description: Optional order status filter
+      responses:
+        '200':
+          description: Order list returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderDto'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: optional
+    post:
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreateRequest'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: none
+  /api/orders/{id}:
+    get:
+      summary: Retrieve an order by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDto'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: owner_or_admin
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    OrderDto:
+      type: object
+      required:
+        - id
+        - userId
+        - items
+        - totalAmount
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: Unique order identifier
+        userId:
+          type: string
+          description: Buyer user identifier
+        items:
+          type: array
+          items:
+            type: object
+            required: [productId, quantity, unitPrice]
+            properties:
+              productId:
+                type: string
+              quantity:
+                type: integer
+                minimum: 1
+              unitPrice:
+                type: number
+                minimum: 0
+          description: Order line items
+        totalAmount:
+          type: number
+          minimum: 0
+          description: Total order amount
+        status:
+          type: string
+          enum: [pending, paid, failed, cancelled, fulfilled]
+        shippingAddress:
+          type: object
+          properties:
+            line1:
+              type: string
+            line2:
+              type: string
+            city:
+              type: string
+            postalCode:
+              type: string
+            country:
+              type: string
+        paymentMethod:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    OrderCreateRequest:
+      type: object
+      required:
+        - items
+        - shippingAddress
+        - paymentMethod
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [productId, quantity]
+            properties:
+              productId:
+                type: string
+              quantity:
+                type: integer
+                minimum: 1
+        shippingAddress:
+          type: object
+          required:
+            - line1
+            - city
+            - postalCode
+            - country
+          properties:
+            line1:
+              type: string
+            line2:
+              type: string
+            city:
+              type: string
+            postalCode:
+              type: string
+            country:
+              type: string
+        paymentMethod:
+          type: string
+        couponCode:
+          type: string
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string

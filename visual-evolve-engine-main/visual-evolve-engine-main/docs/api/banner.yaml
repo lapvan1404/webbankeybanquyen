@@ -1,0 +1,259 @@
+openapi: 3.0.3
+info:
+  title: Banner API Contract
+  version: 1.0.0
+paths:
+  /api/banners:
+    get:
+      summary: List homepage banners
+      responses:
+        '200':
+          description: Banner list returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BannerDto'
+      security: []
+      x-authentication: optional
+      x-authorization: none
+    post:
+      summary: Create a new banner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BannerCreateRequest'
+      responses:
+        '201':
+          description: Banner created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BannerDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: admin
+  /api/banners/{id}:
+    get:
+      summary: Retrieve a banner by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Banner retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BannerDto'
+        '404':
+          description: Banner not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+      x-authentication: optional
+      x-authorization: none
+    put:
+      summary: Update a banner by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BannerUpdateRequest'
+      responses:
+        '200':
+          description: Banner updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BannerDto'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Banner not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: admin
+    delete:
+      summary: Delete a banner by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Banner deleted successfully
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Banner not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+      x-authentication: required
+      x-authorization: admin
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    BannerDto:
+      type: object
+      required:
+        - id
+        - title
+        - imageUrl
+        - link
+        - priority
+      properties:
+        id:
+          type: string
+          description: Unique banner identifier
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          description: Optional banner text
+        imageUrl:
+          type: string
+          format: uri
+          description: Banner image URL
+        link:
+          type: string
+          format: uri
+          description: Target URL when banner is clicked
+        priority:
+          type: integer
+          minimum: 0
+          description: Display order priority, lower first
+        active:
+          type: boolean
+          description: Whether the banner is visible
+    BannerCreateRequest:
+      type: object
+      required:
+        - title
+        - imageUrl
+        - link
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+        imageUrl:
+          type: string
+          format: uri
+        link:
+          type: string
+          format: uri
+        priority:
+          type: integer
+          minimum: 0
+        active:
+          type: boolean
+    BannerUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+        imageUrl:
+          type: string
+          format: uri
+        link:
+          type: string
+          format: uri
+        priority:
+          type: integer
+          minimum: 0
+        active:
+          type: boolean
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string

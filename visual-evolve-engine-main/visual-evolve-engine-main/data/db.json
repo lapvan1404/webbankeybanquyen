@@ -1,0 +1,121 @@
+{
+  "products": [
+    {
+      "id": "prod_ms0mb837_jw8lmq",
+      "name": "acb",
+      "sku": "",
+      "slug": "acb",
+      "price": 100000,
+      "salePrice": 999999,
+      "stock": 100,
+      "description": "abc",
+      "categoryId": "",
+      "brandId": "brand_ms0l2hf3_hajsi0",
+      "status": "active",
+      "thumbnailUrl": "http://localhost:4000/api/upload/object?key=uploads%2Fimages%2F1784998982215-2c189dd1-9e7c-4163-a463-5915e20ec4cc.png",
+      "image": "http://localhost:4000/api/upload/object?key=uploads%2Fimages%2F1784998982215-2c189dd1-9e7c-4163-a463-5915e20ec4cc.png",
+      "images": [
+        {
+          "url": "http://localhost:4000/api/upload/object?key=uploads%2Fimages%2F1784998982215-2c189dd1-9e7c-4163-a463-5915e20ec4cc.png",
+          "position": 0
+        }
+      ],
+      "category": "",
+      "brand": "Microsoft",
+      "rating": 4.5,
+      "reviews": 0,
+      "platforms": [],
+      "specs": []
+    },
+    {
+      "id": "prod_ms6dj1go_1lvojp",
+      "name": "Microsoft 365 Business Basic",
+      "slug": "microsoft-365-business-basic",
+      "sku": "M365-BUS-BASIC-1Y",
+      "status": "ACTIVE",
+      "price": 1290000,
+      "salePrice": 1200000,
+      "stock": 120,
+      "categoryId": "seed-category-office",
+      "brandId": "seed-brand-microsoft",
+      "description": "Lưu trữ đám mây: 1TB OneDrive for Business cho 1 người dùng.\n\nLàm việc nhóm: Họp trực tuyến và nhắn tin qua Microsoft Teams.\n\nỨng dụng Office: Sử dụng Word, Excel, PowerPoint bản Web và Mobile.",
+      "thumbnailUrl": null,
+      "images": []
+    }
+  ],
+  "categories": [
+    {
+      "id": "c1",
+      "slug": "windows",
+      "name": "Windows"
+    },
+    {
+      "id": "c2",
+      "slug": "office",
+      "name": "Office"
+    },
+    {
+      "id": "c3",
+      "slug": "antivirus",
+      "name": "Diệt virus"
+    }
+  ],
+  "brands": [
+    {
+      "id": "brand_ms0l2hf3_hajsi0",
+      "name": "Microsoft",
+      "slug": "microsoft",
+      "website": "",
+      "description": "",
+      "logoUrl": null
+    }
+  ],
+  "coupons": [
+    {
+      "id": "coupon1",
+      "code": "NAMNGUYEN10",
+      "discountPercent": 10,
+      "active": true
+    }
+  ],
+  "keys": [
+    {
+      "id": "key1",
+      "productId": "p1",
+      "key": "WIN11-AAAA-BBBB-CCCC",
+      "status": "available"
+    },
+    {
+      "id": "key2",
+      "productId": "p2",
+      "key": "WIN11-DDDD-EEEE-FFFF",
+      "status": "available"
+    }
+  ],
+  "banners": [
+    {
+      "id": "banner_ms0n86ws_1foqey",
+      "title": "acvc",
+      "link": "",
+      "position": "hero",
+      "isActive": true,
+      "imageUrl": "http://localhost:4000/api/upload/object?key=uploads%2Fimages%2F1785000520944-ffcf2cb1-4c57-4926-b280-3db98e4422df.png",
+      "image": "http://localhost:4000/api/upload/object?key=uploads%2Fimages%2F1785000520944-ffcf2cb1-4c57-4926-b280-3db98e4422df.png",
+      "type": "banner",
+      "active": true
+    },
+    {
+      "id": "banner_ms12yfp0_pjb41c",
+      "title": "12",
+      "link": "12",
+      "position": "hero",
+      "isActive": true,
+      "imageUrl": "/api/upload/object?key=uploads%2Fimages%2F1785026937595-aaf4e704-b456-4fc8-b036-a2621ea49d87.png",
+      "image": "/api/upload/object?key=uploads%2Fimages%2F1785026937595-aaf4e704-b456-4fc8-b036-a2621ea49d87.png",
+      "type": "banner",
+      "active": true
+    }
+  ],
+  "orders": [],
+  "notifications": []
+}

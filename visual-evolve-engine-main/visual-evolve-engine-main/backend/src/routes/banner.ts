@@ -50,24 +50,48 @@ router.post(
   async (req, res, next) => {
     try {
       const { title, name, subtitle, imageUrl, linkUrl, link, isActive, position } = req.body;
-      const finalTitle = title || name || 'Banner Promo';
-      const finalImageUrl = imageUrl || '';
+      const finalTitle = (title || name || 'Banner Promo').slice(0, 190);
+      const rawImageUrl = imageUrl || '';
 
-      if (!finalImageUrl) {
+      if (!rawImageUrl) {
         res.status(400).json(createResponse(null, 'imageUrl is required.', null));
         return;
       }
 
-      const finalLink = linkUrl || link || null;
-      const finalSubtitle = subtitle || (position ? `pos:${position}` : null);
+      const safeImageUrl = rawImageUrl.slice(0, 1000);
+      const rawLink = linkUrl || link || null;
+      const safeLink = rawLink ? rawLink.slice(0, 500) : null;
+      const posTag = position ? `pos:${position}` : null;
+      const finalSubtitle = subtitle ? subtitle.slice(0, 190) : posTag;
+
+      // Nếu có position (promo_windows / promo_antivirus) -> kiểm tra nếu đã tồn tại thì UPDATE
+      if (posTag) {
+        const existingPos = await prisma.banner.findFirst({
+          where: { subtitle: posTag, deletedAt: null },
+        });
+        if (existingPos) {
+          const updated = await prisma.banner.update({
+            where: { id: existingPos.id },
+            data: {
+              title: finalTitle,
+              imageUrl: safeImageUrl,
+              linkUrl: safeLink,
+              isActive: isActive !== false,
+              updatedAt: new Date(),
+            },
+          });
+          res.status(200).json(createResponse(updated, 'Banner updated successfully.', null));
+          return;
+        }
+      }
 
       const banner = await prisma.banner.create({
         data: {
           id: randomUUID(),
           title: finalTitle,
           subtitle: finalSubtitle,
-          imageUrl: finalImageUrl,
-          linkUrl: finalLink,
+          imageUrl: safeImageUrl,
+          linkUrl: safeLink,
           isActive: isActive !== false,
           updatedAt: new Date(),
         },
@@ -96,16 +120,20 @@ router.put(
       }
 
       const { title, name, subtitle, imageUrl, linkUrl, link, isActive, position } = req.body;
-      const finalLink = linkUrl !== undefined ? linkUrl : link !== undefined ? link : existing.linkUrl;
-      const finalSubtitle = subtitle !== undefined ? subtitle : position ? `pos:${position}` : existing.subtitle;
+      const rawLink = linkUrl !== undefined ? linkUrl : link !== undefined ? link : existing.linkUrl;
+      const safeLink = rawLink ? String(rawLink).slice(0, 500) : null;
+      const posTag = position ? `pos:${position}` : null;
+      const finalSubtitle = subtitle !== undefined ? String(subtitle).slice(0, 190) : posTag ?? existing.subtitle;
+      const safeImageUrl = imageUrl ? String(imageUrl).slice(0, 1000) : existing.imageUrl;
+      const finalTitle = (title || name || existing.title).slice(0, 190);
 
       const banner = await prisma.banner.update({
         where: { id },
         data: {
-          title: title || name || existing.title,
+          title: finalTitle,
           subtitle: finalSubtitle,
-          imageUrl: imageUrl ?? existing.imageUrl,
-          linkUrl: finalLink,
+          imageUrl: safeImageUrl,
+          linkUrl: safeLink,
           isActive: isActive !== undefined ? isActive : existing.isActive,
           updatedAt: new Date(),
         },

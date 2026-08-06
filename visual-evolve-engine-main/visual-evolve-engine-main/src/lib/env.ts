@@ -9,7 +9,7 @@ const runtimeHost = typeof window !== "undefined" ? window.location.hostname : u
 const defaultApiHost = runtimeHost ?? "localhost";
 
 const env: AppEnv = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL?.trim() ?? `http://${defaultApiHost}:4000`,
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL?.trim() ?? "https://webbankeybanquyen.onrender.com",
   appName: import.meta.env.VITE_APP_NAME?.trim() ?? "Công Ty TNHH Công Nghệ Nam Nguyễn",
   appTitle:
     import.meta.env.VITE_APP_TITLE?.trim() ??

@@ -237,7 +237,7 @@ function Index() {
       <section className="py-6 px-4 lg:px-8">
         <div className="max-w-[1536px] mx-auto grid grid-cols-12 gap-4 lg:gap-6">
           <div className="col-span-12 lg:col-span-8">
-            <div className="relative aspect-[16/9] lg:aspect-auto lg:h-[490px] rounded-2xl overflow-hidden ring-1 ring-black/5 bg-zinc-100">
+            <div className="relative aspect-[16/9] lg:aspect-auto lg:h-[515px] rounded-2xl overflow-hidden ring-1 ring-black/5 bg-zinc-100">
               {bannerSlides.map((slide, index) => (
                 <div
                   key={index}
@@ -247,7 +247,7 @@ function Index() {
                     <img
                       src={slide.image}
                       alt={slide.title ?? `Banner ${index + 1}`}
-                      className="w-full h-full object-cover object-center"
+                      className="w-full h-full object-fill object-center"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-r from-sky-600 via-indigo-600 to-cyan-600" />
@@ -256,7 +256,7 @@ function Index() {
               ))}
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-4 flex flex-col gap-4 lg:h-[490px]">
+          <div className="col-span-12 lg:col-span-4 flex flex-col gap-4 lg:h-[515px]">
             {featuredCategories.length > 0 ? (
               featuredCategories.map((category, idx) => {
                 // Ưu tiên lấy từ Banners mà Admin quản lý ở mục Chỉnh Sửa 2 Ảnh Nổi Bật

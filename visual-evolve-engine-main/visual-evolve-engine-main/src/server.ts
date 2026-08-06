@@ -49,18 +49,26 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const url = new URL(request.url);
-      if (url.pathname.startsWith("/api/admin/")) {
-        return await handleAdminApi(request);
-      }
+
+      // Proxy tất cả API requests tới Backend Render Server
       if (url.pathname.startsWith("/api/")) {
-        return await handlePublicApi(request);
+        const targetUrl = `https://webbankeybanquyen.onrender.com${url.pathname}${url.search}`;
+        const newHeaders = new Headers(request.headers);
+        newHeaders.set("host", "webbankeybanquyen.onrender.com");
+
+        return await fetch(targetUrl, {
+          method: request.method,
+          headers: newHeaders,
+          body: ["GET", "HEAD"].includes(request.method) ? undefined : request.body,
+          duplex: "half",
+        } as any);
       }
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
-      console.error(error);
+      console.error("SSR Fetch Exception:", error);
       return new Response(renderErrorPage(), {
         status: 500,
         headers: { "content-type": "text/html; charset=utf-8" },

@@ -26,7 +26,11 @@ function AdminLoginPage() {
     event.preventDefault();
     setError("");
     try {
-      await apiPost("/api/admin/login", { email, password }, { credentials: "same-origin" });
+      const res = await apiPost<{ token?: string; accessToken?: string }>("/api/admin/login", { email, password });
+      const token = res?.token || res?.accessToken;
+      if (token) {
+        localStorage.setItem("admin_token", token);
+      }
       navigate({ to: "/admin" });
     } catch (error) {
       setError(error instanceof ApiError ? error.message : "Đăng nhập thất bại");

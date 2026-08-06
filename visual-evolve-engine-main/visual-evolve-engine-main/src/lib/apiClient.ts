@@ -66,28 +66,12 @@ function buildUrl(path: string) {
 
   if (path.startsWith("http")) return path;
 
-  if (
-    path.startsWith("/api/admin") ||
-    path.startsWith("/api/products") ||
-    path.startsWith("/api/categories") ||
-    path.startsWith("/api/search") ||
-    path.startsWith("/api/brands") ||
-    path.startsWith("/api/banners") ||
-    path.startsWith("/api/upload") ||
-    path.startsWith("/api/reviews")
-  ) {
-    return path;
-  }
+  const isLocalDev =
+    typeof window !== "undefined"
+      ? window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      : import.meta.env.DEV;
 
-  const proxyBackendPaths = [
-    "/api/auth",
-    "/api/cart",
-    "/api/orders",
-    "/api/product-keys",
-  ];
-  const shouldProxyBackend =
-    import.meta.env.DEV && proxyBackendPaths.some((prefix) => path.startsWith(prefix));
-  if (shouldProxyBackend) {
+  if (isLocalDev) {
     return path;
   }
 
@@ -122,11 +106,17 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
     body,
   } = options;
 
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("admin_token") || localStorage.getItem("token") || localStorage.getItem("accessToken")
+      : null;
+
   const init: RequestInit = {
     method: method ?? (body != null ? "POST" : "GET"),
-    credentials,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
   };

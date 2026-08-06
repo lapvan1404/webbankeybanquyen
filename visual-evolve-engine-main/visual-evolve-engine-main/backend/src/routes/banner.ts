@@ -49,25 +49,33 @@ router.post(
   requireRole('ADMIN'),
   async (req, res, next) => {
     try {
-      const { title, subtitle, imageUrl, linkUrl, isActive } = req.body;
-      if (!title || !imageUrl) {
-        res.status(400).json(createResponse(null, 'Title and imageUrl are required.', null));
+      const { title, name, subtitle, imageUrl, linkUrl, link, isActive, position } = req.body;
+      const finalTitle = title || name || 'Banner Promo';
+      const finalImageUrl = imageUrl || '';
+
+      if (!finalImageUrl) {
+        res.status(400).json(createResponse(null, 'imageUrl is required.', null));
         return;
       }
+
+      const finalLink = linkUrl || link || null;
+      const finalSubtitle = subtitle || (position ? `pos:${position}` : null);
+
       const banner = await prisma.banner.create({
         data: {
           id: randomUUID(),
-          title,
-          subtitle: subtitle ?? null,
-          imageUrl,
-          linkUrl: linkUrl ?? null,
+          title: finalTitle,
+          subtitle: finalSubtitle,
+          imageUrl: finalImageUrl,
+          linkUrl: finalLink,
           isActive: isActive !== false,
           updatedAt: new Date(),
         },
       });
       res.status(201).json(createResponse(banner, 'Banner created successfully.', null));
     } catch (error) {
-      next(error);
+      console.error('Create Banner Error:', error);
+      res.status(500).json(createResponse(null, 'Lỗi khi tạo banner trên hệ thống.', null));
     }
   },
 );
@@ -86,21 +94,26 @@ router.put(
         res.status(404).json(createResponse(null, 'Banner not found.', null));
         return;
       }
-      const { title, subtitle, imageUrl, linkUrl, isActive } = req.body;
+
+      const { title, name, subtitle, imageUrl, linkUrl, link, isActive, position } = req.body;
+      const finalLink = linkUrl !== undefined ? linkUrl : link !== undefined ? link : existing.linkUrl;
+      const finalSubtitle = subtitle !== undefined ? subtitle : position ? `pos:${position}` : existing.subtitle;
+
       const banner = await prisma.banner.update({
         where: { id },
         data: {
-          title: title ?? existing.title,
-          subtitle: subtitle !== undefined ? subtitle : existing.subtitle,
+          title: title || name || existing.title,
+          subtitle: finalSubtitle,
           imageUrl: imageUrl ?? existing.imageUrl,
-          linkUrl: linkUrl !== undefined ? linkUrl : existing.linkUrl,
+          linkUrl: finalLink,
           isActive: isActive !== undefined ? isActive : existing.isActive,
           updatedAt: new Date(),
         },
       });
       res.status(200).json(createResponse(banner, 'Banner updated successfully.', null));
     } catch (error) {
-      next(error);
+      console.error('Update Banner Error:', error);
+      res.status(500).json(createResponse(null, 'Lỗi khi cập nhật banner trên hệ thống.', null));
     }
   },
 );

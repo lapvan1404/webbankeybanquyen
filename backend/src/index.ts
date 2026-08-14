@@ -47,6 +47,10 @@ app.use(requestLogger);
 //   }),
 // );
 
+app.get('/', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok', service: 'webbankeybanquyen-backend' });
+});
+
 app.use('/api', healthRouter);
 app.use('/api/auth', authRouter);
 app.use('/api', authRouter);

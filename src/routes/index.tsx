@@ -16,6 +16,7 @@ import {
 import { useEffect, useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout";
+import env from "@/lib/env";
 import { useAuth } from "@/lib/auth";
 import { ProductCard } from "@/components/product-card";
 import {
@@ -281,7 +282,9 @@ function Index() {
   }, [bannerSlides.length]);
 
   useEffect(() => {
-    const source = new EventSource("/api/store/stream");
+    if (typeof window === "undefined") return;
+    const streamUrl = env.apiBaseUrl.replace(/\/$/, "") + "/api/store/stream";
+    const source = new EventSource(streamUrl);
     source.addEventListener("message", () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       queryClient.invalidateQueries({ queryKey: ["banners"] });

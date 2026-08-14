@@ -181,6 +181,18 @@ export function cleanImageUrl(url?: string | null): string {
 
   const apiBase = env.apiBaseUrl.replace(/\/$/, "");
 
+  if (clean.startsWith(apiBase)) {
+    return clean;
+  }
+
+  if (clean.startsWith("http://") || clean.startsWith("https://")) {
+    if (clean.includes("/api/upload/object") || clean.includes("/api/admin/upload/object")) {
+      const idx = clean.indexOf("/api/");
+      return `${apiBase}${clean.slice(idx)}`;
+    }
+    return clean;
+  }
+
   if (clean.includes("/api/upload/object")) {
     const idx = clean.indexOf("/api/upload/object");
     let single = clean.slice(idx);
@@ -203,7 +215,7 @@ export function cleanImageUrl(url?: string | null): string {
     return `${apiBase}/api/upload/object?key=${encodeURIComponent(clean)}`;
   }
 
-  if (clean.startsWith("/api/")) {
+  if (clean.startsWith("/")) {
     return `${apiBase}${clean}`;
   }
 

@@ -55,6 +55,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Prisma generate
+        run: npx prisma generate --schema=backend/prisma/schema.prisma
+
       - name: Build
         run: npm run build && cd backend && npm run build
 

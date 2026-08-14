@@ -48,23 +48,24 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          cd backend && npm ci
 
       - name: Run ESLint
         run: npm run lint
 
       - name: Build
-        run: npm run build
+        run: npm run build && cd backend && npm run build
 
       - name: Typecheck
-        run: npm run typecheck
+        run: npm run typecheck && cd backend && npm run typecheck
 
       - name: Prisma migrate
-        run: npx prisma migrate deploy --schema=prisma/schema.prisma
+        run: npx prisma migrate deploy --schema=backend/prisma/schema.prisma
 
       - name: Run tests
-        run: npm test -- --reporter=baseline
-        # using vitest default; if you configure junit reporter produce artifacts
+        run: cd backend && npm test -- --run
 
       - name: Upload test artifacts (if any)
         if: always()

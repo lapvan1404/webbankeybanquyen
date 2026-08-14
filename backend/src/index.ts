@@ -30,9 +30,16 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   req.headers['x-request-id'] ||= uuidv4();
   next();
 });
-app.use(helmet());
+const corsOptions: cors.CorsOptions = {
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'x-request-id'],
+};
+
+app.use(cors(corsOptions));
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' }, crossOriginEmbedderPolicy: false }));
 app.use(compression());
-app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser(env.cookieSecret));
 app.use(requestLogger);

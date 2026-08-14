@@ -18,9 +18,13 @@ afterAll(async () => {
 
 beforeEach(async () => {
   // Clean products and categories and brands
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.brand.deleteMany();
+  await prisma.productkey.deleteMany().catch(() => undefined);
+  await prisma.orderitem.deleteMany().catch(() => undefined);
+  await prisma.cartitem.deleteMany().catch(() => undefined);
+  await prisma.review.deleteMany().catch(() => undefined);
+  await prisma.product.deleteMany().catch(() => undefined);
+  await prisma.category.deleteMany().catch(() => undefined);
+  await prisma.brand.deleteMany().catch(() => undefined);
 });
 
 describe('Product integration', () => {
@@ -35,10 +39,10 @@ describe('Product integration', () => {
 
     // create category & brand
     const category = await prisma.category.create({
-      data: { id: 'c1', name: 'Cat 1', slug: 'cat-1' },
+      data: { id: 'c1', name: 'Cat 1', slug: 'cat-1', updatedAt: new Date() },
     });
     const brand = await prisma.brand.create({
-      data: { id: 'b1', name: 'Brand 1', slug: 'brand-1' },
+      data: { id: 'b1', name: 'Brand 1', slug: 'brand-1', updatedAt: new Date() },
     });
 
     const payload = {
@@ -68,10 +72,10 @@ describe('Product integration', () => {
     const token = makeAdminToken();
 
     const category = await prisma.category.create({
-      data: { id: 'c2', name: 'Cat 2', slug: 'cat-2' },
+      data: { id: 'c2', name: 'Cat 2', slug: 'cat-2', updatedAt: new Date() },
     });
     const brand = await prisma.brand.create({
-      data: { id: 'b2', name: 'Brand 2', slug: 'brand-2' },
+      data: { id: 'b2', name: 'Brand 2', slug: 'brand-2', updatedAt: new Date() },
     });
 
     const payload = {
@@ -110,10 +114,10 @@ describe('Product integration', () => {
   it('soft delete hides product from public', async () => {
     const token = makeAdminToken();
     const category = await prisma.category.create({
-      data: { id: 'c3', name: 'Cat 3', slug: 'cat-3' },
+      data: { id: 'c3', name: 'Cat 3', slug: 'cat-3', updatedAt: new Date() },
     });
     const brand = await prisma.brand.create({
-      data: { id: 'b3', name: 'Brand 3', slug: 'brand-3' },
+      data: { id: 'b3', name: 'Brand 3', slug: 'brand-3', updatedAt: new Date() },
     });
 
     const payload = {

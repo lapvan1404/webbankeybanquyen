@@ -13,7 +13,7 @@ import {
   Headphones as HeadphonesIcon,
   Edit3,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout";
 import { useAuth } from "@/lib/auth";
@@ -194,52 +194,80 @@ function Index() {
   const productsQuery = useQuery({
     queryKey: ["products"],
     queryFn: () => listProducts("?pageSize=100"),
-    refetchInterval: 3000,
+    staleTime: 10000,
+    refetchInterval: 15000,
   });
   const featuredQuery = useQuery({
     queryKey: ["products", "featured"],
     queryFn: listFeaturedProducts,
-    refetchInterval: 3000,
+    staleTime: 10000,
+    refetchInterval: 15000,
   });
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: listCategories,
-    refetchInterval: 3000,
+    staleTime: 10000,
+    refetchInterval: 15000,
   });
   const bannersQuery = useQuery({
     queryKey: ["banners"],
     queryFn: listBanners,
-    refetchInterval: 3000,
+    staleTime: 10000,
+    refetchInterval: 15000,
   });
   const brandsQuery = useQuery({
     queryKey: ["brands"],
     queryFn: listBrands,
-    refetchInterval: 3000,
+    staleTime: 10000,
+    refetchInterval: 15000,
   });
-  const products = productsQuery.data?.data?.map((item) => toProduct(item)) ?? [];
-  const featured = (featuredQuery.data ?? []).map((item) => toProduct(item)).slice(0, 4);
-  const bestSellers = [...products].sort((a, b) => (b.sales ?? 0) - (a.sales ?? 0)).slice(0, 6);
+
+  const products = useMemo(
+    () => productsQuery.data?.data?.map((item) => toProduct(item)) ?? [],
+    [productsQuery.data],
+  );
+  const featured = useMemo(
+    () => (featuredQuery.data ?? []).map((item) => toProduct(item)).slice(0, 4),
+    [featuredQuery.data],
+  );
+  const bestSellers = useMemo(
+    () => [...products].sort((a, b) => (b.sales ?? 0) - (a.sales ?? 0)).slice(0, 6),
+    [products],
+  );
   const queryClient = useQueryClient();
 
-  const categories = unwrapList(categoriesQuery.data ?? []).map((item) => ({
-    slug: item.slug,
-    name: item.name,
-    image: cleanImageUrl(item.image ?? item.imageUrl),
-  }));
-  const heroBanners = (bannersQuery.data ?? []).filter((b) => {
-    if (!b.isActive || !b.imageUrl || b.imageUrl.includes("example.com")) return false;
-    const pos = ((b as any).position || b.subtitle || "").toLowerCase();
-    const title = (b.title || "").toLowerCase();
-    if (pos.startsWith("promo_") || pos === "side" || title.includes("nổi bật")) return false;
-    return true;
-  });
+  const categories = useMemo(
+    () =>
+      unwrapList(categoriesQuery.data ?? []).map((item) => ({
+        slug: item.slug,
+        name: item.name,
+        image: cleanImageUrl(item.image ?? item.imageUrl),
+      })),
+    [categoriesQuery.data],
+  );
 
-  const bannerSlides = heroBanners.length
-    ? heroBanners.map((banner) => ({
-        image: cleanImageUrl(banner.imageUrl),
-        title: banner.title,
-      }))
-    : slides;
+  const heroBanners = useMemo(
+    () =>
+      (bannersQuery.data ?? []).filter((b) => {
+        if (!b.isActive || !b.imageUrl || b.imageUrl.includes("example.com")) return false;
+        const pos = ((b as any).position || b.subtitle || "").toLowerCase();
+        const title = (b.title || "").toLowerCase();
+        if (pos.startsWith("promo_") || pos === "side" || title.includes("nổi bật")) return false;
+        return true;
+      }),
+    [bannersQuery.data],
+  );
+
+  const bannerSlides = useMemo(
+    () =>
+      heroBanners.length
+        ? heroBanners.map((banner) => ({
+            image: cleanImageUrl(banner.imageUrl),
+            title: banner.title,
+          }))
+        : slides,
+    [heroBanners],
+  );
 
   const brandNames = unwrapList(brandsQuery.data ?? []).map((brand) => brand.name.toUpperCase());
   const [activeSlide, setActiveSlide] = useState(0);

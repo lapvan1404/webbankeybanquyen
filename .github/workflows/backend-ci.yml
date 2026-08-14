@@ -65,7 +65,7 @@ jobs:
         run: npm run typecheck && cd backend && npm run typecheck
 
       - name: Prisma migrate
-        run: npx prisma migrate deploy --schema=backend/prisma/schema.prisma
+        run: cd backend && npx prisma migrate deploy
 
       - name: Run tests
         run: cd backend && npm test -- --run

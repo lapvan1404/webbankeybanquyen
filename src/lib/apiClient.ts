@@ -159,7 +159,11 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
       if (parsed && typeof parsed === "object" && "success" in parsed) {
         const envelope = parsed as ApiResponseEnvelope<T> & { message?: string };
         if (!envelope.success) {
-          throw new ApiError(envelope.message || envelope.error || "Yêu cầu thất bại", response.status, envelope);
+          throw new ApiError(
+            envelope.message || envelope.error || "Yêu cầu thất bại",
+            response.status,
+            envelope,
+          );
         }
         return envelope.data as T;
       }

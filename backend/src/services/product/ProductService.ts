@@ -148,7 +148,11 @@ export class ProductService {
 
       return this.toDto(product);
     } catch (err: any) {
-      if (err?.code === 'P2002' || String(err?.message || '').includes('P2002') || String(err?.message || '').includes('Unique constraint')) {
+      if (
+        err?.code === 'P2002' ||
+        String(err?.message || '').includes('P2002') ||
+        String(err?.message || '').includes('Unique constraint')
+      ) {
         throw new HttpError(
           409,
           `Mã SKU "${input.sku}" hoặc tên sản phẩm đã tồn tại trong cơ sở dữ liệu. Vui lòng đổi SKU hoặc Tên khác.`,
@@ -335,14 +339,22 @@ export class ProductService {
   private async validateUniqueSku(sku: string, excludeId?: string) {
     const product = await this.repository.findBySku(sku.trim());
     if (product && product.id !== excludeId) {
-      throw new HttpError(409, `Mã SKU "${sku.trim()}" đã tồn tại trên hệ thống.`, 'Duplicate product SKU');
+      throw new HttpError(
+        409,
+        `Mã SKU "${sku.trim()}" đã tồn tại trên hệ thống.`,
+        'Duplicate product SKU',
+      );
     }
   }
 
   private async validateUniqueSlug(slug: string, excludeId?: string) {
     const product = await this.repository.findBySlug(slug.trim());
     if (product && product.id !== excludeId) {
-      throw new HttpError(409, `Đường dẫn Slug "${slug.trim()}" đã tồn tại trên hệ thống.`, 'Duplicate product slug');
+      throw new HttpError(
+        409,
+        `Đường dẫn Slug "${slug.trim()}" đã tồn tại trên hệ thống.`,
+        'Duplicate product slug',
+      );
     }
   }
 

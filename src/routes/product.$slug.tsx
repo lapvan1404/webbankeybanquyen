@@ -331,7 +331,9 @@ function ProductPage() {
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-6">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-xs text-zinc-500 mb-6 flex-wrap">
-          <Link to="/" className="hover:text-brand">Trang chủ</Link>
+          <Link to="/" className="hover:text-brand">
+            Trang chủ
+          </Link>
           <ChevronRight className="size-3" />
           <Link
             to="/category/$slug"
@@ -384,7 +386,11 @@ function ProductPage() {
                       : "ring-black/5 hover:ring-brand/50 opacity-75 hover:opacity-100")
                   }
                 >
-                  <img src={img} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
+                  <img
+                    src={img}
+                    alt={`${product.name} ${i + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                   {i === 0 ? (
                     <span className="absolute top-1 left-1 bg-brand text-white text-[9px] font-extrabold px-1 py-0.2 rounded shadow-sm">
                       Chính
@@ -404,12 +410,16 @@ function ProductPage() {
 
             {reviews.length > 0 && (
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-sm text-zinc-500 font-medium">💬 {reviews.length} bình luận</span>
+                <span className="text-sm text-zinc-500 font-medium">
+                  💬 {reviews.length} bình luận
+                </span>
               </div>
             )}
 
             {apiProduct.shortDescription && (
-              <p className="text-sm text-zinc-600 mb-4 leading-relaxed">{apiProduct.shortDescription}</p>
+              <p className="text-sm text-zinc-600 mb-4 leading-relaxed">
+                {apiProduct.shortDescription}
+              </p>
             )}
 
             <div className="bg-white rounded-2xl ring-1 ring-black/5 p-6 mb-5">
@@ -417,7 +427,9 @@ function ProductPage() {
                 <span className="text-3xl font-semibold">{money(product.price)}</span>
                 {product.compareAt && (
                   <>
-                    <span className="text-lg text-zinc-400 line-through">{money(product.compareAt)}</span>
+                    <span className="text-lg text-zinc-400 line-through">
+                      {money(product.compareAt)}
+                    </span>
                     <span className="text-xs font-bold text-white bg-accent2 px-2 py-1 rounded">
                       -{discount}%
                     </span>
@@ -429,9 +441,19 @@ function ProductPage() {
               </div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center bg-zinc-100 rounded-lg">
-                  <button onClick={() => setQty(Math.max(1, qty - 1))} className="size-10 grid place-items-center text-lg hover:text-brand">−</button>
+                  <button
+                    onClick={() => setQty(Math.max(1, qty - 1))}
+                    className="size-10 grid place-items-center text-lg hover:text-brand"
+                  >
+                    −
+                  </button>
                   <span className="w-10 text-center text-sm font-semibold">{qty}</span>
-                  <button onClick={() => setQty(qty + 1)} className="size-10 grid place-items-center text-lg hover:text-brand">+</button>
+                  <button
+                    onClick={() => setQty(qty + 1)}
+                    className="size-10 grid place-items-center text-lg hover:text-brand"
+                  >
+                    +
+                  </button>
                 </div>
                 <button
                   id="add-to-cart-btn"
@@ -468,7 +490,10 @@ function ProductPage() {
                     </>
                   )}
                 </button>
-                <button className="size-11 grid place-items-center rounded-lg ring-1 ring-black/10 hover:ring-brand hover:text-brand" aria-label="Yêu thích">
+                <button
+                  className="size-11 grid place-items-center rounded-lg ring-1 ring-black/10 hover:ring-brand hover:text-brand"
+                  aria-label="Yêu thích"
+                >
                   <Heart className="size-4" />
                 </button>
               </div>
@@ -486,11 +511,13 @@ function ProductPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-3 text-xs mb-6">
-              {([
-                [Truck, "Giao key qua email"],
-                [ShieldCheck, "Bản quyền chính hãng"],
-                [RotateCcw, "Bảo hành trọn đời"],
-              ] as const).map(([I, t]) => {
+              {(
+                [
+                  [Truck, "Giao key qua email"],
+                  [ShieldCheck, "Bản quyền chính hãng"],
+                  [RotateCcw, "Bảo hành trọn đời"],
+                ] as const
+              ).map(([I, t]) => {
                 const Icon = I as typeof Truck;
                 return (
                   <div key={t} className="bg-white rounded-lg ring-1 ring-black/5 p-3 text-center">
@@ -504,7 +531,9 @@ function ProductPage() {
             <div>
               <h3 className="font-semibold mb-2 text-base text-zinc-900">Mô tả sản phẩm</h3>
               <div className="text-sm text-zinc-700 leading-relaxed whitespace-pre-line bg-zinc-50/70 p-4 rounded-xl ring-1 ring-black/5">
-                {apiProduct.shortDescription || (product as any).shortDescription || "Chưa có mô tả ngắn."}
+                {apiProduct.shortDescription ||
+                  (product as any).shortDescription ||
+                  "Chưa có mô tả ngắn."}
               </div>
             </div>
           </div>
@@ -516,10 +545,22 @@ function ProductPage() {
             <h2 className="text-xl font-semibold mb-6">Hướng dẫn cài đặt</h2>
             <div className="bg-white rounded-2xl ring-1 ring-black/5 p-6 space-y-4">
               {[
-                ["Bước 1: Nhận key", "Key sẽ được gửi vào email trong vòng 5 phút sau khi thanh toán."],
-                ["Bước 2: Tải phần mềm", "Tải về từ trang chủ nhà sản xuất hoặc dùng link tải được cung cấp trong email."],
-                ["Bước 3: Kích hoạt", "Mở phần mềm, nhập key và làm theo hướng dẫn để hoàn tất kích hoạt."],
-                ["Bước 4: Hỗ trợ", "Nếu có lỗi, liên hệ fanpage hoặc hotline để được hỗ trợ cài đặt từ xa."],
+                [
+                  "Bước 1: Nhận key",
+                  "Key sẽ được gửi vào email trong vòng 5 phút sau khi thanh toán.",
+                ],
+                [
+                  "Bước 2: Tải phần mềm",
+                  "Tải về từ trang chủ nhà sản xuất hoặc dùng link tải được cung cấp trong email.",
+                ],
+                [
+                  "Bước 3: Kích hoạt",
+                  "Mở phần mềm, nhập key và làm theo hướng dẫn để hoàn tất kích hoạt.",
+                ],
+                [
+                  "Bước 4: Hỗ trợ",
+                  "Nếu có lỗi, liên hệ fanpage hoặc hotline để được hỗ trợ cài đặt từ xa.",
+                ],
               ].map(([title, desc]) => (
                 <div key={title}>
                   <h3 className="font-semibold">{title}</h3>
@@ -536,13 +577,21 @@ function ProductPage() {
                   {apiProduct.description || product.description}
                 </div>
               ) : (
-                <p className="text-sm text-zinc-400 italic">Chưa có thông tin chi tiết cho sản phẩm này.</p>
+                <p className="text-sm text-zinc-400 italic">
+                  Chưa có thông tin chi tiết cho sản phẩm này.
+                </p>
               )}
               {product.specs && product.specs.length > 0 && (
                 <div className="pt-4 border-t border-zinc-100">
                   <dl>
                     {product.specs.map((s, i) => (
-                      <div key={s.label} className={"grid grid-cols-3 px-4 py-3 text-sm rounded-xl " + (i % 2 ? "bg-zinc-50" : "")}>
+                      <div
+                        key={s.label}
+                        className={
+                          "grid grid-cols-3 px-4 py-3 text-sm rounded-xl " +
+                          (i % 2 ? "bg-zinc-50" : "")
+                        }
+                      >
                         <dt className="text-zinc-500 col-span-1">{s.label}</dt>
                         <dd className="col-span-2 font-medium">{s.value}</dd>
                       </div>
@@ -583,7 +632,9 @@ function ProductPage() {
             ) : reviews.length === 0 ? (
               <div className="bg-zinc-50 rounded-2xl ring-1 ring-zinc-200 py-10 text-center">
                 <MessageCircle className="size-8 text-zinc-300 mx-auto mb-2" />
-                <p className="text-sm text-zinc-400">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+                <p className="text-sm text-zinc-400">
+                  Chưa có bình luận nào. Hãy là người đầu tiên!
+                </p>
               </div>
             ) : (
               reviews.map((r) => (

@@ -110,7 +110,9 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
   const token =
     typeof window !== "undefined"
       ? isAdminPath
-        ? localStorage.getItem("admin_token") || localStorage.getItem("token") || localStorage.getItem("accessToken")
+        ? localStorage.getItem("admin_token") ||
+          localStorage.getItem("token") ||
+          localStorage.getItem("accessToken")
         : localStorage.getItem("token") || localStorage.getItem("accessToken")
       : null;
 

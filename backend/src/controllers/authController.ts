@@ -385,11 +385,7 @@ export class AuthController {
         res
           .status(403)
           .json(
-            createResponse(
-              null,
-              'Tài khoản này không có quyền truy cập Quản trị Admin.',
-              null,
-            ),
+            createResponse(null, 'Tài khoản này không có quyền truy cập Quản trị Admin.', null),
           );
         return;
       }

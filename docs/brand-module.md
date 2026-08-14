@@ -24,10 +24,12 @@ Uses existing `brand` model from `backend/prisma/schema.prisma`.
 ## Endpoints
 
 Public:
+
 - `GET /api/brands`
 - `GET /api/brands/:slug`
 
 Admin:
+
 - `POST /api/admin/brands`
 - `PUT /api/admin/brands/:id`
 - `DELETE /api/admin/brands/:id`

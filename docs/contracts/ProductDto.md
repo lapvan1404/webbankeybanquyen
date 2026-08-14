@@ -3,6 +3,7 @@
 Represents a product returned by the API.
 
 Fields:
+
 - `id` (string): Unique product identifier.
 - `name` (string): Product title.
 - `description` (string): Product description.

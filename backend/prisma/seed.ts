@@ -183,8 +183,7 @@ const productSeeds: ProductSeed[] = [
     name: 'Windows 11 Pro',
     slug: 'windows-11-pro',
     shortDescription: 'Professional edition for business and power users.',
-    description:
-      'Genuine Windows 11 Pro digital key with advanced business and security features.',
+    description: 'Genuine Windows 11 Pro digital key with advanced business and security features.',
     thumbnailUrl: 'https://example.com/demo/windows-11-pro.webp',
     price: 199,
     salePrice: 169,
@@ -206,8 +205,7 @@ const productSeeds: ProductSeed[] = [
     name: 'Office 2024 Home',
     slug: 'office-2024-home',
     shortDescription: 'Word, Excel and PowerPoint for home productivity.',
-    description:
-      'One-time purchase Office 2024 Home license for a single PC with essential apps.',
+    description: 'One-time purchase Office 2024 Home license for a single PC with essential apps.',
     thumbnailUrl: 'https://example.com/demo/office-2024-home.webp',
     price: 149,
     salePrice: 129,
@@ -316,8 +314,7 @@ const productSeeds: ProductSeed[] = [
     name: 'Kaspersky Plus',
     slug: 'kaspersky-plus',
     shortDescription: 'Enhanced protection with performance tools.',
-    description:
-      'Kaspersky Plus with stronger security controls and premium privacy features.',
+    description: 'Kaspersky Plus with stronger security controls and premium privacy features.',
     thumbnailUrl: 'https://example.com/demo/kaspersky-plus.webp',
     price: 59,
     salePrice: 49,
@@ -338,8 +335,7 @@ const productSeeds: ProductSeed[] = [
     name: 'ESET HOME Security Essential',
     slug: 'eset-home-security-essential',
     shortDescription: 'Lightweight and powerful endpoint protection.',
-    description:
-      'ESET HOME Security Essential annual license with proactive malware defense.',
+    description: 'ESET HOME Security Essential annual license with proactive malware defense.',
     thumbnailUrl: 'https://example.com/demo/eset-home-security-essential.webp',
     price: 49,
     salePrice: 39,

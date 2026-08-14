@@ -102,9 +102,11 @@ async function loginToBackend(email: string, password: string) {
     body: JSON.stringify({ email, password }),
   });
 
-  const payload = (await response.json().catch(() => null)) as
-    | { success?: boolean; message?: string; data?: { accessToken?: string } }
-    | null;
+  const payload = (await response.json().catch(() => null)) as {
+    success?: boolean;
+    message?: string;
+    data?: { accessToken?: string };
+  } | null;
 
   if (!response.ok) {
     return {
@@ -191,7 +193,7 @@ export async function handleAdminApi(request: Request) {
     try {
       backendLogin = await loginToBackend(body.email, body.password);
     } catch (err) {
-      console.error('admin-api: backend login attempt failed', err);
+      console.error("admin-api: backend login attempt failed", err);
       backendLogin = null;
     }
 
@@ -239,7 +241,7 @@ export async function handleAdminApi(request: Request) {
       }
     } catch (err) {
       // Non-fatal: continue without backend cookies if the backend is unavailable.
-      console.error('admin-api: backend login attempt failed for local admin fallback', err);
+      console.error("admin-api: backend login attempt failed for local admin fallback", err);
     }
 
     return createResponse(
@@ -552,7 +554,12 @@ export async function handleAdminApi(request: Request) {
       }
     }
     if (backendCookie) {
-      const response = await proxyToBackend(`/api/admin/products/${id}`, "PUT", backendCookie, body);
+      const response = await proxyToBackend(
+        `/api/admin/products/${id}`,
+        "PUT",
+        backendCookie,
+        body,
+      );
       sendStoreUpdate({ type: "products", action: "update", id: String(id) });
       return response;
     }
@@ -616,7 +623,12 @@ export async function handleAdminApi(request: Request) {
     const session = getAdminSession(request);
     const body = await request.json();
     if (session?.backendCookieHeader) {
-      const response = await proxyToBackend(`/api/admin/categories`, "POST", session.backendCookieHeader, body);
+      const response = await proxyToBackend(
+        `/api/admin/categories`,
+        "POST",
+        session.backendCookieHeader,
+        body,
+      );
       sendStoreUpdate({ type: "categories", action: "create" });
       return response;
     }
@@ -633,7 +645,12 @@ export async function handleAdminApi(request: Request) {
     const session = getAdminSession(request);
     const body = await request.json();
     if (session?.backendCookieHeader) {
-      const response = await proxyToBackend(`/api/admin/categories/${id}`, "PUT", session.backendCookieHeader, body);
+      const response = await proxyToBackend(
+        `/api/admin/categories/${id}`,
+        "PUT",
+        session.backendCookieHeader,
+        body,
+      );
       sendStoreUpdate({ type: "categories", action: "update", id: String(id) });
       return response;
     }
@@ -650,7 +667,11 @@ export async function handleAdminApi(request: Request) {
     const id = pathname.split("/").pop();
     const session = getAdminSession(request);
     if (session?.backendCookieHeader) {
-      const response = await proxyToBackend(`/api/admin/categories/${id}`, "DELETE", session.backendCookieHeader);
+      const response = await proxyToBackend(
+        `/api/admin/categories/${id}`,
+        "DELETE",
+        session.backendCookieHeader,
+      );
       sendStoreUpdate({ type: "categories", action: "delete", id: String(id) });
       return response;
     }
@@ -807,7 +828,12 @@ export async function handleAdminApi(request: Request) {
     const session = getAdminSession(request);
     const body = await request.json();
     if (session?.backendCookieHeader) {
-      const response = await proxyToBackend(`/api/admin/banners`, "POST", session.backendCookieHeader, body);
+      const response = await proxyToBackend(
+        `/api/admin/banners`,
+        "POST",
+        session.backendCookieHeader,
+        body,
+      );
       sendStoreUpdate({ type: "banners", action: "create" });
       return response;
     }
@@ -824,7 +850,12 @@ export async function handleAdminApi(request: Request) {
     const session = getAdminSession(request);
     const body = await request.json();
     if (session?.backendCookieHeader) {
-      const response = await proxyToBackend(`/api/admin/banners/${id}`, "PUT", session.backendCookieHeader, body);
+      const response = await proxyToBackend(
+        `/api/admin/banners/${id}`,
+        "PUT",
+        session.backendCookieHeader,
+        body,
+      );
       sendStoreUpdate({ type: "banners", action: "update", id: String(id) });
       return response;
     }
@@ -841,7 +872,11 @@ export async function handleAdminApi(request: Request) {
     const id = pathname.split("/").pop();
     const session = getAdminSession(request);
     if (session?.backendCookieHeader) {
-      const response = await proxyToBackend(`/api/admin/banners/${id}`, "DELETE", session.backendCookieHeader);
+      const response = await proxyToBackend(
+        `/api/admin/banners/${id}`,
+        "DELETE",
+        session.backendCookieHeader,
+      );
       sendStoreUpdate({ type: "banners", action: "delete", id: String(id) });
       return response;
     }
@@ -1002,16 +1037,16 @@ export async function handlePublicApi(request: Request) {
     }
 
     // Backfill brands from products so storefront still renders when brands list is empty.
-    const derived = Array.from(new Set(store.products.map((item) => item.brand).filter(Boolean))).map(
-      (name) => ({
-        id: createId("brand"),
-        name,
-        slug: name
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/(^-|-$)+/g, ""),
-      }),
-    );
+    const derived = Array.from(
+      new Set(store.products.map((item) => item.brand).filter(Boolean)),
+    ).map((name) => ({
+      id: createId("brand"),
+      name,
+      slug: name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, ""),
+    }));
 
     return createResponse(derived);
   }

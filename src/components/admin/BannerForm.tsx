@@ -27,7 +27,10 @@ export function BannerForm({ banner, onSave, onClose }: BannerFormProps) {
 
   const [images, setImages] = useState<ImageItem[]>(() => {
     if (banner?.imageUrl) {
-      const urls = banner.imageUrl.split(",").map((s) => s.trim()).filter(Boolean);
+      const urls = banner.imageUrl
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
       return urls.map((url) => ({ url }));
     }
     return [];
@@ -42,7 +45,10 @@ export function BannerForm({ banner, onSave, onClose }: BannerFormProps) {
         isActive: banner.isActive !== undefined ? banner.isActive : true,
       });
       if (banner.imageUrl) {
-        const urls = banner.imageUrl.split(",").map((s) => s.trim()).filter(Boolean);
+        const urls = banner.imageUrl
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
         setImages(urls.map((url) => ({ url })));
       } else {
         setImages([]);
@@ -64,7 +70,10 @@ export function BannerForm({ banner, onSave, onClose }: BannerFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalImageUrl = images.map((img) => img.url).filter(Boolean).join(",");
+    const finalImageUrl = images
+      .map((img) => img.url)
+      .filter(Boolean)
+      .join(",");
     if (!finalImageUrl) {
       toast.error("Vui lòng ấn Tải lên để chọn ít nhất 1 ảnh cho banner.");
       return;
@@ -93,7 +102,9 @@ export function BannerForm({ banner, onSave, onClose }: BannerFormProps) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
       <div className="bg-white rounded-2xl w-full max-w-md shadow-xl flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between p-5 border-b border-zinc-100">
-          <h2 className="text-xl font-semibold">{banner ? "Sửa banner / ảnh nổi bật" : "Thêm banner"}</h2>
+          <h2 className="text-xl font-semibold">
+            {banner ? "Sửa banner / ảnh nổi bật" : "Thêm banner"}
+          </h2>
           <button
             onClick={onClose}
             className="p-2 text-zinc-500 hover:bg-zinc-100 rounded-full transition"

@@ -37,10 +37,12 @@ export function CouponForm({ coupon, onSave, onClose }: CouponFormProps) {
         discountPercent: Number(discountPercent),
         active,
       });
-      toast.success(coupon ? "Cập nhật mã giảm giá thành công!" : "Tạo mã giảm giá mới thành công!");
+      toast.success(
+        coupon ? "Cập nhật mã giảm giá thành công!" : "Tạo mã giảm giá mới thành công!",
+      );
       onClose();
-    } catch (err: any) {
-      toast.error(err?.message || "Lỗi khi lưu mã giảm giá");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Lỗi khi lưu mã giảm giá");
     } finally {
       setSubmitting(false);
     }
@@ -71,7 +73,9 @@ export function CouponForm({ coupon, onSave, onClose }: CouponFormProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="font-semibold text-zinc-700 block mb-1">Mã giảm giá (Coupon Code)</label>
+            <label className="font-semibold text-zinc-700 block mb-1">
+              Mã giảm giá (Coupon Code)
+            </label>
             <input
               type="text"
               placeholder="VD: GIAM10, TET2026..."

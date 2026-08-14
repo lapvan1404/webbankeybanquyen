@@ -7,11 +7,13 @@ Hệ thống Website Thương mại điện tử phân phối phần mềm bản
 ## 🛠️ Công Nghệ Sử Dụng (Tech Stack)
 
 ### Frontend
+
 - **Framework**: React 18, [TanStack Router](https://tanstack.com/router) (TanStack Start SSR), [TanStack Query](https://tanstack.com/query)
 - **Styling**: TailwindCSS, CSS Variables (Tông màu chủ đạo `#35B7BC`)
 - **Icons & UI Components**: Lucide React, Sonner (Toast notifications)
 
 ### Backend
+
 - **Core**: Node.js, Express.js (TypeScript)
 - **ORM & Database**: Prisma ORM, MySQL / MariaDB (XAMPP / Port 3306)
 - **Lưu trữ ảnh (Object Storage)**: Cloudflare R2 / AWS S3 API
@@ -32,6 +34,7 @@ Hệ thống Website Thương mại điện tử phân phối phần mềm bản
 Vui lòng tạo các file `.env` trong từng thư mục từ file mẫu bên dưới (không commit file `.env` thật lên Git):
 
 ### `backend/.env` (Backend Configuration)
+
 ```env
 PORT=4000
 DATABASE_URL="mysql://root:@localhost:3306/webtmdt"
@@ -53,6 +56,7 @@ R2_BUCKET_NAME="YOUR_BUCKET_NAME"
 ## 📥 Hướng Dẫn Cài Đặt Chi Tiết
 
 ### 1. Clone Repository về máy
+
 ```bash
 git clone https://github.com/lapvan1404/webbankeybanquyen.git
 cd webbankeybanquyen
@@ -61,11 +65,13 @@ cd webbankeybanquyen
 ### 2. Cài đặt Dependencies (Thư viện)
 
 #### Cài đặt thư viện cho Frontend:
+
 ```bash
 npm install
 ```
 
 #### Cài đặt thư viện cho Backend:
+
 ```bash
 cd backend
 npm install
@@ -103,17 +109,21 @@ cd ..
 Cần mở **2 Cửa sổ Terminal (CMD/PowerShell)** song song:
 
 ### Terminal 1: Chạy Backend Dev Server (Port 4000)
+
 ```bash
 cd backend
 npm run dev
 ```
+
 => Backend API: `http://localhost:4000`
 
 ### Terminal 2: Chạy Frontend Dev Server (Port 8080)
+
 ```bash
 # Ở thư mục gốc dự án
 npm run dev
 ```
+
 => Giao diện Website: `http://localhost:8080`
 
 ---
@@ -134,14 +144,14 @@ npm run dev
    - Tìm kiếm sản phẩm theo từ khóa, lọc theo Danh mục, Thương hiệu & Khoảng giá.
    - **Mã Giảm Giá (Coupon System)**: Nhập mã giảm giá (ví dụ: `GIAM10`) tự động tính và trừ trực tiếp số tiền % giảm giá trên tổng đơn hàng VietQR.
    - **Thanh Toán VietQR MBBank**: Tự động sinh mã VietQR chứa chính xác số tiền sau giảm giá và nội dung chuyển khoản `CK [Mã_Đơn_Hàng]`.
-   - **Đối Soát Giao Dịch 3 Bước**: Khi bấm *"Tôi đã thanh toán thành công"*, hệ thống chạy quy trình 3 bước đối soát giao dịch ngân hàng thời gian thực trước khi cấp key bản quyền.
+   - **Đối Soát Giao Dịch 3 Bước**: Khi bấm _"Tôi đã thanh toán thành công"_, hệ thống chạy quy trình 3 bước đối soát giao dịch ngân hàng thời gian thực trước khi cấp key bản quyền.
    - **Mô Tả & Thông Tin Chi Tiết Riêng Biệt**: Hiển thị tách biệt Mô tả ngắn tổng quan và Thông tin chi tiết sản phẩm.
 
 2. **Trang Quản trị (Admin)**:
    - **Quản lý Sản phẩm**: Thêm/Sửa/Xóa sản phẩm, nhập riêng ô Mô tả ngắn và ô Thông tin chi tiết, upload ảnh sản phẩm trực tiếp.
    - **Quản lý Mã Giảm Giá**: Quản lý danh sách coupon, phần trăm giảm giá và trạng thái kích hoạt.
    - **Quản lý Đơn hàng & Tự Động Trừ Kho**: Đơn hàng thanh toán thành công tự động trừ tồn kho (`stock`) và tăng số lượng bán (`soldCount`). Duyệt key bản quyền gửi trực tiếp qua Email.
-   - **Hệ thống Thông Báo**: Đánh dấu đã đọc đơn lẻ hoặc 1-Click *"Đánh dấu tất cả đã đọc"*.
+   - **Hệ thống Thông Báo**: Đánh dấu đã đọc đơn lẻ hoặc 1-Click _"Đánh dấu tất cả đã đọc"_.
    - **Tổng Quan (Dashboard)**: Thống kê dữ liệu thực về doanh thu, đơn hàng, khách hàng và biến động kho từ MySQL.
 
 ---

@@ -26,7 +26,10 @@ function AdminLoginPage() {
     event.preventDefault();
     setError("");
     try {
-      const res = await apiPost<{ token?: string; accessToken?: string }>("/api/admin/login", { email, password });
+      const res = await apiPost<{ token?: string; accessToken?: string }>("/api/admin/login", {
+        email,
+        password,
+      });
       const token = res?.token || res?.accessToken;
       if (token) {
         localStorage.setItem("admin_token", token);

@@ -100,7 +100,6 @@ Incrementally improve the existing React/TanStack Vite application to production
 
 ## Sprint 5 Integration Tasks
 
-
 ## MVP Mode (New Direction)
 
 The project is now in MVP mode. Priorities are narrowed to shipping a working end-to-end MVP quickly. The following rules apply:
@@ -145,9 +144,9 @@ Next step: prepare ProductKey design and API spec (Sprint 1). Awaiting your appr
 - [x] Fixed Product module compile/lint/type errors in scoped files only.
 - [x] Created review report at `review/product-quality-fix-review.md`.
 - [x] Verified quality gates in backend:
-	- `npm run lint`
-	- `npm run build`
-	- `npm run typecheck`
+  - `npm run lint`
+  - `npm run build`
+  - `npm run typecheck`
 
 ## Image Manager Update (2026-07-25)
 
@@ -157,6 +156,6 @@ Next step: prepare ProductKey design and API spec (Sprint 1). Awaiting your appr
 - [x] Added docs at `docs/image-manager.md`.
 - [x] Added review at `review/image-manager-review.md`.
 - [x] Ran project quality gates from root:
-	- `npm run lint` (pass; warnings only)
-	- `npm run build` (pass)
-	- `npm run typecheck` (pass)
+  - `npm run lint` (pass; warnings only)
+  - `npm run build` (pass)
+  - `npm run typecheck` (pass)

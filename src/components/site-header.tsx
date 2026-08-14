@@ -1,6 +1,16 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import logoImg from "../../logo/logo.png";
-import { Search, ShoppingCart, User, Heart, Truck, Shield, Phone, ArrowRight, Loader2 } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  User,
+  Heart,
+  Truck,
+  Shield,
+  Phone,
+  ArrowRight,
+  Loader2,
+} from "lucide-react";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/lib/cart";
@@ -30,13 +40,22 @@ export function AnnouncementBar() {
           <span>Giao key bản quyền qua email trong 5 phút · Hỗ trợ cài đặt miễn phí</span>
         </p>
         <div className="hidden md:flex items-center gap-6 text-white/90 text-xs">
-          <a href="tel:0383158080" className="hover:text-white flex items-center gap-1.5 font-semibold leading-none transition-colors">
+          <a
+            href="tel:0383158080"
+            className="hover:text-white flex items-center gap-1.5 font-semibold leading-none transition-colors"
+          >
             <Phone className="size-3 shrink-0" /> 0383 158 080
           </a>
-          <button onClick={handleLookupClick} className="hover:text-white flex items-center leading-none transition-colors font-medium cursor-pointer">
+          <button
+            onClick={handleLookupClick}
+            className="hover:text-white flex items-center leading-none transition-colors font-medium cursor-pointer"
+          >
             TRA CỨU ĐƠN HÀNG
           </button>
-          <a href="tel:0383158080" className="hover:text-white flex items-center leading-none transition-colors font-medium">
+          <a
+            href="tel:0383158080"
+            className="hover:text-white flex items-center leading-none transition-colors font-medium"
+          >
             HỖ TRỢ 24/7
           </a>
         </div>
@@ -144,7 +163,9 @@ export function SiteHeader() {
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl ring-1 ring-black/10 shadow-2xl overflow-hidden z-50 max-h-[420px] flex flex-col">
                 <div className="p-3 border-b border-zinc-100 bg-zinc-50 flex items-center justify-between text-xs font-semibold text-zinc-600">
                   <span>Gợi ý sản phẩm ({suggestions.length})</span>
-                  {searchSuggestionsQuery.isLoading && <Loader2 className="size-3.5 animate-spin text-brand" />}
+                  {searchSuggestionsQuery.isLoading && (
+                    <Loader2 className="size-3.5 animate-spin text-brand" />
+                  )}
                 </div>
 
                 <div className="overflow-y-auto divide-y divide-zinc-100 flex-1">

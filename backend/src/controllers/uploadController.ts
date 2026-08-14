@@ -33,7 +33,10 @@ export class UploadController {
         return;
       }
 
-      const folder = (req.body?.folder || req.query?.folder || req.body?.type || req.query?.type) as string | undefined;
+      const folder = (req.body?.folder ||
+        req.query?.folder ||
+        req.body?.type ||
+        req.query?.type) as string | undefined;
       const result = await this.uploadService.uploadImage(req.file, req.user?.sub, folder);
       res.status(201).json(createResponse(result, 'Image uploaded successfully.', null));
     } catch (error) {
@@ -61,7 +64,11 @@ export class UploadController {
     }
   };
 
-  public getPublicObject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  public getPublicObject = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const objectKey = extractQueryString(req.query.key);
 

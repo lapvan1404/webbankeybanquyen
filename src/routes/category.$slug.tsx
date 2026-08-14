@@ -3,10 +3,7 @@ import { ChevronRight, SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout";
 import { ProductCard } from "@/components/product-card";
-import {
-  categories,
-  type Product,
-} from "@/lib/products";
+import { categories, type Product } from "@/lib/products";
 import { cleanImageUrl, getCategoryBySlug, listProducts, toProduct } from "@/lib/storeApi";
 import { useQuery } from "@tanstack/react-query";
 
@@ -64,8 +61,7 @@ function CategoryPage() {
     initialData: { data: initialProducts },
     refetchInterval: 3000,
   });
-  const apiItems =
-    productsQuery.data?.data?.map((item) => toProduct(item)) ?? [];
+  const apiItems = productsQuery.data?.data?.map((item) => toProduct(item)) ?? [];
   const targetCatId = categoryQuery.data?.id;
   const sourceItems: Product[] = apiItems.filter((p) => {
     if (!p) return false;
@@ -110,7 +106,8 @@ function CategoryPage() {
           pBrandId === filterLower ||
           pBrand.includes(filterLower) ||
           pBrandId.includes(filterLower) ||
-          (filterLower.includes("microsoft") && (pBrand.includes("microsoft") || pBrandId.includes("microsoft")))
+          (filterLower.includes("microsoft") &&
+            (pBrand.includes("microsoft") || pBrandId.includes("microsoft")))
         );
       });
     })
@@ -196,7 +193,9 @@ function CategoryPage() {
                   className="w-full h-full object-cover block rounded-2xl hover:scale-[1.02] transition-transform duration-300"
                 />
               ) : (
-                <div className={`relative w-full h-full min-h-[460px] rounded-2xl overflow-hidden bg-gradient-to-br ${posterStyle}`}>
+                <div
+                  className={`relative w-full h-full min-h-[460px] rounded-2xl overflow-hidden bg-gradient-to-br ${posterStyle}`}
+                >
                   <div className="absolute inset-0 p-6 flex items-end">
                     <span className="text-white text-2xl font-bold">{cat.name}</span>
                   </div>
@@ -223,7 +222,11 @@ function CategoryPage() {
 
           <div className="col-span-12 mt-4 flex flex-wrap items-center justify-between gap-4 bg-white rounded-2xl ring-1 ring-black/5 p-5 shadow-sm">
             <div className="text-sm font-medium text-zinc-600">
-              Hiển thị <span className="font-semibold text-zinc-900">{(page - 1) * itemsPerPage + 1}–{Math.min(page * itemsPerPage, filtered.length)}</span> của <span className="font-semibold text-zinc-900">{filtered.length}</span> sản phẩm
+              Hiển thị{" "}
+              <span className="font-semibold text-zinc-900">
+                {(page - 1) * itemsPerPage + 1}–{Math.min(page * itemsPerPage, filtered.length)}
+              </span>{" "}
+              của <span className="font-semibold text-zinc-900">{filtered.length}</span> sản phẩm
             </div>
             <div className="flex items-center gap-2">
               <button

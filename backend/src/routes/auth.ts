@@ -28,7 +28,12 @@ router.get('/me', authMiddleware(jwtService), currentUserMiddleware(jwtService),
 // Admin auth & dashboard aliases
 router.post('/admin/login', loginLimiter, authController.adminLogin);
 router.post('/admin/logout', authMiddleware(jwtService), authController.logout);
-router.get('/admin/session', authMiddleware(jwtService), currentUserMiddleware(jwtService), authController.me);
+router.get(
+  '/admin/session',
+  authMiddleware(jwtService),
+  currentUserMiddleware(jwtService),
+  authController.me,
+);
 router.get('/admin/dashboard', authMiddleware(jwtService), async (req, res, next) => {
   try {
     const orderCount = await prisma.order.count();
@@ -45,10 +50,7 @@ router.get('/admin/dashboard', authMiddleware(jwtService), async (req, res, next
 
     const paidOrders = await prisma.order.findMany({
       where: {
-        OR: [
-          { status: 'PAID' },
-          { paymentStatus: 'PAID' },
-        ],
+        OR: [{ status: 'PAID' }, { paymentStatus: 'PAID' }],
       },
       select: { totalAmount: true },
     });
@@ -76,10 +78,12 @@ router.get('/admin/dashboard', authMiddleware(jwtService), async (req, res, next
 router.get('/store/coupons', async (req, res, next) => {
   try {
     const setting = await prisma.systemsetting.findUnique({ where: { key: 'coupons_list' } });
-    const list = setting ? JSON.parse(setting.value) : [
-      { id: 'cp1', code: 'GIAM10', discountPercent: 10, active: true },
-      { id: 'cp2', code: 'NAMNGUYEN20', discountPercent: 20, active: true },
-    ];
+    const list = setting
+      ? JSON.parse(setting.value)
+      : [
+          { id: 'cp1', code: 'GIAM10', discountPercent: 10, active: true },
+          { id: 'cp2', code: 'NAMNGUYEN20', discountPercent: 20, active: true },
+        ];
     const activeCoupons = list.filter((c: any) => Boolean(c.active));
     res.json({ success: true, data: activeCoupons });
   } catch (err) {
@@ -90,10 +94,12 @@ router.get('/store/coupons', async (req, res, next) => {
 router.get('/admin/coupons', authMiddleware(jwtService), async (req, res, next) => {
   try {
     const setting = await prisma.systemsetting.findUnique({ where: { key: 'coupons_list' } });
-    const list = setting ? JSON.parse(setting.value) : [
-      { id: 'cp1', code: 'GIAM10', discountPercent: 10, active: true },
-      { id: 'cp2', code: 'NAMNGUYEN20', discountPercent: 20, active: true },
-    ];
+    const list = setting
+      ? JSON.parse(setting.value)
+      : [
+          { id: 'cp1', code: 'GIAM10', discountPercent: 10, active: true },
+          { id: 'cp2', code: 'NAMNGUYEN20', discountPercent: 20, active: true },
+        ];
     res.json({ success: true, data: list });
   } catch (err) {
     next(err);
@@ -107,7 +113,9 @@ router.post('/admin/coupons', authMiddleware(jwtService), async (req, res, next)
     const currentList = setting ? JSON.parse(setting.value) : [];
     const newCoupon = {
       id: `cp_${Date.now()}`,
-      code: String(code || '').toUpperCase().trim(),
+      code: String(code || '')
+        .toUpperCase()
+        .trim(),
       discountPercent: Number(discountPercent || 0),
       active: Boolean(active ?? true),
     };
@@ -115,7 +123,12 @@ router.post('/admin/coupons', authMiddleware(jwtService), async (req, res, next)
     await prisma.systemsetting.upsert({
       where: { key: 'coupons_list' },
       update: { value: JSON.stringify(newList), updatedAt: new Date() },
-      create: { id: `st_${Date.now()}`, key: 'coupons_list', value: JSON.stringify(newList), updatedAt: new Date() },
+      create: {
+        id: `st_${Date.now()}`,
+        key: 'coupons_list',
+        value: JSON.stringify(newList),
+        updatedAt: new Date(),
+      },
     });
     res.json({ success: true, data: newCoupon });
   } catch (err) {
@@ -134,7 +147,8 @@ router.put('/admin/coupons/:id', authMiddleware(jwtService), async (req, res, ne
         ? {
             ...c,
             code: code !== undefined ? String(code).toUpperCase().trim() : c.code,
-            discountPercent: discountPercent !== undefined ? Number(discountPercent) : c.discountPercent,
+            discountPercent:
+              discountPercent !== undefined ? Number(discountPercent) : c.discountPercent,
             active: active !== undefined ? Boolean(active) : c.active,
           }
         : c,
@@ -142,7 +156,12 @@ router.put('/admin/coupons/:id', authMiddleware(jwtService), async (req, res, ne
     await prisma.systemsetting.upsert({
       where: { key: 'coupons_list' },
       update: { value: JSON.stringify(currentList), updatedAt: new Date() },
-      create: { id: `st_${Date.now()}`, key: 'coupons_list', value: JSON.stringify(currentList), updatedAt: new Date() },
+      create: {
+        id: `st_${Date.now()}`,
+        key: 'coupons_list',
+        value: JSON.stringify(currentList),
+        updatedAt: new Date(),
+      },
     });
     res.json({ success: true, message: 'Coupon updated' });
   } catch (err) {
@@ -159,7 +178,12 @@ router.delete('/admin/coupons/:id', authMiddleware(jwtService), async (req, res,
     await prisma.systemsetting.upsert({
       where: { key: 'coupons_list' },
       update: { value: JSON.stringify(currentList), updatedAt: new Date() },
-      create: { id: `st_${Date.now()}`, key: 'coupons_list', value: JSON.stringify(currentList), updatedAt: new Date() },
+      create: {
+        id: `st_${Date.now()}`,
+        key: 'coupons_list',
+        value: JSON.stringify(currentList),
+        updatedAt: new Date(),
+      },
     });
     res.json({ success: true, message: 'Coupon deleted' });
   } catch (err) {

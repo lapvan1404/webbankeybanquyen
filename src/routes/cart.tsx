@@ -110,7 +110,9 @@ function CartPage() {
                         >
                           −
                         </button>
-                        <span className="w-8 text-center text-xs font-bold text-zinc-900">{l.qty}</span>
+                        <span className="w-8 text-center text-xs font-bold text-zinc-900">
+                          {l.qty}
+                        </span>
                         <button
                           type="button"
                           onClick={() => setQty(l.product.id, l.qty + 1)}
@@ -176,16 +178,22 @@ function CartPage() {
                   )}
                   <div className="pt-3 border-t border-zinc-100 flex justify-between items-baseline">
                     <div>
-                      <span className="font-extrabold text-zinc-900 text-base block">Tổng cộng</span>
+                      <span className="font-extrabold text-zinc-900 text-base block">
+                        Tổng cộng
+                      </span>
                       <span className="text-[10px] text-zinc-400">Đã bao gồm thuế VAT 10%</span>
                     </div>
-                    <span className="text-2xl font-black text-brand tracking-tight">{money(total)}</span>
+                    <span className="text-2xl font-black text-brand tracking-tight">
+                      {money(total)}
+                    </span>
                   </div>
                 </div>
 
                 {/* COUPON DISCOUNT CODE SECTION */}
                 <div className="space-y-2 pt-2 border-t border-zinc-100">
-                  <label className="block text-xs font-bold text-zinc-700">Mã giảm giá (Coupon):</label>
+                  <label className="block text-xs font-bold text-zinc-700">
+                    Mã giảm giá (Coupon):
+                  </label>
                   <div className="flex gap-2">
                     <div className="flex-1 relative">
                       <Tag className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-zinc-400" />
@@ -216,7 +224,9 @@ function CartPage() {
                           onClick={() => {
                             setCoupon(c.code);
                             setDiscount((subtotal * c.discountPercent) / 100);
-                            toast.success(`🎉 Áp dụng mã ${c.code} thành công — giảm ${c.discountPercent}%!`);
+                            toast.success(
+                              `🎉 Áp dụng mã ${c.code} thành công — giảm ${c.discountPercent}%!`,
+                            );
                           }}
                           className="text-[10px] font-mono font-bold bg-brand/10 hover:bg-brand text-brand hover:text-white px-2.5 py-0.5 rounded-full transition cursor-pointer"
                         >
@@ -229,7 +239,9 @@ function CartPage() {
 
                 {/* ORDER NOTE */}
                 <div className="space-y-1.5 pt-2 border-t border-zinc-100">
-                  <label className="block text-xs font-bold text-zinc-700">Ghi chú cho cửa hàng (Tùy chọn):</label>
+                  <label className="block text-xs font-bold text-zinc-700">
+                    Ghi chú cho cửa hàng (Tùy chọn):
+                  </label>
                   <input
                     type="text"
                     value={orderNote}
@@ -249,7 +261,9 @@ function CartPage() {
                       navigate({
                         to: "/login",
                         search: {
-                          redirect: activeCouponCode ? `/checkout?coupon=${encodeURIComponent(activeCouponCode)}` : "/checkout",
+                          redirect: activeCouponCode
+                            ? `/checkout?coupon=${encodeURIComponent(activeCouponCode)}`
+                            : "/checkout",
                         } as any,
                       });
                       return;

@@ -132,8 +132,11 @@ export const removeCartItem = (itemId: string) =>
   apiFetch<ApiCart>(`/api/cart/items/${itemId}`, { method: "DELETE", credentials: "include" });
 export const clearCart = () =>
   apiFetch<{ success: boolean }>("/api/cart", { method: "DELETE", credentials: "include" });
-export const createOrder = (payload?: { productId?: string; quantity?: number; couponCode?: string }) =>
-  apiPost<ApiOrder>("/api/orders", payload ?? {}, { credentials: "include" });
+export const createOrder = (payload?: {
+  productId?: string;
+  quantity?: number;
+  couponCode?: string;
+}) => apiPost<ApiOrder>("/api/orders", payload ?? {}, { credentials: "include" });
 export const listOrders = () => apiFetch<ApiOrder[]>("/api/orders", { credentials: "include" });
 export const getOrder = (id: string) =>
   apiFetch<ApiOrder>(`/api/orders/${id}`, { credentials: "include" });
@@ -142,7 +145,9 @@ export const payOrder = (id: string, customerEmail?: string) =>
 export const getLicenseKeys = (id: string) =>
   apiFetch<LicenseKey[]>(`/api/orders/${id}/license-keys`, { credentials: "include" });
 
-export async function listActiveCoupons(): Promise<Array<{ id: string; code: string; discountPercent: number; active: boolean }>> {
+export async function listActiveCoupons(): Promise<
+  Array<{ id: string; code: string; discountPercent: number; active: boolean }>
+> {
   try {
     const res = await apiFetch<any>("/api/store/coupons");
     return Array.isArray(res) ? res : res?.data || [];
@@ -159,24 +164,42 @@ export function unwrapList<T>(value: { data: T[] } | T[]): T[] {
 }
 
 export function cleanImageUrl(url?: string | null): string {
-  if (!url || url.includes("example.com")) return "";
+  if (!url || typeof url !== "string") return "";
   let clean = url.trim();
+  if (clean.includes("example.com")) return "";
+
   if (clean.includes(",")) {
-    const parts = clean.split(",").map((s) => s.trim()).filter(Boolean);
-    clean = parts.find((p) => p && !p.includes("example.com")) || "";
+    const parts = clean
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s && !s.includes("example.com"));
+    clean = parts[0] || "";
   }
+
   if (!clean || clean.includes("example.com")) return "";
+
   if (clean.includes("/api/upload/object")) {
     const idx = clean.indexOf("/api/upload/object");
-    return clean.slice(idx);
+    let single = clean.slice(idx);
+    if (single.includes(",")) {
+      single = single.split(",")[0].trim();
+    }
+    return single;
   }
+
   if (clean.includes("/api/admin/upload/object")) {
     const idx = clean.indexOf("/api/admin/upload/object");
-    return clean.slice(idx);
+    let single = clean.slice(idx);
+    if (single.includes(",")) {
+      single = single.split(",")[0].trim();
+    }
+    return single;
   }
+
   if (clean.startsWith("uploads/")) {
     return `/api/upload/object?key=${encodeURIComponent(clean)}`;
   }
+
   return clean;
 }
 
@@ -184,24 +207,31 @@ export function toProduct(item: ApiProduct, fallback?: Product): Product {
   const categorySlug =
     typeof item.category === "string"
       ? item.category
-      : (item.category as any)?.slug ??
+      : ((item.category as any)?.slug ??
         (item.categoryId === "seed-category-windows"
           ? "windows"
           : item.categoryId === "seed-category-office"
             ? "office"
             : item.categoryId === "seed-category-antivirus"
               ? "antivirus"
-              : item.categoryId ?? fallback?.category ?? "");
+              : (item.categoryId ?? fallback?.category ?? "")));
 
   const brandName =
     typeof item.brand === "string"
       ? item.brand
-      : (item.brand as any)?.name ?? (item.brand as any)?.slug ?? item.brandId ?? fallback?.brand ?? "";
+      : ((item.brand as any)?.name ??
+        (item.brand as any)?.slug ??
+        item.brandId ??
+        fallback?.brand ??
+        "");
 
   const defaultCategoryImages: Record<string, string> = {
-    windows: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=600&auto=format&fit=crop&q=80",
-    office: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&auto=format&fit=crop&q=80",
-    antivirus: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=80",
+    windows:
+      "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=600&auto=format&fit=crop&q=80",
+    office:
+      "https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&auto=format&fit=crop&q=80",
+    antivirus:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=80",
   };
   const categoryFallback = defaultCategoryImages[categorySlug] || defaultCategoryImages.windows;
 
@@ -218,7 +248,11 @@ export function toProduct(item: ApiProduct, fallback?: Product): Product {
     rating: item.rating ?? fallback?.rating ?? 0,
     reviews: item.reviews ?? fallback?.reviews ?? 0,
     sales: fallback?.sales,
-    image: cleanImageUrl(item.thumbnailUrl) || cleanImageUrl(item.image) || fallback?.image || categoryFallback,
+    image:
+      cleanImageUrl(item.thumbnailUrl) ||
+      cleanImageUrl(item.image) ||
+      fallback?.image ||
+      categoryFallback,
     badge: item.badge ?? fallback?.badge,
     stock: item.stock ?? 0,
     shortDescription: item.shortDescription ?? "",
@@ -228,7 +262,10 @@ export function toProduct(item: ApiProduct, fallback?: Product): Product {
   } as unknown as Product & { shortDescription?: string };
 }
 
-export async function uploadImage(file: File, folder?: string): Promise<{ id: string; url: string }> {
+export async function uploadImage(
+  file: File,
+  folder?: string,
+): Promise<{ id: string; url: string }> {
   const formData = new FormData();
   formData.append("file", file);
   if (folder) {

@@ -3,6 +3,7 @@
 Represents a payment session or record returned by the API.
 
 Fields:
+
 - `id` (string): Unique payment identifier.
 - `orderId` (string): Associated order identifier.
 - `amount` (number): Payment amount.

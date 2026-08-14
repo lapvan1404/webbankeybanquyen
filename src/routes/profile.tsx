@@ -50,7 +50,8 @@ function ProfilePage() {
               </span>
               <h1 className="text-3xl font-bold text-zinc-900 mt-2">Xin chào, {user.name}</h1>
               <p className="text-sm text-zinc-500 mt-1">
-                Quản lý thông tin tài khoản và xem mã Key bản quyền đã mua tại Công Ty TNHH Công Nghệ Nam Nguyễn.
+                Quản lý thông tin tài khoản và xem mã Key bản quyền đã mua tại Công Ty TNHH Công
+                Nghệ Nam Nguyễn.
               </p>
             </div>
             <button
@@ -83,19 +84,26 @@ function ProfilePage() {
                 <div className="space-y-4 text-xs">
                   <div className="bg-zinc-50 p-4 rounded-2xl space-y-3 ring-1 ring-zinc-200/60">
                     <div>
-                      <p className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">Họ và tên</p>
+                      <p className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
+                        Họ và tên
+                      </p>
                       <p className="font-semibold text-zinc-800 text-sm mt-0.5">{user.name}</p>
                     </div>
                     <div className="border-t border-zinc-200/60 pt-2.5">
-                      <p className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">Địa chỉ Email</p>
-                      <p className="font-semibold text-zinc-800 text-sm mt-0.5 font-mono">{user.email}</p>
+                      <p className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">
+                        Địa chỉ Email
+                      </p>
+                      <p className="font-semibold text-zinc-800 text-sm mt-0.5 font-mono">
+                        {user.email}
+                      </p>
                     </div>
                   </div>
 
                   <div className="bg-brand/5 p-4 rounded-2xl space-y-1 text-brand">
                     <p className="font-bold">🔑 Hỗ trợ kích hoạt Key 24/7</p>
                     <p className="text-[11px] text-zinc-600 leading-relaxed">
-                      Tất cả mã Key mua tại cửa hàng đều được lưu trữ vĩnh viễn trong tài khoản của bạn. Đội ngũ kỹ thuật hỗ trợ cài đặt qua UltraViewer/TeamViewer 24/7.
+                      Tất cả mã Key mua tại cửa hàng đều được lưu trữ vĩnh viễn trong tài khoản của
+                      bạn. Đội ngũ kỹ thuật hỗ trợ cài đặt qua UltraViewer/TeamViewer 24/7.
                     </p>
                   </div>
                 </div>
@@ -142,7 +150,10 @@ function ProfilePage() {
 
                 <div className="space-y-4">
                   {(ordersQuery.data ?? []).map((order) => {
-                    const isPaid = order.status === "PAID" || order.status === "approved" || order.status === "COMPLETED";
+                    const isPaid =
+                      order.status === "PAID" ||
+                      order.status === "approved" ||
+                      order.status === "COMPLETED";
                     const isSelected = selectedOrderId === order.id;
 
                     return (
@@ -156,7 +167,14 @@ function ProfilePage() {
                               #{order.orderNumber || order.id.slice(0, 8)}
                             </span>
                             <p className="text-xs text-zinc-400 mt-0.5">
-                              Ngày đặt: {new Date(order.createdAt).toLocaleDateString("vi-VN", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                              Ngày đặt:{" "}
+                              {new Date(order.createdAt).toLocaleDateString("vi-VN", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </p>
                           </div>
                           <div className="flex items-center gap-3">
@@ -168,22 +186,29 @@ function ProfilePage() {
                                 isPaid
                                   ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
                                   : order.status === "CANCELLED"
-                                  ? "bg-red-100 text-red-800 border border-red-200"
-                                  : "bg-amber-100 text-amber-800 border border-amber-200"
+                                    ? "bg-red-100 text-red-800 border border-red-200"
+                                    : "bg-amber-100 text-amber-800 border border-amber-200"
                               }`}
                             >
                               {isPaid
                                 ? "🟢 ĐÃ THANH TOÁN"
                                 : order.status === "CANCELLED"
-                                ? "🔴 ĐÃ HỦY"
-                                : "🟡 CHỜ ADMIN XÁC NHẬN"}
+                                  ? "🔴 ĐÃ HỦY"
+                                  : "🟡 CHỜ ADMIN XÁC NHẬN"}
                             </span>
                           </div>
                         </div>
 
                         <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                           <span className="text-xs text-zinc-500">
-                            Trạng thái cấp Key: <strong className="text-zinc-800">{isPaid ? "Hiển thị trực tiếp trên Website" : order.status === "CANCELLED" ? "Đơn hàng đã hủy" : "Đang chờ Admin xác nhận thanh toán"}</strong>
+                            Trạng thái cấp Key:{" "}
+                            <strong className="text-zinc-800">
+                              {isPaid
+                                ? "Hiển thị trực tiếp trên Website"
+                                : order.status === "CANCELLED"
+                                  ? "Đơn hàng đã hủy"
+                                  : "Đang chờ Admin xác nhận thanh toán"}
+                            </strong>
                           </span>
                           {isPaid && (
                             <button
@@ -202,18 +227,29 @@ function ProfilePage() {
                               <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
                                 🔑 Danh sách mã License Key của đơn hàng
                               </h4>
-                              {keysQuery.isLoading && <span className="text-[11px] text-zinc-400">Đang nạp Key...</span>}
+                              {keysQuery.isLoading && (
+                                <span className="text-[11px] text-zinc-400">Đang nạp Key...</span>
+                              )}
                             </div>
 
                             {keysQuery.isLoading ? (
-                              <p className="text-xs text-zinc-400 italic">Đang tải mã key từ server bảo mật...</p>
+                              <p className="text-xs text-zinc-400 italic">
+                                Đang tải mã key từ server bảo mật...
+                              </p>
                             ) : keysQuery.isError ? (
-                              <p className="text-xs text-red-400">Không thể nạp key. Vui lòng thử lại sau.</p>
+                              <p className="text-xs text-red-400">
+                                Không thể nạp key. Vui lòng thử lại sau.
+                              </p>
                             ) : (keysQuery.data ?? []).length > 0 ? (
                               (keysQuery.data ?? []).map((k: any, idx: number) => (
-                                <div key={idx} className="bg-zinc-800 p-3 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 ring-1 ring-white/10">
+                                <div
+                                  key={idx}
+                                  className="bg-zinc-800 p-3 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 ring-1 ring-white/10"
+                                >
                                   <div>
-                                    <p className="text-[11px] text-zinc-400 font-medium">{k.productName || "Phần mềm bản quyền"}</p>
+                                    <p className="text-[11px] text-zinc-400 font-medium">
+                                      {k.productName || "Phần mềm bản quyền"}
+                                    </p>
                                     <p className="font-mono text-emerald-400 font-bold text-sm tracking-widest mt-0.5 select-all">
                                       {k.key}
                                     </p>
@@ -232,7 +268,8 @@ function ProfilePage() {
                               ))
                             ) : (
                               <p className="text-xs text-zinc-400 italic">
-                                Đơn hàng đã được thanh toán. Nếu chưa thấy mã Key hiển thị, vui lòng liên hệ Hotline 0383 158 080 để hỗ trợ ngay lập tức.
+                                Đơn hàng đã được thanh toán. Nếu chưa thấy mã Key hiển thị, vui lòng
+                                liên hệ Hotline 0383 158 080 để hỗ trợ ngay lập tức.
                               </p>
                             )}
                           </div>

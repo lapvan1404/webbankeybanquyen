@@ -3,7 +3,9 @@ import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const adapter = new PrismaMariaDb(process.env.DATABASE_URL || 'mysql://root:@127.0.0.1:3306/webbankeybanquyen');
+const adapter = new PrismaMariaDb(
+  process.env.DATABASE_URL || 'mysql://root:@127.0.0.1:3306/webbankeybanquyen',
+);
 const prisma = new PrismaClient({ adapter });
 const BASE_URL = 'http://localhost:4000';
 
@@ -15,21 +17,31 @@ async function runTests() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'admin@example.com', password: 'Admin@1234' }),
-  }).then(r => r.json());
+  }).then((r) => r.json());
   const adminToken = adminLoginRes.data?.accessToken;
-  const adminHeaders = { Authorization: `Bearer ${adminToken}`, 'Content-Type': 'application/json' };
+  const adminHeaders = {
+    Authorization: `Bearer ${adminToken}`,
+    'Content-Type': 'application/json',
+  };
 
   // Login Customer
   const customerLoginRes = await fetch(`${BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'customer1@example.com', password: 'Customer@1234' }),
-  }).then(r => r.json());
-  const customerToken = customerLoginRes.data?.tokens?.accessToken || customerLoginRes.data?.accessToken;
-  const customerHeaders = { Authorization: `Bearer ${customerToken}`, 'Content-Type': 'application/json' };
+  }).then((r) => r.json());
+  const customerToken =
+    customerLoginRes.data?.tokens?.accessToken || customerLoginRes.data?.accessToken;
+  const customerHeaders = {
+    Authorization: `Bearer ${customerToken}`,
+    'Content-Type': 'application/json',
+  };
 
   // Test 1: Customer Create order
-  const products = await prisma.product.findMany({ where: { status: 'ACTIVE', deletedAt: null }, take: 1 });
+  const products = await prisma.product.findMany({
+    where: { status: 'ACTIVE', deletedAt: null },
+    take: 1,
+  });
   const testProduct = products[0];
 
   const createOrderRes = await fetch(`${BASE_URL}/api/orders`, {
@@ -44,8 +56,13 @@ async function runTests() {
   console.log(`[PASS] 1. Create order -> Status: 201, Order: #${orderNumber}`);
 
   // Test 2 & 5: Order paymentStatus is UNPAID / PENDING
-  console.assert(createOrderData.data.paymentStatus === 'UNPAID' && createOrderData.data.status === 'PENDING', 'Test 2 Failed');
-  console.log(`[PASS] 2 & 5. Order initially created as PENDING/UNPAID -> paymentStatus: ${createOrderData.data.paymentStatus}`);
+  console.assert(
+    createOrderData.data.paymentStatus === 'UNPAID' && createOrderData.data.status === 'PENDING',
+    'Test 2 Failed',
+  );
+  console.log(
+    `[PASS] 2 & 5. Order initially created as PENDING/UNPAID -> paymentStatus: ${createOrderData.data.paymentStatus}`,
+  );
 
   // Test 3: Customer pay endpoint does NOT self-confirm as PAID
   const custPayRes = await fetch(`${BASE_URL}/api/orders/${orderId}/pay`, {
@@ -55,10 +72,14 @@ async function runTests() {
   });
   const custPayData = await custPayRes.json();
   console.assert(custPayData.data.paymentStatus === 'UNPAID', 'Test 3 Failed');
-  console.log(`[PASS] 3. Customer self-confirm attempt ignored -> paymentStatus remains: ${custPayData.data.paymentStatus}`);
+  console.log(
+    `[PASS] 3. Customer self-confirm attempt ignored -> paymentStatus remains: ${custPayData.data.paymentStatus}`,
+  );
 
   // Test 6: Customer cannot access license keys before Admin confirm
-  const keyPreConfirmRes = await fetch(`${BASE_URL}/api/orders/${orderId}/license-keys`, { headers: customerHeaders });
+  const keyPreConfirmRes = await fetch(`${BASE_URL}/api/orders/${orderId}/license-keys`, {
+    headers: customerHeaders,
+  });
   console.assert(keyPreConfirmRes.status === 403, 'Test 6 Failed');
   console.log(`[PASS] 6. Customer pre-confirm key access -> Blocked with Status: 403 Forbidden`);
 
@@ -80,12 +101,19 @@ async function runTests() {
   // Test 13 & 14: Admin sees order in list & filters pending
   const adminListOrdersRes = await fetch(`${BASE_URL}/api/admin/orders`, { headers: adminHeaders });
   const adminListOrdersData = await adminListOrdersRes.json();
-  const pendingOrders = (adminListOrdersData.data || []).filter(o => o.status === 'PENDING');
-  console.assert(pendingOrders.some(o => o.id === orderId), 'Test 13 & 14 Failed');
-  console.log(`[PASS] 13 & 14. Admin list & filter pending -> Found order in pending list (${pendingOrders.length} pending orders)`);
+  const pendingOrders = (adminListOrdersData.data || []).filter((o) => o.status === 'PENDING');
+  console.assert(
+    pendingOrders.some((o) => o.id === orderId),
+    'Test 13 & 14 Failed',
+  );
+  console.log(
+    `[PASS] 13 & 14. Admin list & filter pending -> Found order in pending list (${pendingOrders.length} pending orders)`,
+  );
 
   // Test 15: Admin get order detail
-  const adminGetDetailRes = await fetch(`${BASE_URL}/api/admin/orders/${orderId}`, { headers: adminHeaders });
+  const adminGetDetailRes = await fetch(`${BASE_URL}/api/admin/orders/${orderId}`, {
+    headers: adminHeaders,
+  });
   console.assert(adminGetDetailRes.status === 200, 'Test 15 Failed');
   console.log(`[PASS] 15. Admin get order detail -> Status: 200 OK`);
 
@@ -95,14 +123,24 @@ async function runTests() {
     headers: adminHeaders,
   });
   const adminConfirmData = await adminConfirmRes.json();
-  console.assert(adminConfirmRes.status === 200 && adminConfirmData.data.paymentStatus === 'PAID', 'Test 16 & 17 Failed');
+  console.assert(
+    adminConfirmRes.status === 200 && adminConfirmData.data.paymentStatus === 'PAID',
+    'Test 16 & 17 Failed',
+  );
   console.log(`[PASS] 16 & 17. Admin Confirm Payment -> Order paymentStatus updated to PAID`);
 
   // Test 9 & 10: Customer post-confirmation -> Order is PAID and License Keys accessible on website
-  const keysPostConfirmRes = await fetch(`${BASE_URL}/api/orders/${orderId}/license-keys`, { headers: customerHeaders });
+  const keysPostConfirmRes = await fetch(`${BASE_URL}/api/orders/${orderId}/license-keys`, {
+    headers: customerHeaders,
+  });
   const keysPostConfirmData = await keysPostConfirmRes.json();
-  console.assert(keysPostConfirmRes.status === 200 && keysPostConfirmData.data.length > 0, 'Test 9 & 10 Failed');
-  console.log(`[PASS] 9 & 10. Customer gets License Key on Website -> Key: ${keysPostConfirmData.data[0].key}`);
+  console.assert(
+    keysPostConfirmRes.status === 200 && keysPostConfirmData.data.length > 0,
+    'Test 9 & 10 Failed',
+  );
+  console.log(
+    `[PASS] 9 & 10. Customer gets License Key on Website -> Key: ${keysPostConfirmData.data[0].key}`,
+  );
 
   // Test 20: Audit Log created for CONFIRM_PAYMENT
   const auditLogs = await prisma.auditlog.findMany({
@@ -131,7 +169,7 @@ async function runTests() {
   await prisma.$disconnect();
 }
 
-runTests().catch(e => {
+runTests().catch((e) => {
   console.error(e);
   process.exit(1);
 });

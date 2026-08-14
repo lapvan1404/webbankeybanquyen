@@ -3,6 +3,7 @@
 IMPORTANT: This is a design-only update per your instructions. Do NOT modify `schema.prisma`, do NOT generate migrations, and do NOT write code until you explicitly approve.
 
 ## Goal
+
 Provide an updated ProductKey schema and operational design reflecting your required revisions. This document contains the revised Prisma model (proposal), enums, relations, indexes, constraints, ERD, business and operational workflows, import flows, encryption/decryption, duplicate prevention, stock rules, and the exact schema changes required (not applied).
 
 ---
@@ -49,6 +50,7 @@ n  @@index([productId, status])
 ```
 
 Notes:
+
 - Relation `product` uses `onDelete: NoAction` to avoid cascading deletion of keys when a `Product` is removed; this requires explicit admin cleanup if a product is deleted.
 - Field `encryptedKey` replaces `keyCipher` per your request.
 - `assignedTo` and `deletedAt` have been removed; assignment is represented solely via `orderItemId` and `assignedAt`.
@@ -58,12 +60,14 @@ Notes:
 ---
 
 ## Enums
+
 - `ProductKeyStatus`: `AVAILABLE`, `RESERVED`, `SOLD`, `DISABLED`.
 - `ProductKeyAlgorithm`: `AES_256_GCM` (extendable).
 
 ---
 
 ## Relations
+
 - `ProductKey.productId -> Product.id` with `onDelete: NoAction` (Restrict-style behavior).
 - `ProductKey.orderItemId -> OrderItem.id` with `onDelete: SetNull`.
 - Rationale: use `orderItemId` as the single source of truth for assignment; do not store `assignedTo` separately.
@@ -71,6 +75,7 @@ Notes:
 ---
 
 ## Indexes & Constraints
+
 - `@@index([productId, status])` — fast per-product status queries.
 - `@@index([status])` — global scans for background jobs (e.g., release expired reservations).
 - `@@index([productId, keyHash])` — duplicate detection lookups.
@@ -80,7 +85,7 @@ Notes:
 
 ## ERD
 
-```mermaid
+````mermaid
 erDiagram
 +    PRODUCT ||--o{ PRODUCTKEY : has
 +    PRODUCTKEY }o--o{ ORDERITEM : assigned_to
@@ -250,3 +255,4 @@ Database migration considerations:
 3. When you approve implementation after schema approval, reply `APPROVE IMPLEMENTATION`.
 
 No code, schema modifications, or migrations will be performed until you explicitly approve.
+````

@@ -71,9 +71,7 @@ export class AdminUserController {
 
       const formattedUsers = users.map((u) => {
         const fullName = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email;
-        const paidOrders = u.order.filter(
-          (o) => o.status === 'PAID' || o.paymentStatus === 'PAID',
-        );
+        const paidOrders = u.order.filter((o) => o.status === 'PAID' || o.paymentStatus === 'PAID');
         const totalSpending = paidOrders.reduce((sum, o) => sum + Number(o.totalAmount || 0), 0);
 
         return {
@@ -95,15 +93,17 @@ export class AdminUserController {
 
       // Audit log cho xem danh sách user
       if (req.user?.sub) {
-        await this.prisma.auditlog.create({
-          data: {
-            id: randomUUID(),
-            userId: req.user.sub,
-            event: 'ADMIN_VIEW_USER_LIST',
-            metadata: JSON.stringify({ search, status: statusParam, page, limit, ip: req.ip }),
-            createdAt: new Date(),
-          },
-        }).catch(() => null);
+        await this.prisma.auditlog
+          .create({
+            data: {
+              id: randomUUID(),
+              userId: req.user.sub,
+              event: 'ADMIN_VIEW_USER_LIST',
+              metadata: JSON.stringify({ search, status: statusParam, page, limit, ip: req.ip }),
+              createdAt: new Date(),
+            },
+          })
+          .catch(() => null);
       }
 
       res.status(200).json(
@@ -184,15 +184,21 @@ export class AdminUserController {
 
       // Audit log cho xem chi tiết user
       if (req.user?.sub) {
-        await this.prisma.auditlog.create({
-          data: {
-            id: randomUUID(),
-            userId: req.user.sub,
-            event: 'ADMIN_VIEW_USER_DETAIL',
-            metadata: JSON.stringify({ targetUserId: user.id, targetEmail: user.email, ip: req.ip }),
-            createdAt: new Date(),
-          },
-        }).catch(() => null);
+        await this.prisma.auditlog
+          .create({
+            data: {
+              id: randomUUID(),
+              userId: req.user.sub,
+              event: 'ADMIN_VIEW_USER_DETAIL',
+              metadata: JSON.stringify({
+                targetUserId: user.id,
+                targetEmail: user.email,
+                ip: req.ip,
+              }),
+              createdAt: new Date(),
+            },
+          })
+          .catch(() => null);
       }
 
       res.status(200).json(
@@ -241,7 +247,15 @@ export class AdminUserController {
       }
 
       if (!targetStatus) {
-        res.status(400).json(createResponse(null, 'Trạng thái không hợp lệ. Chỉ chấp nhận ACTIVE hoặc LOCKED.', null));
+        res
+          .status(400)
+          .json(
+            createResponse(
+              null,
+              'Trạng thái không hợp lệ. Chỉ chấp nhận ACTIVE hoặc LOCKED.',
+              null,
+            ),
+          );
         return;
       }
 
@@ -257,10 +271,20 @@ export class AdminUserController {
 
       // BẢO VỆ TÀI KHOẢN ADMIN: SERVER-SIDE PROTECTION
       const roleName = (user.role?.name || '').toLowerCase();
-      if (roleName === 'admin' || user.email === 'admin@example.com' || user.email === 'admin@namnguyen.vn') {
+      if (
+        roleName === 'admin' ||
+        user.email === 'admin@example.com' ||
+        user.email === 'admin@namnguyen.vn'
+      ) {
         res
           .status(400)
-          .json(createResponse(null, 'Không thể khóa hoặc thao tác trạng thái trên tài khoản Quản trị viên (Admin).', null));
+          .json(
+            createResponse(
+              null,
+              'Không thể khóa hoặc thao tác trạng thái trên tài khoản Quản trị viên (Admin).',
+              null,
+            ),
+          );
         return;
       }
 
@@ -269,7 +293,10 @@ export class AdminUserController {
         where: { id },
         data: {
           status: targetStatus,
-          lockedUntil: targetStatus === user_status.LOCKED ? new Date(Date.now() + 100 * 365 * 24 * 3600 * 1000) : null,
+          lockedUntil:
+            targetStatus === user_status.LOCKED
+              ? new Date(Date.now() + 100 * 365 * 24 * 3600 * 1000)
+              : null,
           updatedAt: new Date(),
         },
         select: {
@@ -283,33 +310,37 @@ export class AdminUserController {
       // Audit Log chuyên sâu cho LOCK / UNLOCK
       const auditEvent = targetStatus === user_status.LOCKED ? 'LOCK_USER' : 'UNLOCK_USER';
       if (req.user?.sub) {
-        await this.prisma.auditlog.create({
-          data: {
-            id: randomUUID(),
-            userId: req.user.sub,
-            event: auditEvent,
-            metadata: JSON.stringify({
-              adminId: req.user.sub,
-              targetUserId: user.id,
-              targetEmail: user.email,
-              previousStatus,
-              newStatus: targetStatus,
-              ip: req.ip,
-              timestamp: new Date().toISOString(),
-            }),
-            createdAt: new Date(),
-          },
-        }).catch(() => null);
+        await this.prisma.auditlog
+          .create({
+            data: {
+              id: randomUUID(),
+              userId: req.user.sub,
+              event: auditEvent,
+              metadata: JSON.stringify({
+                adminId: req.user.sub,
+                targetUserId: user.id,
+                targetEmail: user.email,
+                previousStatus,
+                newStatus: targetStatus,
+                ip: req.ip,
+                timestamp: new Date().toISOString(),
+              }),
+              createdAt: new Date(),
+            },
+          })
+          .catch(() => null);
       }
 
       const actionText = targetStatus === user_status.LOCKED ? 'Khóa' : 'Mở khóa';
-      res.status(200).json(
-        createResponse(
-          updatedUser,
-          `Đã ${actionText.toLowerCase()} tài khoản ${user.email} thành công`,
-          null,
-        ),
-      );
+      res
+        .status(200)
+        .json(
+          createResponse(
+            updatedUser,
+            `Đã ${actionText.toLowerCase()} tài khoản ${user.email} thành công`,
+            null,
+          ),
+        );
     } catch (error) {
       next(error);
     }

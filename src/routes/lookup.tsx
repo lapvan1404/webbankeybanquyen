@@ -5,7 +5,13 @@ import { toast } from "sonner";
 import { Layout } from "@/components/layout";
 import { useAuth } from "@/lib/auth";
 import { money } from "@/lib/products";
-import { listOrders, getLicenseKeys, payOrder, type ApiOrder, type LicenseKey } from "@/lib/storeApi";
+import {
+  listOrders,
+  getLicenseKeys,
+  payOrder,
+  type ApiOrder,
+  type LicenseKey,
+} from "@/lib/storeApi";
 import { ApiError } from "@/lib/apiClient";
 
 export const Route = createFileRoute("/lookup")({ component: LookupPage });
@@ -106,7 +112,8 @@ function LookupPage() {
               </span>
               <h1 className="text-3xl font-bold text-zinc-900 mt-1">Tra Cứu & Quản Lý Đơn Hàng</h1>
               <p className="text-xs text-zinc-500 mt-1">
-                Xem lại danh sách đơn hàng đã mua, nhận mã Key bản quyền và theo dõi trạng thái thanh toán.
+                Xem lại danh sách đơn hàng đã mua, nhận mã Key bản quyền và theo dõi trạng thái
+                thanh toán.
               </p>
             </div>
           </div>
@@ -134,7 +141,9 @@ function LookupPage() {
             <ShoppingBag className="size-12 text-zinc-300 mx-auto" />
             <h3 className="font-bold text-zinc-800 text-lg">Chưa tìm thấy đơn hàng nào</h3>
             <p className="text-xs text-zinc-500">
-              {searchQuery ? "Không tìm thấy đơn hàng phù hợp với từ khóa." : "Bạn chưa thực hiện đơn hàng nào trên hệ thống."}
+              {searchQuery
+                ? "Không tìm thấy đơn hàng phù hợp với từ khóa."
+                : "Bạn chưa thực hiện đơn hàng nào trên hệ thống."}
             </p>
           </div>
         ) : (
@@ -176,7 +185,9 @@ function LookupPage() {
                           <Clock className="size-3.5" /> CHỜ THANH TOÁN
                         </span>
                       )}
-                      <span className="font-bold text-brand text-base">{money(Number(order.totalAmount))}</span>
+                      <span className="font-bold text-brand text-base">
+                        {money(Number(order.totalAmount))}
+                      </span>
                     </div>
                   </div>
 
@@ -185,10 +196,18 @@ function LookupPage() {
                     {/* Items */}
                     <div className="space-y-2">
                       {order.items?.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center text-sm py-1 border-b border-zinc-50 last:border-0">
-                          <span className="font-medium text-zinc-800">{item.productName || "Sản phẩm bản quyền"}</span>
+                        <div
+                          key={idx}
+                          className="flex justify-between items-center text-sm py-1 border-b border-zinc-50 last:border-0"
+                        >
+                          <span className="font-medium text-zinc-800">
+                            {item.productName || "Sản phẩm bản quyền"}
+                          </span>
                           <span className="text-xs text-zinc-500">
-                            x{item.quantity} · <strong className="text-zinc-900">{money(Number(item.unitPrice || 0))}</strong>
+                            x{item.quantity} ·{" "}
+                            <strong className="text-zinc-900">
+                              {money(Number(item.unitPrice || 0))}
+                            </strong>
                           </span>
                         </div>
                       ))}
@@ -221,7 +240,11 @@ function LookupPage() {
                                 onClick={() => handleCopy(k.key)}
                                 className="bg-brand hover:bg-brand-hover text-brand-foreground text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 shrink-0"
                               >
-                                {copiedKey === k.key ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                                {copiedKey === k.key ? (
+                                  <Check className="size-3.5" />
+                                ) : (
+                                  <Copy className="size-3.5" />
+                                )}
                                 {copiedKey === k.key ? "Đã chép" : "Sao chép"}
                               </button>
                             </div>
@@ -234,14 +257,17 @@ function LookupPage() {
                     {!isPaid && (
                       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
                         <span className="text-amber-900 font-medium">
-                          Đơn hàng chưa hoàn tất thanh toán. Bấm nút dưới để hoàn tất và nhận Key tức thì!
+                          Đơn hàng chưa hoàn tất thanh toán. Bấm nút dưới để hoàn tất và nhận Key
+                          tức thì!
                         </span>
                         <button
                           onClick={() => handlePayNow(order.id)}
                           disabled={payingOrderId === order.id}
                           className="bg-brand hover:bg-brand-hover text-brand-foreground font-semibold px-5 py-2 rounded-lg transition-all shadow-sm shrink-0 flex items-center gap-1.5"
                         >
-                          {payingOrderId === order.id ? "Đang xử lý..." : "Thanh toán & Nhận Key ngay"}
+                          {payingOrderId === order.id
+                            ? "Đang xử lý..."
+                            : "Thanh toán & Nhận Key ngay"}
                         </button>
                       </div>
                     )}

@@ -134,7 +134,7 @@
 - Product module controllers, validators, routes, and authorization were implemented and statically validated.
 - Quality gates (`lint`, `build`, `typecheck`) passed after the Product work.
 - An integration test plan and review were created in `review/product-integration-review.md` with recommended CI test steps. Full automated end-to-end HTTP tests require a test DB and CI setup and are recommended before freeze.
- - A GitHub Actions CI workflow was added at `.github/workflows/backend-ci.yml` to run lint/build/typecheck and integration tests against a disposable MySQL service.
+- A GitHub Actions CI workflow was added at `.github/workflows/backend-ci.yml` to run lint/build/typecheck and integration tests against a disposable MySQL service.
 - Backend repository abstraction was extended with a ProductKey repository and Prisma schema migration to support encrypted key management.
 
 ## MVP Mode
@@ -160,28 +160,28 @@
 - Implemented complete, idempotent Prisma seed at `backend/prisma/seed.ts`.
 - Seed now creates demo data for key commerce entities and related tables: roles, users, categories, brands, products, product images, banners, product keys, carts, orders, payments, and auxiliary records.
 - Added Prisma seed configuration in `backend/package.json`:
-	- `"prisma": { "seed": "tsx prisma/seed.ts" }`
+  - `"prisma": { "seed": "tsx prisma/seed.ts" }`
 - Added documentation: `docs/database-seed.md`.
 - Added dedicated review: `review/database-seed-review.md`.
 - No schema changes, no migrations, no API contract changes, and no business logic changes were introduced.
 - Runtime verification complete:
-	- `npx prisma db seed` passed twice (idempotent run confirmed).
-	- Verified required demo entities exist (admin, 3 customers, categories, brands, products, product keys, orders).
+  - `npx prisma db seed` passed twice (idempotent run confirmed).
+  - Verified required demo entities exist (admin, 3 customers, categories, brands, products, product keys, orders).
 - Quality gate status after seed work:
-	- Product-module blockers have now been fixed; backend quality gates are passing again.
+  - Product-module blockers have now been fixed; backend quality gates are passing again.
 
 ## Product Quality Gate Fix (2026-07-25)
 
 - Resolved existing lint/build/type errors in Product module scoped files only:
-	- `backend/src/controllers/ProductController.ts`
-	- `backend/src/repositories/product/ProductRepository.ts`
-	- `backend/src/services/product/ProductService.ts`
-	- `backend/src/validators/product.ts`
+  - `backend/src/controllers/ProductController.ts`
+  - `backend/src/repositories/product/ProductRepository.ts`
+  - `backend/src/services/product/ProductService.ts`
+  - `backend/src/validators/product.ts`
 - No business logic changes, no API behavior changes, no Prisma schema changes, and no migrations.
 - Verification status in `backend`:
-	- `npm run lint`: PASS
-	- `npm run build`: PASS
-	- `npm run typecheck`: PASS
+  - `npm run lint`: PASS
+  - `npm run build`: PASS
+  - `npm run typecheck`: PASS
 - Detailed notes: `review/product-quality-fix-review.md`.
 
 ## Image Manager (Admin) (2026-07-25)
@@ -189,25 +189,25 @@
 - Implemented Image Manager for `Product`, `Category`, `Brand`, `Banner` by reusing existing upload API flow.
 - No new upload service introduced; no auth architecture change.
 - Added in admin UI:
-	- Upload preview
-	- Replace image
-	- Remove image
-	- Reorder images (move left/right) for product gallery
-	- Upload progress indicator
-	- Save-button lock while uploads are running
+  - Upload preview
+  - Replace image
+  - Remove image
+  - Reorder images (move left/right) for product gallery
+  - Upload progress indicator
+  - Save-button lock while uploads are running
 - Product image behavior:
-	- Max 4 images
-	- First image treated as thumbnail/default image
-	- URL-only payload persisted (`thumbnailUrl`, ordered `images` list)
+  - Max 4 images
+  - First image treated as thumbnail/default image
+  - URL-only payload persisted (`thumbnailUrl`, ordered `images` list)
 - Category/Brand/Banner behavior:
-	- Single image flow with upload/replace/remove and preview
+  - Single image flow with upload/replace/remove and preview
 - Validation behavior:
-	- Allowed: jpg/jpeg/png/webp
-	- SVG not accepted
+  - Allowed: jpg/jpeg/png/webp
+  - SVG not accepted
 - Quality gates from project root:
-	- `npm run lint`: PASS (warnings only)
-	- `npm run build`: PASS
-	- `npm run typecheck`: PASS
+  - `npm run lint`: PASS (warnings only)
+  - `npm run build`: PASS
+  - `npm run typecheck`: PASS
 - Documentation:
-	- `docs/image-manager.md`
-	- `review/image-manager-review.md`
+  - `docs/image-manager.md`
+  - `review/image-manager-review.md`

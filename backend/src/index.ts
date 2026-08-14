@@ -61,10 +61,13 @@ app.use('/api', cartRouter);
 app.use('/api', orderRouter);
 app.use('/api', bannerRouter);
 app.use('/api', reviewRouter);
-app.use('/uploads', express.static('uploads', {
-  maxAge: '30d',
-  immutable: true,
-}));
+app.use(
+  '/uploads',
+  express.static('uploads', {
+    maxAge: '30d',
+    immutable: true,
+  }),
+);
 app.use(errorHandler);
 
 const startServer = async () => {

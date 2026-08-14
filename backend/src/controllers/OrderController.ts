@@ -17,10 +17,14 @@ export class OrderController {
       const userId = req.user?.sub ?? '';
       const payload = CreateOrderSchema.parse(req.body);
       const couponCode = (payload as any).couponCode;
-      const order =
-        payload.productId
-          ? await this.service.createBuyNowOrder(userId, payload.productId, payload.quantity || 1, couponCode)
-          : await this.service.createOrder(userId, couponCode);
+      const order = payload.productId
+        ? await this.service.createBuyNowOrder(
+            userId,
+            payload.productId,
+            payload.quantity || 1,
+            couponCode,
+          )
+        : await this.service.createOrder(userId, couponCode);
       res.status(201).json(createResponse(order, 'Order created successfully.', null));
     } catch (error) {
       next(error);

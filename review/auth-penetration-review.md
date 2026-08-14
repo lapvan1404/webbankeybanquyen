@@ -1,17 +1,21 @@
 # Authentication API Security Audit
 
 ## Scope
+
 This audit reviews the implementation of the Authentication API endpoints for register, login, logout, refresh, and current-user access, as well as the associated password, JWT, cookie, middleware, and environment handling.
 
 ## Executive Summary
+
 The current implementation provides a functional auth flow and includes several baseline controls such as Argon2id password hashing, hashed refresh tokens, HttpOnly cookies, and basic rate limiting on login. However, the implementation is not yet production-ready from a security perspective. The most significant gaps are around JWT claim hardening, stronger refresh-token lifecycle controls, session and cookie protections, and defensive handling for enumeration, replay, and cross-site abuse.
 
 ## Findings by Severity
 
 ### Critical
+
 - None identified in the current implementation.
 
 ### High
+
 - JWTs are not hardened with explicit issuer, audience, subject, or JTI claims.
   - Impact: tokens are more easily reused across services, environments, or contexts and are harder to constrain.
   - Risk: JWT replay and token confusion risk are elevated.
@@ -31,6 +35,7 @@ The current implementation provides a functional auth flow and includes several 
   - Risk: CSRF exposure remains.
 
 ### Medium
+
 - Password policy enforcement is minimal.
   - The implementation requires 8+ characters and a mix of upper/lower/number/special, but it does not use a stronger policy such as password breach checks, length minimums beyond 8, or disallowing common passwords.
   - Risk: weak password resilience against credential stuffing.
@@ -45,6 +50,7 @@ The current implementation provides a functional auth flow and includes several 
   - Risk: token misuse risk remains.
 
 ### Low
+
 - The password service uses Argon2id defaults rather than explicitly configured parameters.
   - Impact: memory/time/parallelism tuning is not auditable or easily aligned to a chosen security target.
   - Risk: lower operational control over password hashing cost.
@@ -55,6 +61,7 @@ The current implementation provides a functional auth flow and includes several 
 ## Review by Attack Surface
 
 ### Register
+
 - Protection against user enumeration: Partial
   - The endpoint returns a different result for duplicate email addresses, which can signal account existence.
 - Protection against timing attack: Weak
@@ -67,6 +74,7 @@ The current implementation provides a functional auth flow and includes several 
   - Registration events are not explicitly logged as authentication events.
 
 ### Login
+
 - Protection against user enumeration: Partial
   - The code returns a generic `Invalid credentials` message, but it still uses a distinct branch for existing users and records failure attempts differently.
 - Protection against timing attack: Weak
@@ -81,12 +89,14 @@ The current implementation provides a functional auth flow and includes several 
   - Failed logins are recorded, but successful logins and lockout events are not explicitly surfaced as structured auth events.
 
 ### Logout
+
 - Protection against session hijacking: Partial
   - Logout revokes the refresh token and session state, but it relies on server-side state and does not appear to invalidate other active sessions or token families.
 - Logging: Partial
   - Logout events are not explicitly logged as authentication events.
 
 ### Refresh
+
 - Protection against JWT replay: Partial
   - Access token replay is not explicitly bounded by additional claims or revocation state.
 - Protection against refresh token replay: Partial
@@ -99,6 +109,7 @@ The current implementation provides a functional auth flow and includes several 
   - Refresh events are not explicitly logged as authentication events.
 
 ### Current User
+
 - Protection against unauthorized access: Partial
   - The endpoint relies on the auth middleware and returns only safe profile fields.
   - However, the middleware is not shown to enforce a stronger token-type or role-boundary model beyond the current access-token verification.
@@ -108,6 +119,7 @@ The current implementation provides a functional auth flow and includes several 
 ## Cookie Review
 
 ### Current Cookie Attributes
+
 - HttpOnly: Yes
 - Secure: Yes, but conditional on `NODE_ENV`
 - SameSite: Yes, set to `lax`
@@ -116,6 +128,7 @@ The current implementation provides a functional auth flow and includes several 
 - Domain: Not configured
 
 ### Assessment
+
 - The cookie is protected against direct JavaScript access through `HttpOnly`, which is good.
 - The cookie is not fully hardened against modern browser-based CSRF and transport risks because `SameSite` is not strict and `Secure` is not tied to a production-safe rule.
 - The missing explicit `Domain` setting is acceptable in many cases, but it reduces control over scope in larger deployments.
@@ -123,6 +136,7 @@ The current implementation provides a functional auth flow and includes several 
 ## JWT Review
 
 ### Current JWT Attributes
+
 - Algorithm: The implementation uses `jsonwebtoken` with the library’s default signing behavior; the algorithm is not explicitly pinned.
 - Expiration: Access token `15m`; refresh token `7d`
 - Issuer: Not configured
@@ -132,16 +146,19 @@ The current implementation provides a functional auth flow and includes several 
 - Secret loading: Environment-based via `JWT_SECRET` and `JWT_REFRESH_SECRET`
 
 ### Assessment
+
 - The JWT implementation is acceptable as a baseline, but it is not yet aligned with the strongest production guidance because issuer, audience, jti, and algorithm pinning are missing.
 
 ## Password Review
 
 ### Current Password Attributes
+
 - Argon2id: Yes
 - Parameters: Not explicitly configured; defaults are used
 - Password policy: Partial; the current regex is basic
 
 ### Assessment
+
 - Argon2id is the correct choice.
 - The lack of explicit Argon2 parameters means the password hashing cost is not auditable or fully tuned.
 - The password policy is functional but not strong enough for a high-security deployment.
@@ -149,17 +166,20 @@ The current implementation provides a functional auth flow and includes several 
 ## Logging Review
 
 ### Current Logging Coverage
+
 - Authentication events: Partial
 - Failed login: Yes, recorded in the database
 - Logout: Not explicitly logged
 - Refresh: Not explicitly logged
 
 ### Assessment
+
 - Logging is present for failed login events, which is good, but it is still incomplete for a production-ready auth audit trail.
 
 ## OWASP ASVS Alignment
 
 ### Partially aligned with relevant controls
+
 - V2 Authentication Architecture
   - Basic token-based auth exists, but stronger claim and lifecycle controls are missing.
 - V3 Session Management
@@ -170,7 +190,9 @@ The current implementation provides a functional auth flow and includes several 
   - Logging exists but is incomplete for full auth audit coverage.
 
 ## Production Readiness Score
+
 Score: 6.5/10
 
 ## Overall Assessment
+
 The implementation is a solid foundation for authentication but is not yet production-ready without additional hardening. The biggest items to address before production are stronger JWT claims, stronger refresh-token lifecycle controls, CSRF protection, more robust logging, and improved anti-enumeration and anti-abuse controls.

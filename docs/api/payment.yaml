@@ -11,32 +11,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PaymentRequest'
+              $ref: "#/components/schemas/PaymentRequest"
       responses:
-        '200':
+        "200":
           description: Payment initiation successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentDto'
-        '400':
+                $ref: "#/components/schemas/PaymentDto"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '402':
+                $ref: "#/components/schemas/ErrorResponse"
+        "402":
           description: Payment required / payment failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required
@@ -51,30 +51,30 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Payment details returned
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentDto'
-        '401':
+                $ref: "#/components/schemas/PaymentDto"
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Payment not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required

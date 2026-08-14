@@ -63,13 +63,21 @@ export class OrderService {
       .digest();
   }
 
-  private async applyCouponDiscount(transaction: any, rawTotal: number, couponCode?: string): Promise<number> {
+  private async applyCouponDiscount(
+    transaction: any,
+    rawTotal: number,
+    couponCode?: string,
+  ): Promise<number> {
     if (!couponCode) return rawTotal;
     try {
-      const setting = await transaction.getClient().systemsetting.findUnique({ where: { key: 'coupons_list' } });
+      const setting = await transaction
+        .getClient()
+        .systemsetting.findUnique({ where: { key: 'coupons_list' } });
       if (!setting) return rawTotal;
       const list = JSON.parse(setting.value);
-      const match = list.find((c: any) => c.code.toUpperCase() === couponCode.toUpperCase() && c.active);
+      const match = list.find(
+        (c: any) => c.code.toUpperCase() === couponCode.toUpperCase() && c.active,
+      );
       if (match && match.discountPercent > 0) {
         const discount = (rawTotal * match.discountPercent) / 100;
         return Math.max(0, rawTotal - discount);
@@ -107,11 +115,7 @@ export class OrderService {
       for (const item of cart.cartitem) {
         const product = await productRepo.findById(item.productId);
         if (!product || product.deletedAt) {
-          throw new HttpError(
-            404,
-            `Product not found: ${item.productId}`,
-            'Order creation failed',
-          );
+          throw new HttpError(404, `Product not found: ${item.productId}`, 'Order creation failed');
         }
         if (product.status !== 'ACTIVE') {
           throw new HttpError(

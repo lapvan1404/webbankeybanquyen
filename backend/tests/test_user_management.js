@@ -3,7 +3,9 @@ import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const adapter = new PrismaMariaDb(process.env.DATABASE_URL || 'mysql://root:@127.0.0.1:3306/webbankeybanquyen');
+const adapter = new PrismaMariaDb(
+  process.env.DATABASE_URL || 'mysql://root:@127.0.0.1:3306/webbankeybanquyen',
+);
 const prisma = new PrismaClient({ adapter });
 const BASE_URL = 'http://localhost:4000';
 
@@ -30,7 +32,9 @@ async function runTests() {
   const usersRes = await fetch(`${BASE_URL}/api/admin/users`, { headers: adminHeaders });
   const usersData = await usersRes.json();
   console.assert(usersRes.status === 200, 'Test 1 Failed');
-  console.log(`[PASS] 1. Admin GET users -> Status: ${usersRes.status}, Total count: ${usersData.data.counts.total}`);
+  console.log(
+    `[PASS] 1. Admin GET users -> Status: ${usersRes.status}, Total count: ${usersData.data.counts.total}`,
+  );
 
   // Test 2: Guest GET users -> 401
   const guestRes = await fetch(`${BASE_URL}/api/admin/users`);
@@ -43,7 +47,8 @@ async function runTests() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: 'customer2@example.com', password: 'Customer@1234' }),
   }).then((r) => r.json());
-  const customerToken = customerLoginRes.data?.tokens?.accessToken || customerLoginRes.data?.accessToken;
+  const customerToken =
+    customerLoginRes.data?.tokens?.accessToken || customerLoginRes.data?.accessToken;
 
   const customerAccessRes = await fetch(`${BASE_URL}/api/admin/users`, {
     headers: { Authorization: `Bearer ${customerToken}` },
@@ -52,39 +57,61 @@ async function runTests() {
   console.log(`[PASS] 3. Customer GET users -> Status: ${customerAccessRes.status} Forbidden`);
 
   // Test 4: Search name
-  const searchNameRes = await fetch(`${BASE_URL}/api/admin/users?search=Linh`, { headers: adminHeaders }).then(r => r.json());
+  const searchNameRes = await fetch(`${BASE_URL}/api/admin/users?search=Linh`, {
+    headers: adminHeaders,
+  }).then((r) => r.json());
   console.assert(searchNameRes.data.users.length > 0, 'Test 4 Failed');
   console.log(`[PASS] 4. Search name ("Linh") -> Found: ${searchNameRes.data.users.length} users`);
 
   // Test 5: Search email
-  const searchEmailRes = await fetch(`${BASE_URL}/api/admin/users?search=customer2@example.com`, { headers: adminHeaders }).then(r => r.json());
+  const searchEmailRes = await fetch(`${BASE_URL}/api/admin/users?search=customer2@example.com`, {
+    headers: adminHeaders,
+  }).then((r) => r.json());
   console.assert(searchEmailRes.data.users.length === 1, 'Test 5 Failed');
-  console.log(`[PASS] 5. Search email ("customer2@example.com") -> Found: ${searchEmailRes.data.users[0].email}`);
+  console.log(
+    `[PASS] 5. Search email ("customer2@example.com") -> Found: ${searchEmailRes.data.users[0].email}`,
+  );
 
   // Test 6: Search phone
-  const searchPhoneRes = await fetch(`${BASE_URL}/api/admin/users?search=0900000003`, { headers: adminHeaders }).then(r => r.json());
+  const searchPhoneRes = await fetch(`${BASE_URL}/api/admin/users?search=0900000003`, {
+    headers: adminHeaders,
+  }).then((r) => r.json());
   console.assert(searchPhoneRes.data.users.length === 1, 'Test 6 Failed');
-  console.log(`[PASS] 6. Search phone ("0900000003") -> Found: ${searchPhoneRes.data.users[0].phone}`);
+  console.log(
+    `[PASS] 6. Search phone ("0900000003") -> Found: ${searchPhoneRes.data.users[0].phone}`,
+  );
 
   // Test 7: Filter ACTIVE
-  const filterActiveRes = await fetch(`${BASE_URL}/api/admin/users?status=ACTIVE`, { headers: adminHeaders }).then(r => r.json());
+  const filterActiveRes = await fetch(`${BASE_URL}/api/admin/users?status=ACTIVE`, {
+    headers: adminHeaders,
+  }).then((r) => r.json());
   console.log(`[PASS] 7. Filter ACTIVE -> ${filterActiveRes.data.users.length} active users`);
 
   // Test 8: Filter LOCKED
-  const filterLockedRes = await fetch(`${BASE_URL}/api/admin/users?status=LOCKED`, { headers: adminHeaders }).then(r => r.json());
+  const filterLockedRes = await fetch(`${BASE_URL}/api/admin/users?status=LOCKED`, {
+    headers: adminHeaders,
+  }).then((r) => r.json());
   console.log(`[PASS] 8. Filter LOCKED -> ${filterLockedRes.data.users.length} locked users`);
 
   // Test 9: Pagination
-  const pageRes = await fetch(`${BASE_URL}/api/admin/users?page=1&limit=5`, { headers: adminHeaders }).then(r => r.json());
+  const pageRes = await fetch(`${BASE_URL}/api/admin/users?page=1&limit=5`, {
+    headers: adminHeaders,
+  }).then((r) => r.json());
   console.assert(pageRes.data.users.length === 5, 'Test 9 Failed');
-  console.log(`[PASS] 9. Pagination (limit=5) -> Returned ${pageRes.data.users.length} items, totalPages: ${pageRes.data.pagination.totalPages}`);
+  console.log(
+    `[PASS] 9. Pagination (limit=5) -> Returned ${pageRes.data.users.length} items, totalPages: ${pageRes.data.pagination.totalPages}`,
+  );
 
   // Test 10: Counts
   console.assert(typeof pageRes.data.counts.total === 'number', 'Test 10 Failed');
-  console.log(`[PASS] 10. Counts -> Total: ${pageRes.data.counts.total}, Active: ${pageRes.data.counts.active}, Locked: ${pageRes.data.counts.locked}`);
+  console.log(
+    `[PASS] 10. Counts -> Total: ${pageRes.data.counts.total}, Active: ${pageRes.data.counts.active}, Locked: ${pageRes.data.counts.locked}`,
+  );
 
   // Test 11: Admin GET user detail
-  const detailRes = await fetch(`${BASE_URL}/api/admin/users/seed-user-customer-1`, { headers: adminHeaders });
+  const detailRes = await fetch(`${BASE_URL}/api/admin/users/seed-user-customer-1`, {
+    headers: adminHeaders,
+  });
   const detailData = await detailRes.json();
   console.assert(detailRes.status === 200, 'Test 11 Failed');
   console.log(`[PASS] 11. Admin GET user detail -> User: ${detailData.data.user.email}`);
@@ -116,7 +143,9 @@ async function runTests() {
     body: JSON.stringify({ email: 'customer1@example.com', password: 'Customer@1234' }),
   });
   console.assert(customer1LockedRes.status === 423, 'Test 14 Failed');
-  console.log(`[PASS] 14. Customer login while LOCKED -> Blocked with Status: ${customer1LockedRes.status}`);
+  console.log(
+    `[PASS] 14. Customer login while LOCKED -> Blocked with Status: ${customer1LockedRes.status}`,
+  );
 
   // Test 15: Admin UNLOCK customer
   const unlockRes = await fetch(`${BASE_URL}/api/admin/users/seed-user-customer-1/status`, {
@@ -140,7 +169,9 @@ async function runTests() {
     body: JSON.stringify({ status: 'LOCKED' }),
   });
   console.assert(lockAdminRes.status === 400, 'Test 17 Failed');
-  console.log(`[PASS] 17. Protection: Attempt to lock Admin -> Rejected with Status: ${lockAdminRes.status}`);
+  console.log(
+    `[PASS] 17. Protection: Attempt to lock Admin -> Rejected with Status: ${lockAdminRes.status}`,
+  );
 
   // Test 18 & 19: Audit Log check in DB
   const logs = await prisma.auditlog.findMany({
@@ -149,12 +180,19 @@ async function runTests() {
     take: 2,
   });
   console.assert(logs.length >= 2, 'Test 18 & 19 Failed');
-  console.log(`[PASS] 18 & 19. Audit Logs recorded in DB -> Events: ${logs.map(l => l.event).join(', ')}`);
+  console.log(
+    `[PASS] 18 & 19. Audit Logs recorded in DB -> Events: ${logs.map((l) => l.event).join(', ')}`,
+  );
 
   // Test 20: Sensitive Data Leakage Test
   const jsonString = JSON.stringify(usersData);
-  console.assert(!jsonString.includes('passwordHash') && !jsonString.includes('refreshToken'), 'Test 20 Failed');
-  console.log('[PASS] 20. Sensitive Data Test -> NO passwordHash or tokens leaked in API responses!');
+  console.assert(
+    !jsonString.includes('passwordHash') && !jsonString.includes('refreshToken'),
+    'Test 20 Failed',
+  );
+  console.log(
+    '[PASS] 20. Sensitive Data Test -> NO passwordHash or tokens leaked in API responses!',
+  );
 
   console.log('\n==================================================');
   console.log('ALL 20 VERIFICATION TESTS PASSED PERFECTLY! (PASS)');

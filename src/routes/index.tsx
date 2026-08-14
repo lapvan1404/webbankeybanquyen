@@ -32,15 +32,18 @@ import { useQuery } from "@tanstack/react-query";
 
 const slides: Array<{ image: string; title: string }> = [
   {
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&auto=format&fit=crop&q=80",
+    image:
+      "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&auto=format&fit=crop&q=80",
     title: "Ưu đãi phần mềm bản quyền chính hãng Microsoft & Antivirus",
   },
   {
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
+    image:
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",
     title: "Flash sale key bản quyền 100% vĩnh viễn - Giá tốt nhất thị trường",
   },
   {
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
+    image:
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80",
     title: "Giao key tự động qua email 5 phút - Hỗ trợ kỹ thuật 24/7",
   },
 ];
@@ -62,9 +65,12 @@ function FeaturedAnimatedBlock({
   // Tự động xoay đổi hình ảnh mỗi 3.5 giây (nếu có nhiều hơn 1 ảnh)
   useEffect(() => {
     if (images.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentImgIndex((prev) => (prev + 1) % images.length);
-    }, 3500 + index * 500);
+    const interval = setInterval(
+      () => {
+        setCurrentImgIndex((prev) => (prev + 1) % images.length);
+      },
+      3500 + index * 500,
+    );
     return () => clearInterval(interval);
   }, [images.length, index]);
 
@@ -80,7 +86,9 @@ function FeaturedAnimatedBlock({
         <div
           key={i}
           className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-            i === currentImgIndex ? "opacity-100 scale-100 z-10" : "opacity-0 scale-105 pointer-events-none z-0"
+            i === currentImgIndex
+              ? "opacity-100 scale-100 z-10"
+              : "opacity-0 scale-105 pointer-events-none z-0"
           }`}
         >
           <img
@@ -208,11 +216,8 @@ function Index() {
     queryFn: listBrands,
     refetchInterval: 3000,
   });
-  const products =
-    productsQuery.data?.data?.map((item) => toProduct(item)) ?? [];
-  const featured = (featuredQuery.data ?? [])
-    .map((item) => toProduct(item))
-    .slice(0, 4);
+  const products = productsQuery.data?.data?.map((item) => toProduct(item)) ?? [];
+  const featured = (featuredQuery.data ?? []).map((item) => toProduct(item)).slice(0, 4);
   const bestSellers = [...products].sort((a, b) => (b.sales ?? 0) - (a.sales ?? 0)).slice(0, 6);
   const queryClient = useQueryClient();
 
@@ -266,7 +271,9 @@ function Index() {
   const featuredCategorySlugs = ["windows", "antivirus"];
   const featuredCategories = featuredCategorySlugs
     .map((slug) => categories.find((category) => category.slug === slug))
-    .filter((category): category is { slug: string; name: string; image: string } => Boolean(category));
+    .filter((category): category is { slug: string; name: string; image: string } =>
+      Boolean(category),
+    );
 
   return (
     <Layout>
@@ -282,7 +289,9 @@ function Index() {
                   <div
                     key={index}
                     className={`absolute inset-0 transition-opacity duration-700 ${
-                      index === activeSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                      index === activeSlide
+                        ? "opacity-100 z-10"
+                        : "opacity-0 z-0 pointer-events-none"
                     }`}
                   >
                     <img
@@ -296,16 +305,19 @@ function Index() {
                       }}
                       className="w-full h-full object-cover object-center"
                     />
-                    {slide.title && !["banner", "hero", "promo", "side", "test"].includes(slide.title.trim().toLowerCase()) && (
-                      <>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                        <div className="absolute bottom-6 left-6 right-6 text-white pointer-events-none">
-                          <h2 className="text-xl lg:text-3xl font-bold drop-shadow-md leading-tight max-w-2xl">
-                            {slide.title}
-                          </h2>
-                        </div>
-                      </>
-                    )}
+                    {slide.title &&
+                      !["banner", "hero", "promo", "side", "test"].includes(
+                        slide.title.trim().toLowerCase(),
+                      ) && (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                          <div className="absolute bottom-6 left-6 right-6 text-white pointer-events-none">
+                            <h2 className="text-xl lg:text-3xl font-bold drop-shadow-md leading-tight max-w-2xl">
+                              {slide.title}
+                            </h2>
+                          </div>
+                        </>
+                      )}
                   </div>
                 );
               })}
@@ -334,9 +346,10 @@ function Index() {
                   (b) =>
                     b.isActive &&
                     (b.position === `promo_${category.slug}` ||
-                      (category.slug === "windows" && (b.position === "promo_windows" || b.position === "side")) ||
+                      (category.slug === "windows" &&
+                        (b.position === "promo_windows" || b.position === "side")) ||
                       (category.slug === "antivirus" && b.position === "promo_antivirus") ||
-                      b.title.toLowerCase().includes(category.slug))
+                      b.title.toLowerCase().includes(category.slug)),
                 );
 
                 const bannerImgString = matchedBanner?.imageUrl || category.image || "";
@@ -487,7 +500,9 @@ function Index() {
                   className="bg-zinc-800/90 px-4 py-2.5 rounded-xl border border-amber-500/30 text-center min-w-16 shadow-inner"
                 >
                   <span className="text-amber-400 text-2xl font-black tabular-nums block">{n}</span>
-                  <span className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">{l}</span>
+                  <span className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">
+                    {l}
+                  </span>
                 </div>
               ))}
             </div>

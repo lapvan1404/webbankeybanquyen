@@ -11,10 +11,17 @@ const client = new S3Client({
 });
 const key = 'uploads/images/1785466847876-807c8b51-b022-4c7b-9a98-b5179c828bda.png';
 const bucket = process.env.R2_BUCKET_NAME || process.env.R2_BUCKET;
-client.send(new HeadObjectCommand({ Bucket: bucket, Key: key }))
+client
+  .send(new HeadObjectCommand({ Bucket: bucket, Key: key }))
   .then((r) => {
     console.log('EXISTS');
-    console.log(JSON.stringify({ bucket, key, contentType: r.ContentType, contentLength: r.ContentLength, etag: r.ETag }, null, 2));
+    console.log(
+      JSON.stringify(
+        { bucket, key, contentType: r.ContentType, contentLength: r.ContentLength, etag: r.ETag },
+        null,
+        2,
+      ),
+    );
   })
   .catch((e) => {
     console.log('NOT_FOUND_OR_ERROR');

@@ -12,8 +12,10 @@ export const MockPaymentSchema = z
 
 // An empty body retains the existing cart checkout behaviour. Supplying this
 // payload creates a single-item order without reading or mutating the cart.
-export const CreateOrderSchema = z.object({
-  productId: z.string().optional(),
-  quantity: z.number().int().positive().max(100).optional(),
-  couponCode: z.string().optional(),
-}).passthrough();
+export const CreateOrderSchema = z
+  .object({
+    productId: z.string().optional(),
+    quantity: z.number().int().positive().max(100).optional(),
+    couponCode: z.string().optional(),
+  })
+  .passthrough();

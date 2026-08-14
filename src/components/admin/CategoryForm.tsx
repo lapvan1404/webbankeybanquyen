@@ -27,7 +27,10 @@ export function CategoryForm({ category, onSave, onClose }: CategoryFormProps) {
     const raw = category?.image || category?.imageUrl;
     if (raw) {
       // Hỗ trợ lưu trữ nhiều ảnh phân tách bởi dấu phẩy
-      const urls = raw.split(",").map((s) => s.trim()).filter(Boolean);
+      const urls = raw
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
       return urls.map((url) => ({ url }));
     }
     return [];
@@ -60,7 +63,10 @@ export function CategoryForm({ category, onSave, onClose }: CategoryFormProps) {
       // Lưu toàn bộ danh sách (tối đa 5 ảnh) ghép lại thành chuỗi phân tách bởi dấu phẩy
       const dataToSave = {
         ...formData,
-        image: images.map((img) => img.url).filter(Boolean).join(","),
+        image: images
+          .map((img) => img.url)
+          .filter(Boolean)
+          .join(","),
       };
       await onSave(dataToSave);
       onClose();

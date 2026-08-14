@@ -11,26 +11,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '400':
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Invalid credentials
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: optional
@@ -43,26 +43,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterRequest'
+              $ref: "#/components/schemas/RegisterRequest"
       responses:
-        '201':
+        "201":
           description: User registered successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '400':
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
           description: Email already in use
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: optional
@@ -73,14 +73,14 @@ paths:
       requestBody:
         required: false
       responses:
-        '204':
+        "204":
           description: Logout successful
-        '401':
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required
@@ -89,18 +89,18 @@ paths:
     get:
       summary: Fetch current authenticated user profile
       responses:
-        '200':
+        "200":
           description: Authenticated user profile
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDto'
-        '401':
+                $ref: "#/components/schemas/UserDto"
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required
@@ -152,7 +152,7 @@ components:
         - user
       properties:
         user:
-          $ref: '#/components/schemas/UserDto'
+          $ref: "#/components/schemas/UserDto"
         accessToken:
           type: string
           description: Client-side token placeholder; frontend should consume via auth client

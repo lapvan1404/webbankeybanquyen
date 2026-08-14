@@ -20,8 +20,7 @@ function SearchPage() {
     queryFn: () => listProducts(`?keyword=${encodeURIComponent(query)}&pageSize=100`),
     enabled: Boolean(query),
   });
-  const results =
-    productsQuery.data?.data?.map((item) => toProduct(item)) ?? [];
+  const results = productsQuery.data?.data?.map((item) => toProduct(item)) ?? [];
 
   return (
     <Layout>

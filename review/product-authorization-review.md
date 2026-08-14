@@ -30,6 +30,7 @@ Public routes remain open: GET `/api/products`, `/api/products/featured`, `/api/
 - Testing: 3/5 (recommend automated integration tests for RBAC scenarios)
 
 Recommended next steps:
+
 - Add automated tests verifying guest/customer/admin-without-permission/admin-with-permission scenarios.
 - Consider logging authorization failures for monitoring and alerting.
 - Optionally add `requirePermission` checks to other admin routes across the app for consistency.

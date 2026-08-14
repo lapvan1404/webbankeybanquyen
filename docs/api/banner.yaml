@@ -7,14 +7,14 @@ paths:
     get:
       summary: List homepage banners
       responses:
-        '200':
+        "200":
           description: Banner list returned
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/BannerDto'
+                  $ref: "#/components/schemas/BannerDto"
       security: []
       x-authentication: optional
       x-authorization: none
@@ -25,32 +25,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BannerCreateRequest'
+              $ref: "#/components/schemas/BannerCreateRequest"
       responses:
-        '201':
+        "201":
           description: Banner created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BannerDto'
-        '400':
+                $ref: "#/components/schemas/BannerDto"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required
@@ -65,18 +65,18 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Banner retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BannerDto'
-        '404':
+                $ref: "#/components/schemas/BannerDto"
+        "404":
           description: Banner not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security: []
       x-authentication: optional
       x-authorization: none
@@ -93,38 +93,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BannerUpdateRequest'
+              $ref: "#/components/schemas/BannerUpdateRequest"
       responses:
-        '200':
+        "200":
           description: Banner updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BannerDto'
-        '400':
+                $ref: "#/components/schemas/BannerDto"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Banner not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required
@@ -138,26 +138,26 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        "204":
           description: Banner deleted successfully
-        '401':
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Banner not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required

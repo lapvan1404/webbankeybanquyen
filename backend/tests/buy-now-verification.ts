@@ -129,11 +129,15 @@ async function ensureUser(email: string, password: string): Promise<string> {
   // Login
   const loginRes = await api('POST', '/api/auth/login', { email, password });
   if (loginRes.status !== 200) {
-    throw new Error(`Login failed for ${email} (${loginRes.status}): ${JSON.stringify(loginRes.json)}`);
+    throw new Error(
+      `Login failed for ${email} (${loginRes.status}): ${JSON.stringify(loginRes.json)}`,
+    );
   }
   const cookies = extractCookiesFromHeaders(loginRes.rawHeaders);
   if (!cookies || !cookies.includes('accessToken')) {
-    throw new Error(`No auth cookies received for ${email}. Headers: ${JSON.stringify(loginRes.rawHeaders.filter(([k]) => k.toLowerCase() === 'set-cookie'))}`);
+    throw new Error(
+      `No auth cookies received for ${email}. Headers: ${JSON.stringify(loginRes.rawHeaders.filter(([k]) => k.toLowerCase() === 'set-cookie'))}`,
+    );
   }
   return cookies;
 }
@@ -165,7 +169,7 @@ async function testCase1(): Promise<{ pass: boolean; details: string }> {
     details.push(`Product: "${anyProduct.name}" (${anyProduct.id})`);
     details.push(`Available keys before: ${availableKeys.length}`);
 
-    const disabledKeyIds = availableKeys.map(k => k.id);
+    const disabledKeyIds = availableKeys.map((k) => k.id);
     if (disabledKeyIds.length > 0) {
       await prisma.productkey.updateMany({
         where: { id: { in: disabledKeyIds } },
@@ -185,23 +189,37 @@ async function testCase1(): Promise<{ pass: boolean; details: string }> {
       details.push(`✓ Logged in`);
 
       // Create order (Buy Now)
-      const orderRes = await api('POST', '/api/orders', { productId: anyProduct.id, quantity: 1 }, cookies);
+      const orderRes = await api(
+        'POST',
+        '/api/orders',
+        { productId: anyProduct.id, quantity: 1 },
+        cookies,
+      );
       details.push(`  POST /api/orders → ${orderRes.status}`);
 
       if (orderRes.status !== 201) {
-        return { pass: false, details: details.join('\n') + `\n✗ Order creation failed: ${JSON.stringify(orderRes.json)}` };
+        return {
+          pass: false,
+          details:
+            details.join('\n') + `\n✗ Order creation failed: ${JSON.stringify(orderRes.json)}`,
+        };
       }
 
       const order = orderRes.json.data as Json;
       const orderId = order.id as string;
-      details.push(`✓ Order created: ${order.orderNumber} (status: ${order.status}, payment: ${order.paymentStatus})`);
+      details.push(
+        `✓ Order created: ${order.orderNumber} (status: ${order.status}, payment: ${order.paymentStatus})`,
+      );
 
       // Pay - should fail
       const payRes = await api('POST', `/api/orders/${orderId}/pay`, {}, cookies);
       details.push(`  POST /api/orders/${orderId}/pay → ${payRes.status}`);
 
       if (payRes.status === 200) {
-        return { pass: false, details: details.join('\n') + '\n✗ Payment SUCCEEDED when it should have FAILED' };
+        return {
+          pass: false,
+          details: details.join('\n') + '\n✗ Payment SUCCEEDED when it should have FAILED',
+        };
       }
 
       const errorMsg = (payRes.json.message as string) ?? (payRes.json.error as string) ?? '';
@@ -274,7 +292,7 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
     const otherKeys = await prisma.productkey.findMany({
       where: { productId: product.id, status: 'AVAILABLE', id: { not: testKeyId } },
     });
-    const disabledIds = otherKeys.map(k => k.id);
+    const disabledIds = otherKeys.map((k) => k.id);
     if (disabledIds.length > 0) {
       await prisma.productkey.updateMany({
         where: { id: { in: disabledIds } },
@@ -296,11 +314,25 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
       details.push(`✓ Two users logged in`);
 
       // Both create orders
-      const orderA = await api('POST', '/api/orders', { productId: product.id, quantity: 1 }, cookiesA);
-      const orderB = await api('POST', '/api/orders', { productId: product.id, quantity: 1 }, cookiesB);
+      const orderA = await api(
+        'POST',
+        '/api/orders',
+        { productId: product.id, quantity: 1 },
+        cookiesA,
+      );
+      const orderB = await api(
+        'POST',
+        '/api/orders',
+        { productId: product.id, quantity: 1 },
+        cookiesB,
+      );
 
       if (orderA.status !== 201 || orderB.status !== 201) {
-        return { pass: false, details: details.join('\n') + `\n✗ Order creation: A=${orderA.status}, B=${orderB.status}` };
+        return {
+          pass: false,
+          details:
+            details.join('\n') + `\n✗ Order creation: A=${orderA.status}, B=${orderB.status}`,
+        };
       }
 
       const orderIdA = (orderA.json.data as Json).id as string;
@@ -315,8 +347,10 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
         api('POST', `/api/orders/${orderIdB}/pay`, {}, cookiesB),
       ]);
 
-      const aMsgField = payA.json.error ?? payA.json.message ?? (payA.json.data as Json)?.status ?? 'OK';
-      const bMsgField = payB.json.error ?? payB.json.message ?? (payB.json.data as Json)?.status ?? 'OK';
+      const aMsgField =
+        payA.json.error ?? payA.json.message ?? (payA.json.data as Json)?.status ?? 'OK';
+      const bMsgField =
+        payB.json.error ?? payB.json.message ?? (payB.json.data as Json)?.status ?? 'OK';
       details.push(`  Pay A: ${payA.status} - ${aMsgField}`);
       details.push(`  Pay B: ${payB.status} - ${bMsgField}`);
 
@@ -324,7 +358,10 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
       const bSuccess = payB.status === 200;
 
       if (aSuccess && bSuccess) {
-        return { pass: false, details: details.join('\n') + '\n✗ BOTH succeeded — RACE CONDITION!' };
+        return {
+          pass: false,
+          details: details.join('\n') + '\n✗ BOTH succeeded — RACE CONDITION!',
+        };
       }
 
       if (!aSuccess && !bSuccess) {
@@ -332,13 +369,20 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
         const keyState = await prisma.productkey.findUnique({ where: { id: testKeyId } });
         details.push(`  Both failed. Key state: status=${keyState?.status}`);
         if (keyState?.status === 'AVAILABLE') {
-          details.push(`✓ Both failed safely — key still AVAILABLE (serialization conflict). This is safe.`);
+          details.push(
+            `✓ Both failed safely — key still AVAILABLE (serialization conflict). This is safe.`,
+          );
           return { pass: true, details: details.join('\n') };
         }
-        return { pass: false, details: details.join('\n') + '\n✗ Both failed but key not AVAILABLE' };
+        return {
+          pass: false,
+          details: details.join('\n') + '\n✗ Both failed but key not AVAILABLE',
+        };
       }
 
-      details.push(`✓ Exactly one succeeded (${aSuccess ? 'A' : 'B'}), one failed (${aSuccess ? 'B' : 'A'})`);
+      details.push(
+        `✓ Exactly one succeeded (${aSuccess ? 'A' : 'B'}), one failed (${aSuccess ? 'B' : 'A'})`,
+      );
 
       const winnerId = aSuccess ? orderIdA : orderIdB;
       const loserId = aSuccess ? orderIdB : orderIdA;
@@ -346,7 +390,9 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
       // Verify DB
       const winnerOrder = await prisma.order.findUnique({ where: { id: winnerId } });
       const loserOrder = await prisma.order.findUnique({ where: { id: loserId } });
-      details.push(`  Winner: status=${winnerOrder?.status}, payment=${winnerOrder?.paymentStatus}`);
+      details.push(
+        `  Winner: status=${winnerOrder?.status}, payment=${winnerOrder?.paymentStatus}`,
+      );
       details.push(`  Loser: status=${loserOrder?.status}, payment=${loserOrder?.paymentStatus}`);
 
       if (winnerOrder?.status !== 'PAID') {
@@ -367,13 +413,18 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
       // No duplicate assignment
       const winnerItems = await prisma.orderitem.findMany({ where: { orderId: winnerId } });
       const loserItems = await prisma.orderitem.findMany({ where: { orderId: loserId } });
-      let wCount = 0, lCount = 0;
-      for (const item of winnerItems) wCount += await prisma.productkey.count({ where: { orderItemId: item.id } });
-      for (const item of loserItems) lCount += await prisma.productkey.count({ where: { orderItemId: item.id } });
+      let wCount = 0,
+        lCount = 0;
+      for (const item of winnerItems)
+        wCount += await prisma.productkey.count({ where: { orderItemId: item.id } });
+      for (const item of loserItems)
+        lCount += await prisma.productkey.count({ where: { orderItemId: item.id } });
 
       details.push(`  Winner keys: ${wCount}, Loser keys: ${lCount}`);
-      if (wCount !== 1) return { pass: false, details: details.join('\n') + '\n✗ Winner needs 1 key' };
-      if (lCount !== 0) return { pass: false, details: details.join('\n') + '\n✗ Loser should have 0 keys' };
+      if (wCount !== 1)
+        return { pass: false, details: details.join('\n') + '\n✗ Winner needs 1 key' };
+      if (lCount !== 0)
+        return { pass: false, details: details.join('\n') + '\n✗ Loser should have 0 keys' };
 
       details.push(`✓ No duplicate assignment. Database consistent.`);
       return { pass: true, details: details.join('\n') };
@@ -386,7 +437,11 @@ async function testCase2(): Promise<{ pass: boolean; details: string }> {
       }
     }
   } catch (err) {
-    return { pass: false, details: details.join('\n') + `\nException: ${(err as Error).message}\n${(err as Error).stack}` };
+    return {
+      pass: false,
+      details:
+        details.join('\n') + `\nException: ${(err as Error).message}\n${(err as Error).stack}`,
+    };
   }
 }
 
@@ -431,7 +486,10 @@ async function testCase3(): Promise<{ pass: boolean; details: string }> {
     details.push(`  GET /api/products/id/${product.id} → ${productRes.status}`);
 
     if (productRes.status !== 200) {
-      return { pass: false, details: details.join('\n') + '\n✗ Product fetch failed after refresh' };
+      return {
+        pass: false,
+        details: details.join('\n') + '\n✗ Product fetch failed after refresh',
+      };
     }
 
     const fetched = productRes.json.data as Json;
@@ -444,7 +502,10 @@ async function testCase3(): Promise<{ pass: boolean; details: string }> {
     details.push(`  POST /api/orders → ${orderRes.status}`);
 
     if (orderRes.status !== 201) {
-      return { pass: false, details: details.join('\n') + `\n✗ Order failed: ${JSON.stringify(orderRes.json)}` };
+      return {
+        pass: false,
+        details: details.join('\n') + `\n✗ Order failed: ${JSON.stringify(orderRes.json)}`,
+      };
     }
 
     const order = orderRes.json.data as Json;
@@ -465,7 +526,10 @@ async function testCase3(): Promise<{ pass: boolean; details: string }> {
     details.push(`  POST /api/orders/${orderId}/pay → ${payRes.status}`);
 
     if (payRes.status !== 200) {
-      return { pass: false, details: details.join('\n') + `\n✗ Payment failed: ${JSON.stringify(payRes.json)}` };
+      return {
+        pass: false,
+        details: details.join('\n') + `\n✗ Payment failed: ${JSON.stringify(payRes.json)}`,
+      };
     }
 
     const paid = payRes.json.data as Json;
@@ -477,7 +541,10 @@ async function testCase3(): Promise<{ pass: boolean; details: string }> {
     details.push(`  GET /api/orders/${orderId}/license-keys → ${keysRes.status}`);
 
     if (keysRes.status !== 200) {
-      return { pass: false, details: details.join('\n') + `\n✗ Key fetch failed: ${JSON.stringify(keysRes.json)}` };
+      return {
+        pass: false,
+        details: details.join('\n') + `\n✗ Key fetch failed: ${JSON.stringify(keysRes.json)}`,
+      };
     }
 
     const keys = keysRes.json.data as Json[];
@@ -494,7 +561,11 @@ async function testCase3(): Promise<{ pass: boolean; details: string }> {
     details.push(`\n✓ Full flow: Buy Now → Checkout → F5 → Place Order → Pay → Key ✓`);
     return { pass: true, details: details.join('\n') };
   } catch (err) {
-    return { pass: false, details: details.join('\n') + `\nException: ${(err as Error).message}\n${(err as Error).stack}` };
+    return {
+      pass: false,
+      details:
+        details.join('\n') + `\nException: ${(err as Error).message}\n${(err as Error).stack}`,
+    };
   }
 }
 
@@ -534,10 +605,10 @@ async function main() {
   console.log('\n═══════════════════════════════════════\n');
 
   await prisma.$disconnect();
-  process.exit(results.every(r => r.pass) ? 0 : 1);
+  process.exit(results.every((r) => r.pass) ? 0 : 1);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Fatal error:', err);
   process.exit(1);
 });

@@ -120,10 +120,12 @@ router.put(
       }
 
       const { title, name, subtitle, imageUrl, linkUrl, link, isActive, position } = req.body;
-      const rawLink = linkUrl !== undefined ? linkUrl : link !== undefined ? link : existing.linkUrl;
+      const rawLink =
+        linkUrl !== undefined ? linkUrl : link !== undefined ? link : existing.linkUrl;
       const safeLink = rawLink ? String(rawLink).slice(0, 500) : null;
       const posTag = position ? `pos:${position}` : null;
-      const finalSubtitle = subtitle !== undefined ? String(subtitle).slice(0, 190) : posTag ?? existing.subtitle;
+      const finalSubtitle =
+        subtitle !== undefined ? String(subtitle).slice(0, 190) : (posTag ?? existing.subtitle);
       const safeImageUrl = imageUrl ? String(imageUrl).slice(0, 1000) : existing.imageUrl;
       const finalTitle = (title || name || existing.title).slice(0, 190);
 

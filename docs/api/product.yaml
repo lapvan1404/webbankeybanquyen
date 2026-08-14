@@ -18,14 +18,14 @@ paths:
             type: string
           description: Search term for name or description
       responses:
-        '200':
+        "200":
           description: Product list returned
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProductDto'
+                  $ref: "#/components/schemas/ProductDto"
       security: []
       x-authentication: optional
       x-authorization: none
@@ -36,32 +36,32 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductCreateRequest'
+              $ref: "#/components/schemas/ProductCreateRequest"
       responses:
-        '201':
+        "201":
           description: Product created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductDto'
-        '400':
+                $ref: "#/components/schemas/ProductDto"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required
@@ -76,18 +76,18 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Product retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductDto'
-        '404':
+                $ref: "#/components/schemas/ProductDto"
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security: []
       x-authentication: optional
       x-authorization: none
@@ -104,38 +104,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductUpdateRequest'
+              $ref: "#/components/schemas/ProductUpdateRequest"
       responses:
-        '200':
+        "200":
           description: Product updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductDto'
-        '400':
+                $ref: "#/components/schemas/ProductDto"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required
@@ -149,26 +149,26 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        "204":
           description: Product deleted successfully
-        '401':
+        "401":
           description: Not authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
         - bearerAuth: []
       x-authentication: required

@@ -9,11 +9,7 @@ const router = Router();
 const jwtService = new JWTService();
 const adminUserController = new AdminUserController(prisma);
 
-const adminGuard = [
-  authMiddleware(jwtService),
-  requireAuth(),
-  requireRole('admin'),
-];
+const adminGuard = [authMiddleware(jwtService), requireAuth(), requireRole('admin')];
 
 router.get('/users', ...adminGuard, adminUserController.getUsers);
 router.get('/users/:id', ...adminGuard, adminUserController.getUserById);

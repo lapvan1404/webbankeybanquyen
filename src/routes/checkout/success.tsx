@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, CheckCircle2, Copy, KeyRound, Mail, PhoneCall, ShieldCheck, ShoppingBag } from "lucide-react";
+import {
+  Check,
+  CheckCircle2,
+  Copy,
+  KeyRound,
+  Mail,
+  PhoneCall,
+  ShieldCheck,
+  ShoppingBag,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Layout } from "@/components/layout";
@@ -54,7 +63,9 @@ function CheckoutSuccessPage() {
           </div>
           <h1 className="text-3xl font-bold text-zinc-900">Thanh toán thành công!</h1>
           <p className="text-sm text-zinc-500 max-w-md mx-auto">
-            Cảm ơn bạn đã mua hàng tại <strong className="text-zinc-800">Công Ty TNHH Công Nghệ Nam Nguyễn</strong>. Mã bản quyền đã được kích hoạt thành công.
+            Cảm ơn bạn đã mua hàng tại{" "}
+            <strong className="text-zinc-800">Công Ty TNHH Công Nghệ Nam Nguyễn</strong>. Mã bản
+            quyền đã được kích hoạt thành công.
           </p>
         </div>
 
@@ -96,7 +107,10 @@ function CheckoutSuccessPage() {
                 <p className="text-xs text-zinc-500">Đang tạo key bản quyền cho đơn hàng...</p>
               ) : (
                 keys.map((item) => (
-                  <div key={item.orderItemId} className="bg-zinc-50 rounded-xl p-4 ring-1 ring-black/5 space-y-2">
+                  <div
+                    key={item.orderItemId}
+                    className="bg-zinc-50 rounded-xl p-4 ring-1 ring-black/5 space-y-2"
+                  >
                     <p className="font-semibold text-sm text-zinc-900">{item.productName}</p>
                     <div className="flex items-center justify-between gap-3 bg-white p-3 rounded-lg border border-brand/30 shadow-inner">
                       <code className="font-mono font-bold text-base text-brand tracking-wider break-all">
@@ -132,11 +146,15 @@ function CheckoutSuccessPage() {
                 </div>
                 <div className="flex justify-between text-zinc-600">
                   <span>Trạng thái thanh toán:</span>
-                  <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">ĐÃ THANH TOÁN</span>
+                  <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                    ĐÃ THANH TOÁN
+                  </span>
                 </div>
                 <div className="flex justify-between text-zinc-600 border-t pt-2 items-baseline">
                   <span className="font-bold text-zinc-900 text-sm">Tổng tiền:</span>
-                  <span className="font-bold text-brand text-lg">{money(Number(order.totalAmount))}</span>
+                  <span className="font-bold text-brand text-lg">
+                    {money(Number(order.totalAmount))}
+                  </span>
                 </div>
               </div>
             )}
@@ -145,7 +163,10 @@ function CheckoutSuccessPage() {
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between text-xs text-amber-900">
               <div className="flex items-center gap-2">
                 <PhoneCall className="size-4 text-amber-700 shrink-0" />
-                <span>Cần hỗ trợ kích hoạt key nhanh? Liên hệ Hotline / Zalo: <strong>0383 158 080</strong></span>
+                <span>
+                  Cần hỗ trợ kích hoạt key nhanh? Liên hệ Hotline / Zalo:{" "}
+                  <strong>0383 158 080</strong>
+                </span>
               </div>
             </div>
 

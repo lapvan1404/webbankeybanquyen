@@ -3,6 +3,7 @@
 Represents a homepage banner returned by the API.
 
 Fields:
+
 - `id` (string): Unique banner identifier.
 - `title` (string): Banner title.
 - `description` (string): Optional banner description.

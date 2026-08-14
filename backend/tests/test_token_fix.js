@@ -34,7 +34,7 @@ async function testTokenFix() {
   console.log('==================================================\n');
 }
 
-testTokenFix().catch(e => {
+testTokenFix().catch((e) => {
   console.error(e);
   process.exit(1);
 });

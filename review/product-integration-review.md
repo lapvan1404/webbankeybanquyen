@@ -9,12 +9,14 @@ This review documents the integration testing coverage for the Product module an
 Endpoints tested (planned):
 
 Public
+
 - GET /api/products
 - GET /api/products/featured
 - GET /api/products/:slug
 - GET /api/products/:slug/related
 
 Admin (requires authentication + permissions)
+
 - POST /api/admin/products
 - PUT /api/admin/products/:id
 - PATCH /api/admin/products/:id/status
@@ -29,6 +31,7 @@ Automated execution of full end-to-end HTTP tests was not performed because the 
 ## Test Cases (to run)
 
 Positive flows
+
 - Create product with valid payload → 201, product returned, visible via GET /api/products and GET /api/products/:slug.
 - Update product fields → 200, changes reflected in subsequent GET.
 - Update status → 200, status changed.
@@ -36,6 +39,7 @@ Positive flows
 - Pagination/filter/sort on GET /api/products works as expected.
 
 Negative flows
+
 - Create with duplicate SKU/slug/name → 409 conflict.
 - Create with invalid categoryId/brandId → 400 validation error.
 - Create with negative price or stock → 400 validation error.
@@ -44,6 +48,7 @@ Negative flows
 - Guest/customer attempting admin endpoints → 401/403 as appropriate.
 
 Security tests
+
 - Attempt mass-assignment by including server-only fields (e.g. `deletedAt`, `createdAt`) in payload — server ignores or rejects these fields.
 - Attempt to trigger Prisma errors (malformed inputs) — API returns generic validation errors, not stack traces.
 

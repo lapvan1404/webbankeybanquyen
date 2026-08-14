@@ -71,9 +71,9 @@ export function ImageUploader({
         } else {
           newImages.push({ url: uploaded.url, uploadId: uploaded.id });
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         failures += 1;
-        lastErrMsg = err?.message || "";
+        lastErrMsg = err instanceof Error ? err.message : String(err || "");
       } finally {
         completed += 1;
         setProgressState(Math.round((completed / files.length) * 100));

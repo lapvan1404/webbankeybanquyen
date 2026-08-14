@@ -59,7 +59,9 @@ export function KeyForm({ keyData, products, onSave, onClose }: KeyFormProps) {
               <h3 className="font-bold text-lg text-zinc-900">
                 {keyData ? "Chỉnh sửa Key bản quyền" : "Thêm Key bản quyền mới"}
               </h3>
-              <p className="text-xs text-zinc-500">Quản lý mã key cấp tự động cho khách mua sản phẩm</p>
+              <p className="text-xs text-zinc-500">
+                Quản lý mã key cấp tự động cho khách mua sản phẩm
+              </p>
             </div>
           </div>
           <button
@@ -79,7 +81,9 @@ export function KeyForm({ keyData, products, onSave, onClose }: KeyFormProps) {
               className="w-full bg-zinc-50 border border-zinc-200 focus:border-brand rounded-xl px-4 py-3 font-semibold text-sm outline-none transition"
               required
             >
-              <option value="" disabled>-- Chọn sản phẩm --</option>
+              <option value="" disabled>
+                -- Chọn sản phẩm --
+              </option>
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}

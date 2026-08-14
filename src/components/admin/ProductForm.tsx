@@ -79,7 +79,10 @@ export function ProductForm({ product, categories, brands, onSave, onClose }: Pr
     try {
       const generatedSku =
         formData.sku.trim() ||
-        `SKU-${(formData.slug || Date.now().toString()).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 16)}`;
+        `SKU-${(formData.slug || Date.now().toString())
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "")
+          .slice(0, 16)}`;
 
       const dataToSave = {
         ...formData,
@@ -240,7 +243,9 @@ export function ProductForm({ product, categories, brands, onSave, onClose }: Pr
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-1">Mô tả ngắn (Tổng quan)</label>
+                <label className="block text-sm font-medium text-zinc-700 mb-1">
+                  Mô tả ngắn (Tổng quan)
+                </label>
                 <textarea
                   name="shortDescription"
                   value={formData.shortDescription}

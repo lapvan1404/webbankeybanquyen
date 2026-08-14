@@ -194,7 +194,12 @@ function AdminDashboard() {
   const [userSearch, setUserSearch] = useState("");
   const [userStatusFilter, setUserStatusFilter] = useState<"ALL" | "ACTIVE" | "LOCKED">("ALL");
   const [userPage, setUserPage] = useState(1);
-  const [userPagination, setUserPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
+  const [userPagination, setUserPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+  });
   const [userCounts, setUserCounts] = useState({ total: 0, active: 0, locked: 0 });
 
   const [selectedUserDetail, setSelectedUserDetail] = useState<AdminUserDetail | null>(null);
@@ -232,7 +237,9 @@ function AdminDashboard() {
   const [isConfirmPaymentModalOpen, setIsConfirmPaymentModalOpen] = useState(false);
   const [confirmPaymentLoading, setConfirmPaymentLoading] = useState(false);
   const [loadingModalKeys, setLoadingModalKeys] = useState(false);
-  const [orderFilterTab, setOrderFilterTab] = useState<"all" | "pending" | "paid" | "approved" | "cancelled">("all");
+  const [orderFilterTab, setOrderFilterTab] = useState<
+    "all" | "pending" | "paid" | "approved" | "cancelled"
+  >("all");
   const [orderSearchQuery, setOrderSearchQuery] = useState("");
 
   const loadUsers = useCallback(async () => {
@@ -249,8 +256,17 @@ function AdminDashboard() {
       const payload = res?.users ? res : res?.data ? res.data : res;
       if (payload) {
         setAdminUsers(payload.users || []);
-        setUserPagination(payload.pagination || { page: 1, limit: 10, total: (payload.users || []).length, totalPages: 1 });
-        setUserCounts(payload.counts || { total: (payload.users || []).length, active: 0, locked: 0 });
+        setUserPagination(
+          payload.pagination || {
+            page: 1,
+            limit: 10,
+            total: (payload.users || []).length,
+            totalPages: 1,
+          },
+        );
+        setUserCounts(
+          payload.counts || { total: (payload.users || []).length, active: 0, locked: 0 },
+        );
       }
     } catch (err: any) {
       if (err?.status === 401) {
@@ -310,7 +326,7 @@ function AdminDashboard() {
 
       if (selectedUserDetail && selectedUserDetail.user.id === userToToggleStatus.id) {
         setSelectedUserDetail((prev) =>
-          prev ? { ...prev, user: { ...prev.user, status: targetStatus } } : null
+          prev ? { ...prev, user: { ...prev.user, status: targetStatus } } : null,
         );
       }
     } catch (err: any) {
@@ -324,8 +340,14 @@ function AdminDashboard() {
     if (!orderToConfirmPayment || confirmPaymentLoading) return;
     setConfirmPaymentLoading(true);
     try {
-      await apiPost<any>(`/api/admin/orders/${orderToConfirmPayment.id}/mark-paid`, {}, { credentials: "include" });
-      toast.success(`🎉 Đã xác nhận thanh toán thành công cho đơn #${orderToConfirmPayment.orderNumber || orderToConfirmPayment.id.slice(0, 8)}!`);
+      await apiPost<any>(
+        `/api/admin/orders/${orderToConfirmPayment.id}/mark-paid`,
+        {},
+        { credentials: "include" },
+      );
+      toast.success(
+        `🎉 Đã xác nhận thanh toán thành công cho đơn #${orderToConfirmPayment.orderNumber || orderToConfirmPayment.id.slice(0, 8)}!`,
+      );
       setIsConfirmPaymentModalOpen(false);
       setOrderToConfirmPayment(null);
       setModalOrder(null);
@@ -426,7 +448,9 @@ function AdminDashboard() {
       if (!editSlug) return;
       (async () => {
         try {
-          const data = await apiFetch<CategoryData[]>("/api/admin/categories", { credentials: "include" });
+          const data = await apiFetch<CategoryData[]>("/api/admin/categories", {
+            credentials: "include",
+          });
           setCategories(data);
           const found = data.find((c) => c.slug === editSlug || c.id === editSlug);
           if (found) {
@@ -529,7 +553,9 @@ function AdminDashboard() {
 
   const loadProducts = useCallback(async () => {
     try {
-      let res = await apiFetch<any>("/api/admin/products", { credentials: "include" }).catch(() => null);
+      let res = await apiFetch<any>("/api/admin/products", { credentials: "include" }).catch(
+        () => null,
+      );
       if (!res) {
         res = await apiFetch<any>("/api/products?pageSize=100").catch(() => null);
       }
@@ -548,7 +574,8 @@ function AdminDashboard() {
         slug: p.slug || p.id,
         name: p.name,
         brand: typeof p.brand === "string" ? p.brand : p.brand?.name || p.brandId || "",
-        category: typeof p.category === "string" ? p.category : p.category?.name || p.categoryId || "",
+        category:
+          typeof p.category === "string" ? p.category : p.category?.name || p.categoryId || "",
         categoryId: p.categoryId || (typeof p.category === "object" ? p.category?.id : ""),
         brandId: p.brandId || (typeof p.brand === "object" ? p.brand?.id : ""),
         price: Number(p.price ?? 0),
@@ -567,7 +594,9 @@ function AdminDashboard() {
 
   const loadCategories = useCallback(async () => {
     try {
-      let res = await apiFetch<any>("/api/admin/categories", { credentials: "include" }).catch(() => null);
+      let res = await apiFetch<any>("/api/admin/categories", { credentials: "include" }).catch(
+        () => null,
+      );
       if (!res) {
         res = await apiFetch<any>("/api/categories?pageSize=100").catch(() => null);
       }
@@ -588,7 +617,9 @@ function AdminDashboard() {
 
   const loadBrands = useCallback(async () => {
     try {
-      let res = await apiFetch<any>("/api/admin/brands", { credentials: "include" }).catch(() => null);
+      let res = await apiFetch<any>("/api/admin/brands", { credentials: "include" }).catch(
+        () => null,
+      );
       if (!res) {
         res = await apiFetch<any>("/api/brands?pageSize=100").catch(() => null);
       }
@@ -643,7 +674,12 @@ function AdminDashboard() {
             imageUrl: String(item.imageUrl ?? item.url_hinh_anh ?? item.image ?? ""),
             position: String(position),
             isActive: active,
-            link: typeof item.linkUrl === "string" ? item.linkUrl : typeof item.link === "string" ? item.link : "",
+            link:
+              typeof item.linkUrl === "string"
+                ? item.linkUrl
+                : typeof item.link === "string"
+                  ? item.link
+                  : "",
           } satisfies BannerData;
         });
       setBanners(normalized);
@@ -785,12 +821,8 @@ function AdminDashboard() {
     } catch {
       // fallback
     }
-    setNotifications((current) =>
-      current.map((n) => ({ ...n, read: true })),
-    );
-    setStats((current) =>
-      current ? { ...current, notificationCount: 0 } : current,
-    );
+    setNotifications((current) => current.map((n) => ({ ...n, read: true })));
+    setStats((current) => (current ? { ...current, notificationCount: 0 } : current));
     toast.success("Đã đánh dấu TẤT CẢ thông báo là đã đọc!");
   };
 
@@ -837,7 +869,11 @@ function AdminDashboard() {
     navigate({ to: "/admin/login" });
   };
 
-  const createItem = async (path: string, body: unknown, reload: () => Promise<void>): Promise<boolean> => {
+  const createItem = async (
+    path: string,
+    body: unknown,
+    reload: () => Promise<void>,
+  ): Promise<boolean> => {
     try {
       await apiPost(path, body);
       toast.success("Thêm mới thành công");
@@ -850,7 +886,11 @@ function AdminDashboard() {
     }
   };
 
-  const updateItem = async (path: string, body: unknown, reload: () => Promise<void>): Promise<boolean> => {
+  const updateItem = async (
+    path: string,
+    body: unknown,
+    reload: () => Promise<void>,
+  ): Promise<boolean> => {
     try {
       await apiFetch(path, { method: "PUT", body });
       toast.success("Cập nhật thành công");
@@ -905,14 +945,20 @@ function AdminDashboard() {
                   v2.0
                 </span>
               </span>
-              <span className="text-[11px] text-white/80 block -mt-0.5 font-medium">Công Ty TNHH Công Nghệ Nam Nguyễn</span>
+              <span className="text-[11px] text-white/80 block -mt-0.5 font-medium">
+                Công Ty TNHH Công Nghệ Nam Nguyễn
+              </span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-2 text-xs text-white bg-white/15 px-3.5 py-1.5 rounded-full border border-white/25">
-              <span className={`size-2 rounded-full ${sseConnected ? "bg-emerald-300 animate-pulse" : "bg-amber-300"}`} />
-              <span className="font-mono font-semibold">{sseConnected ? "SSE REALTIME LIVE" : "SSE CONNECTING..."}</span>
+              <span
+                className={`size-2 rounded-full ${sseConnected ? "bg-emerald-300 animate-pulse" : "bg-amber-300"}`}
+              />
+              <span className="font-mono font-semibold">
+                {sseConnected ? "SSE REALTIME LIVE" : "SSE CONNECTING..."}
+              </span>
             </div>
 
             <Link
@@ -938,7 +984,9 @@ function AdminDashboard() {
             <p className="text-xs uppercase tracking-[0.25em] font-semibold text-zinc-500">
               Bảng điều khiển Admin
             </p>
-            <h1 className="text-3xl font-bold text-zinc-900">Quản trị Công Ty TNHH Công Nghệ Nam Nguyễn</h1>
+            <h1 className="text-3xl font-bold text-zinc-900">
+              Quản trị Công Ty TNHH Công Nghệ Nam Nguyễn
+            </h1>
           </div>
         </div>
 
@@ -980,11 +1028,20 @@ function AdminDashboard() {
               {
                 key: "analytics",
                 label: "Doanh Thu Thực",
-                value: money(stats?.totalRevenue ?? orders.filter((o) => o.status === "paid" || o.status === "approved").reduce((s, o) => s + (o.total || 0), 0)),
+                value: money(
+                  stats?.totalRevenue ??
+                    orders
+                      .filter((o) => o.status === "paid" || o.status === "approved")
+                      .reduce((s, o) => s + (o.total || 0), 0),
+                ),
                 isMoney: true,
               },
               { key: "products", label: "Sản phẩm", value: stats?.productCount ?? products.length },
-              { key: "categories", label: "Danh mục", value: stats?.categoryCount ?? categories.length },
+              {
+                key: "categories",
+                label: "Danh mục",
+                value: stats?.categoryCount ?? categories.length,
+              },
               { key: "brands", label: "Thương hiệu", value: stats?.brandCount ?? brands.length },
               { key: "coupons", label: "Mã giảm giá", value: stats?.couponCount ?? coupons.length },
               { key: "keys", label: "Khoá bản quyền", value: stats?.keyCount ?? keys.length },
@@ -1003,11 +1060,11 @@ function AdminDashboard() {
               >
                 <p className="text-xs font-semibold text-zinc-500 uppercase tracking-[0.15em] mb-3 group-hover:text-brand transition flex items-center justify-between">
                   <span>{card.label}</span>
-                  <span className="text-[10px] text-zinc-400 group-hover:text-brand font-medium">Xem ➔</span>
+                  <span className="text-[10px] text-zinc-400 group-hover:text-brand font-medium">
+                    Xem ➔
+                  </span>
                 </p>
-                <p className="text-3xl font-bold text-zinc-900">
-                  {card.value}
-                </p>
+                <p className="text-3xl font-bold text-zinc-900">{card.value}</p>
               </div>
             ))}
           </div>
@@ -1038,7 +1095,9 @@ function AdminDashboard() {
                     onClick={async () => {
                       try {
                         await apiFetch("/api/admin/notifications", { method: "DELETE" });
-                      } catch {}
+                      } catch {
+                        // ignore error
+                      }
                       setNotifications([]);
                       toast.success("Đã xóa sạch tất cả thông báo!");
                     }}
@@ -1240,7 +1299,8 @@ function AdminDashboard() {
                 </div>
 
                 <div className="text-xs text-zinc-500 font-medium">
-                  Hiển thị <span className="font-bold text-zinc-800">{adminUsers.length}</span> / <span className="font-bold text-zinc-800">{userPagination.total}</span> tài khoản
+                  Hiển thị <span className="font-bold text-zinc-800">{adminUsers.length}</span> /{" "}
+                  <span className="font-bold text-zinc-800">{userPagination.total}</span> tài khoản
                 </div>
               </div>
             </div>
@@ -1249,7 +1309,9 @@ function AdminDashboard() {
             {usersLoading ? (
               <div className="bg-white rounded-3xl p-12 ring-1 ring-zinc-200 text-center space-y-3">
                 <Loader2 className="size-8 animate-spin text-[#35B7BC] mx-auto" />
-                <p className="text-sm font-medium text-zinc-600">⏳ Đang tải danh sách tài khoản từ Database...</p>
+                <p className="text-sm font-medium text-zinc-600">
+                  ⏳ Đang tải danh sách tài khoản từ Database...
+                </p>
               </div>
             ) : usersError ? (
               <div className="bg-red-50 rounded-3xl p-8 ring-1 ring-red-200 text-center space-y-2">
@@ -1264,8 +1326,12 @@ function AdminDashboard() {
             ) : adminUsers.length === 0 ? (
               <div className="bg-white rounded-3xl p-12 ring-1 ring-zinc-200 text-center space-y-2">
                 <span className="text-4xl block">🔍</span>
-                <p className="text-sm font-semibold text-zinc-700">Không tìm thấy tài khoản phù hợp.</p>
-                <p className="text-xs text-zinc-500">Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc trạng thái.</p>
+                <p className="text-sm font-semibold text-zinc-700">
+                  Không tìm thấy tài khoản phù hợp.
+                </p>
+                <p className="text-xs text-zinc-500">
+                  Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc trạng thái.
+                </p>
               </div>
             ) : (
               <div className="bg-white rounded-3xl ring-1 ring-zinc-200 shadow-sm overflow-hidden">
@@ -1292,11 +1358,17 @@ function AdminDashboard() {
 
                         return (
                           <tr key={u.id} className="hover:bg-zinc-50/80 transition">
-                            <td className="py-3.5 px-4 text-center text-zinc-400 font-mono">{stt}</td>
+                            <td className="py-3.5 px-4 text-center text-zinc-400 font-mono">
+                              {stt}
+                            </td>
                             <td className="py-3.5 px-4">
                               <div className="flex items-center gap-3">
                                 {u.avatarUrl ? (
-                                  <img src={u.avatarUrl} alt={u.fullName} className="size-9 rounded-full object-cover ring-1 ring-zinc-200" />
+                                  <img
+                                    src={u.avatarUrl}
+                                    alt={u.fullName}
+                                    className="size-9 rounded-full object-cover ring-1 ring-zinc-200"
+                                  />
                                 ) : (
                                   <div className="size-9 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-white font-bold grid place-items-center text-xs shadow-sm">
                                     {(u.fullName || u.email).charAt(0).toUpperCase()}
@@ -1311,11 +1383,15 @@ function AdminDashboard() {
                                       </span>
                                     )}
                                   </div>
-                                  <div className="text-[11px] text-zinc-400 font-mono">ID: {u.id.slice(0, 8)}...</div>
+                                  <div className="text-[11px] text-zinc-400 font-mono">
+                                    ID: {u.id.slice(0, 8)}...
+                                  </div>
                                 </div>
                               </div>
                             </td>
-                            <td className="py-3.5 px-4 font-mono font-medium text-zinc-700">{u.email}</td>
+                            <td className="py-3.5 px-4 font-mono font-medium text-zinc-700">
+                              {u.email}
+                            </td>
                             <td className="py-3.5 px-4 font-mono text-zinc-600">{u.phone}</td>
                             <td className="py-3.5 px-4 text-center">
                               <span className="inline-block bg-zinc-100 text-zinc-800 font-bold px-2 py-0.5 rounded-full text-[11px]">
@@ -1392,24 +1468,28 @@ function AdminDashboard() {
                     </button>
 
                     <div className="flex items-center gap-1">
-                      {Array.from({ length: userPagination.totalPages }, (_, i) => i + 1).map((p) => (
-                        <button
-                          key={p}
-                          onClick={() => setUserPage(p)}
-                          className={`size-8 rounded-xl text-xs font-bold transition cursor-pointer ${
-                            userPage === p
-                              ? "bg-[#35B7BC] text-white shadow-md"
-                              : "bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-100"
-                          }`}
-                        >
-                          {p}
-                        </button>
-                      ))}
+                      {Array.from({ length: userPagination.totalPages }, (_, i) => i + 1).map(
+                        (p) => (
+                          <button
+                            key={p}
+                            onClick={() => setUserPage(p)}
+                            className={`size-8 rounded-xl text-xs font-bold transition cursor-pointer ${
+                              userPage === p
+                                ? "bg-[#35B7BC] text-white shadow-md"
+                                : "bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-100"
+                            }`}
+                          >
+                            {p}
+                          </button>
+                        ),
+                      )}
                     </div>
 
                     <button
                       disabled={userPage >= userPagination.totalPages}
-                      onClick={() => setUserPage((prev) => Math.min(userPagination.totalPages, prev + 1))}
+                      onClick={() =>
+                        setUserPage((prev) => Math.min(userPagination.totalPages, prev + 1))
+                      }
                       className="px-3.5 py-1.5 rounded-xl border border-zinc-300 text-xs font-semibold bg-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-100 transition cursor-pointer"
                     >
                       Sau →
@@ -1428,7 +1508,9 @@ function AdminDashboard() {
                       <h3 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
                         <span>👤</span> THÔNG TIN CHI TIẾT KHÁCH HÀNG
                       </h3>
-                      <p className="text-xs text-zinc-500">Thông tin cá nhân và lịch sử mua hàng thực tế từ Database</p>
+                      <p className="text-xs text-zinc-500">
+                        Thông tin cá nhân và lịch sử mua hàng thực tế từ Database
+                      </p>
                     </div>
                     <button
                       onClick={() => {
@@ -1445,51 +1527,84 @@ function AdminDashboard() {
                     {detailLoading || !selectedUserDetail ? (
                       <div className="py-12 text-center space-y-2">
                         <Loader2 className="size-8 animate-spin text-[#35B7BC] mx-auto" />
-                        <p className="text-sm font-medium text-zinc-500">⏳ Đang tải thông tin chi tiết...</p>
+                        <p className="text-sm font-medium text-zinc-500">
+                          ⏳ Đang tải thông tin chi tiết...
+                        </p>
                       </div>
                     ) : (
                       <>
                         {/* Information Card */}
                         <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 p-5 rounded-2xl ring-1 ring-zinc-200/80 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
                           <div>
-                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">Họ và tên</span>
-                            <span className="font-bold text-zinc-900 text-sm">{selectedUserDetail.user.fullName}</span>
-                          </div>
-                          <div>
-                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">Email</span>
-                            <span className="font-mono text-zinc-800 font-semibold">{selectedUserDetail.user.email}</span>
-                          </div>
-                          <div>
-                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">Số điện thoại</span>
-                            <span className="font-mono text-zinc-800 font-semibold">{selectedUserDetail.user.phone}</span>
-                          </div>
-                          <div>
-                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">Trạng thái</span>
-                            {selectedUserDetail.user.status === "LOCKED" ? (
-                              <span className="inline-block mt-0.5 text-red-600 font-bold bg-red-100 px-2 py-0.5 rounded text-[11px]">🔴 Đã khóa</span>
-                            ) : (
-                              <span className="inline-block mt-0.5 text-emerald-600 font-bold bg-emerald-100 px-2 py-0.5 rounded text-[11px]">🟢 Hoạt động</span>
-                            )}
-                          </div>
-                          <div>
-                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">Ngày đăng ký</span>
-                            <span className="font-medium text-zinc-700">
-                              {new Date(selectedUserDetail.user.createdAt).toLocaleDateString("vi-VN", {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
+                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">
+                              Họ và tên
+                            </span>
+                            <span className="font-bold text-zinc-900 text-sm">
+                              {selectedUserDetail.user.fullName}
                             </span>
                           </div>
                           <div>
-                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">Tổng đơn hàng</span>
-                            <span className="font-bold text-zinc-900">{selectedUserDetail.user.totalOrders} đơn</span>
+                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">
+                              Email
+                            </span>
+                            <span className="font-mono text-zinc-800 font-semibold">
+                              {selectedUserDetail.user.email}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">
+                              Số điện thoại
+                            </span>
+                            <span className="font-mono text-zinc-800 font-semibold">
+                              {selectedUserDetail.user.phone}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">
+                              Trạng thái
+                            </span>
+                            {selectedUserDetail.user.status === "LOCKED" ? (
+                              <span className="inline-block mt-0.5 text-red-600 font-bold bg-red-100 px-2 py-0.5 rounded text-[11px]">
+                                🔴 Đã khóa
+                              </span>
+                            ) : (
+                              <span className="inline-block mt-0.5 text-emerald-600 font-bold bg-emerald-100 px-2 py-0.5 rounded text-[11px]">
+                                🟢 Hoạt động
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">
+                              Ngày đăng ký
+                            </span>
+                            <span className="font-medium text-zinc-700">
+                              {new Date(selectedUserDetail.user.createdAt).toLocaleDateString(
+                                "vi-VN",
+                                {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-400 block text-[10px] uppercase font-bold">
+                              Tổng đơn hàng
+                            </span>
+                            <span className="font-bold text-zinc-900">
+                              {selectedUserDetail.user.totalOrders} đơn
+                            </span>
                           </div>
                           <div className="sm:col-span-2 md:col-span-3 pt-2 border-t border-zinc-200/60 flex items-center justify-between">
-                            <span className="text-zinc-500 font-bold uppercase text-[11px]">Tổng chi tiêu tích lũy:</span>
-                            <span className="text-lg font-extrabold text-emerald-600">{money(selectedUserDetail.user.totalSpending)}</span>
+                            <span className="text-zinc-500 font-bold uppercase text-[11px]">
+                              Tổng chi tiêu tích lũy:
+                            </span>
+                            <span className="text-lg font-extrabold text-emerald-600">
+                              {money(selectedUserDetail.user.totalSpending)}
+                            </span>
                           </div>
                         </div>
 
@@ -1566,14 +1681,20 @@ function AdminDashboard() {
               <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
                 <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl p-6 space-y-5 border border-zinc-100">
                   <div className="flex items-center gap-3">
-                    <div className={`size-12 rounded-2xl grid place-items-center text-xl shrink-0 ${
-                      userToToggleStatus.status === "ACTIVE" ? "bg-red-100 text-red-600" : "bg-emerald-100 text-emerald-600"
-                    }`}>
+                    <div
+                      className={`size-12 rounded-2xl grid place-items-center text-xl shrink-0 ${
+                        userToToggleStatus.status === "ACTIVE"
+                          ? "bg-red-100 text-red-600"
+                          : "bg-emerald-100 text-emerald-600"
+                      }`}
+                    >
                       {userToToggleStatus.status === "ACTIVE" ? "🔒" : "🔓"}
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-zinc-900">
-                        {userToToggleStatus.status === "ACTIVE" ? "Khóa tài khoản khách hàng?" : "Mở khóa tài khoản khách hàng?"}
+                        {userToToggleStatus.status === "ACTIVE"
+                          ? "Khóa tài khoản khách hàng?"
+                          : "Mở khóa tài khoản khách hàng?"}
                       </h3>
                       <p className="text-xs text-zinc-500">
                         {userToToggleStatus.status === "ACTIVE"
@@ -1584,9 +1705,22 @@ function AdminDashboard() {
                   </div>
 
                   <div className="bg-zinc-50 p-4 rounded-2xl ring-1 ring-zinc-200 text-xs space-y-1.5 font-medium">
-                    <div><span className="text-zinc-400">Khách hàng:</span> <span className="font-bold text-zinc-900">{userToToggleStatus.fullName}</span></div>
-                    <div><span className="text-zinc-400">Email:</span> <span className="font-mono font-bold text-zinc-800">{userToToggleStatus.email}</span></div>
-                    <div><span className="text-zinc-400">Trạng thái hiện tại:</span> <span className="font-bold">{userToToggleStatus.status === "ACTIVE" ? "🟢 Hoạt động" : "🔴 Đã khóa"}</span></div>
+                    <div>
+                      <span className="text-zinc-400">Khách hàng:</span>{" "}
+                      <span className="font-bold text-zinc-900">{userToToggleStatus.fullName}</span>
+                    </div>
+                    <div>
+                      <span className="text-zinc-400">Email:</span>{" "}
+                      <span className="font-mono font-bold text-zinc-800">
+                        {userToToggleStatus.email}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-zinc-400">Trạng thái hiện tại:</span>{" "}
+                      <span className="font-bold">
+                        {userToToggleStatus.status === "ACTIVE" ? "🟢 Hoạt động" : "🔴 Đã khóa"}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-end gap-3 pt-2 border-t border-zinc-100">
@@ -1605,7 +1739,9 @@ function AdminDashboard() {
                       disabled={mutationLoading}
                       onClick={handleConfirmToggleUserStatus}
                       className={`px-4 py-2 rounded-xl text-xs font-bold text-white transition flex items-center gap-1.5 shadow-md cursor-pointer ${
-                        userToToggleStatus.status === "ACTIVE" ? "bg-red-600 hover:bg-red-700" : "bg-emerald-600 hover:bg-emerald-700"
+                        userToToggleStatus.status === "ACTIVE"
+                          ? "bg-red-600 hover:bg-red-700"
+                          : "bg-emerald-600 hover:bg-emerald-700"
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {mutationLoading ? (
@@ -1614,7 +1750,11 @@ function AdminDashboard() {
                           <span>⏳ Đang xử lý...</span>
                         </>
                       ) : (
-                        <span>{userToToggleStatus.status === "ACTIVE" ? "🔒 Xác nhận khóa" : "🔓 Xác nhận mở khóa"}</span>
+                        <span>
+                          {userToToggleStatus.status === "ACTIVE"
+                            ? "🔒 Xác nhận khóa"
+                            : "🔓 Xác nhận mở khóa"}
+                        </span>
                       )}
                     </button>
                   </div>
@@ -1630,8 +1770,12 @@ function AdminDashboard() {
             <div className="bg-white rounded-3xl p-6 ring-1 ring-zinc-200 shadow-sm space-y-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-bold text-zinc-900">Quản lý Đơn hàng ({orders.length})</h2>
-                  <p className="text-xs text-zinc-500 mt-0.5">Click vào từng đơn hàng để xem chi tiết thông tin mua & mã key bản quyền</p>
+                  <h2 className="text-xl font-bold text-zinc-900">
+                    Quản lý Đơn hàng ({orders.length})
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Click vào từng đơn hàng để xem chi tiết thông tin mua & mã key bản quyền
+                  </p>
                 </div>
                 <input
                   type="text"
@@ -1646,9 +1790,18 @@ function AdminDashboard() {
               <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-100">
                 {[
                   { id: "all", label: `Tất cả (${orders.length})` },
-                  { id: "pending", label: `🟠 Chờ xác nhận (${orders.filter((o) => o.status?.toLowerCase() === "pending").length})` },
-                  { id: "paid", label: `🟢 Đã thanh toán (${orders.filter((o) => ["paid", "approved"].includes(o.status?.toLowerCase())).length})` },
-                  { id: "cancelled", label: `🔴 Đã hủy (${orders.filter((o) => o.status?.toLowerCase() === "cancelled").length})` },
+                  {
+                    id: "pending",
+                    label: `🟠 Chờ xác nhận (${orders.filter((o) => o.status?.toLowerCase() === "pending").length})`,
+                  },
+                  {
+                    id: "paid",
+                    label: `🟢 Đã thanh toán (${orders.filter((o) => ["paid", "approved"].includes(o.status?.toLowerCase())).length})`,
+                  },
+                  {
+                    id: "cancelled",
+                    label: `🔴 Đã hủy (${orders.filter((o) => o.status?.toLowerCase() === "cancelled").length})`,
+                  },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -1685,7 +1838,8 @@ function AdminDashboard() {
                       .filter((o) => {
                         const st = o.status?.toLowerCase();
                         if (orderFilterTab === "pending" && st !== "pending") return false;
-                        if (orderFilterTab === "paid" && !["paid", "approved"].includes(st)) return false;
+                        if (orderFilterTab === "paid" && !["paid", "approved"].includes(st))
+                          return false;
                         if (orderFilterTab === "cancelled" && st !== "cancelled") return false;
                         if (!orderSearchQuery.trim()) return true;
                         const q = orderSearchQuery.toLowerCase();
@@ -1706,7 +1860,9 @@ function AdminDashboard() {
                           </td>
                           <td className="py-3.5 px-4">
                             <p className="font-semibold text-zinc-900">{order.email}</p>
-                            <p className="text-[11px] text-zinc-500">{order.phone || "Chưa có SĐT"}</p>
+                            <p className="text-[11px] text-zinc-500">
+                              {order.phone || "Chưa có SĐT"}
+                            </p>
                           </td>
                           <td className="py-3.5 px-4 font-medium text-zinc-800 max-w-xs truncate">
                             {getOrderLabel(order)}
@@ -1839,8 +1995,12 @@ function AdminDashboard() {
           <div className="space-y-6">
             <div className="bg-white rounded-3xl p-6 ring-1 ring-zinc-200 shadow-sm flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-zinc-900">Quản lý Mã Giảm Giá ({coupons.length})</h2>
-                <p className="text-xs text-zinc-500 mt-0.5">Tạo và kích hoạt các mã ưu đãi chiết khấu % cho khách hàng</p>
+                <h2 className="text-xl font-bold text-zinc-900">
+                  Quản lý Mã Giảm Giá ({coupons.length})
+                </h2>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Tạo và kích hoạt các mã ưu đãi chiết khấu % cho khách hàng
+                </p>
               </div>
               <button
                 onClick={() => {
@@ -1876,7 +2036,9 @@ function AdminDashboard() {
                         <td className="py-3.5 px-4">
                           <span
                             className={`px-2.5 py-1 rounded-full font-bold text-[11px] inline-block ${
-                              c.active ? "bg-emerald-100 text-emerald-800" : "bg-zinc-100 text-zinc-600"
+                              c.active
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-zinc-100 text-zinc-600"
                             }`}
                           >
                             {c.active ? "✓ Đang kích hoạt" : "Tắt / Tạm ngưng"}
@@ -1894,10 +2056,16 @@ function AdminDashboard() {
                           </button>
                           <button
                             onClick={async () => {
-                              await updateItem(`/api/admin/coupons/${c.id}`, { active: !c.active }, loadCoupons);
+                              await updateItem(
+                                `/api/admin/coupons/${c.id}`,
+                                { active: !c.active },
+                                loadCoupons,
+                              );
                             }}
                             className={`font-semibold px-3 py-1 rounded-full text-[11px] transition cursor-pointer ${
-                              c.active ? "bg-amber-100 hover:bg-amber-200 text-amber-800" : "bg-emerald-100 hover:bg-emerald-200 text-emerald-800"
+                              c.active
+                                ? "bg-amber-100 hover:bg-amber-200 text-amber-800"
+                                : "bg-emerald-100 hover:bg-emerald-200 text-emerald-800"
                             }`}
                           >
                             {c.active ? "Tắt" : "Bật"}
@@ -1924,8 +2092,12 @@ function AdminDashboard() {
           <div className="space-y-6">
             <div className="bg-white rounded-3xl p-6 ring-1 ring-zinc-200 shadow-sm flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-zinc-900">Kho Key Bản Quyền ({keys.length})</h2>
-                <p className="text-xs text-zinc-500 mt-0.5">Quản lý các mã key được tự động trả về cho khách hàng khi hoàn tất đơn hàng</p>
+                <h2 className="text-xl font-bold text-zinc-900">
+                  Kho Key Bản Quyền ({keys.length})
+                </h2>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Quản lý các mã key được tự động trả về cho khách hàng khi hoàn tất đơn hàng
+                </p>
               </div>
               <button
                 onClick={() => {
@@ -1969,7 +2141,9 @@ function AdminDashboard() {
                           </div>
                         </td>
                         <td className="py-3.5 px-4 font-semibold text-zinc-800">
-                          {k.productName || products.find((p) => p.id === k.productId)?.name || k.productId}
+                          {k.productName ||
+                            products.find((p) => p.id === k.productId)?.name ||
+                            k.productId}
                         </td>
                         <td className="py-3.5 px-4">
                           <span
@@ -2024,8 +2198,7 @@ function AdminDashboard() {
                     ...editingProduct,
                     categoryId:
                       categories.find((item) => item.slug === editingProduct.category)?.id || "",
-                    brandId:
-                      brands.find((item) => item.name === editingProduct.brand)?.id || "",
+                    brandId: brands.find((item) => item.name === editingProduct.brand)?.id || "",
                   }
                 : undefined
             }
@@ -2034,23 +2207,19 @@ function AdminDashboard() {
             onSave={async (data) => {
               const payload = {
                 ...data,
-                status:
-                  typeof data.status === "string"
-                    ? data.status.toUpperCase()
-                    : "ACTIVE",
+                status: typeof data.status === "string" ? data.status.toUpperCase() : "ACTIVE",
                 categoryId:
-                  typeof data.categoryId === "string" && data.categoryId
-                    ? data.categoryId
-                    : null,
-                brandId:
-                  typeof data.brandId === "string" && data.brandId
-                    ? data.brandId
-                    : null,
+                  typeof data.categoryId === "string" && data.categoryId ? data.categoryId : null,
+                brandId: typeof data.brandId === "string" && data.brandId ? data.brandId : null,
               };
 
               let ok = false;
               if (editingProduct) {
-                ok = await updateItem(`/api/admin/products/${editingProduct.id}`, payload, loadProducts);
+                ok = await updateItem(
+                  `/api/admin/products/${editingProduct.id}`,
+                  payload,
+                  loadProducts,
+                );
               } else {
                 ok = await createItem("/api/admin/products", payload, loadProducts);
               }
@@ -2121,7 +2290,11 @@ function AdminDashboard() {
 
               let ok = false;
               if (editingBanner) {
-                ok = await updateItem(`/api/admin/banners/${editingBanner.id}`, payload, loadBanners);
+                ok = await updateItem(
+                  `/api/admin/banners/${editingBanner.id}`,
+                  payload,
+                  loadBanners,
+                );
               } else {
                 ok = await createItem("/api/admin/banners", payload, loadBanners);
               }
@@ -2151,7 +2324,11 @@ function AdminDashboard() {
 
               let ok = false;
               if (editingCategory) {
-                ok = await updateItem(`/api/admin/categories/${editingCategory.id}`, payload, loadCategories);
+                ok = await updateItem(
+                  `/api/admin/categories/${editingCategory.id}`,
+                  payload,
+                  loadCategories,
+                );
               } else {
                 ok = await createItem("/api/admin/categories", payload, loadCategories);
               }
@@ -2207,16 +2384,46 @@ function AdminDashboard() {
               {/* Thông tin người mua & Thanh toán */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                 <div className="bg-zinc-50 p-4 rounded-2xl ring-1 ring-black/5 space-y-2">
-                  <h4 className="font-bold text-zinc-900 text-sm border-b pb-1">👤 Thông tin khách hàng</h4>
-                  <p><span className="text-zinc-500">Email nhận key:</span> <span className="font-semibold text-zinc-900">{modalOrder.email}</span></p>
-                  <p><span className="text-zinc-500">Số điện thoại:</span> <span className="font-semibold text-zinc-900">{modalOrder.phone || "Không có"}</span></p>
-                  <p><span className="text-zinc-500">Phương thức giao:</span> <span className="font-semibold text-zinc-900">{modalOrder.deliveryMethod}</span></p>
+                  <h4 className="font-bold text-zinc-900 text-sm border-b pb-1">
+                    👤 Thông tin khách hàng
+                  </h4>
+                  <p>
+                    <span className="text-zinc-500">Email nhận key:</span>{" "}
+                    <span className="font-semibold text-zinc-900">{modalOrder.email}</span>
+                  </p>
+                  <p>
+                    <span className="text-zinc-500">Số điện thoại:</span>{" "}
+                    <span className="font-semibold text-zinc-900">
+                      {modalOrder.phone || "Không có"}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="text-zinc-500">Phương thức giao:</span>{" "}
+                    <span className="font-semibold text-zinc-900">{modalOrder.deliveryMethod}</span>
+                  </p>
                 </div>
                 <div className="bg-zinc-50 p-4 rounded-2xl ring-1 ring-black/5 space-y-2">
-                  <h4 className="font-bold text-zinc-900 text-sm border-b pb-1">💳 Chi tiết thanh toán</h4>
-                  <p><span className="text-zinc-500">Tổng thanh toán:</span> <span className="font-bold text-emerald-600 text-sm">{money(modalOrder.total)}</span></p>
-                  <p><span className="text-zinc-500">Trạng thái:</span> <span className="font-semibold text-zinc-900">{getStatusLabel(modalOrder.status)}</span></p>
-                  <p><span className="text-zinc-500">Ghi chú:</span> <span className="font-semibold text-zinc-900">{modalOrder.note || "Không có"}</span></p>
+                  <h4 className="font-bold text-zinc-900 text-sm border-b pb-1">
+                    💳 Chi tiết thanh toán
+                  </h4>
+                  <p>
+                    <span className="text-zinc-500">Tổng thanh toán:</span>{" "}
+                    <span className="font-bold text-emerald-600 text-sm">
+                      {money(modalOrder.total)}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="text-zinc-500">Trạng thái:</span>{" "}
+                    <span className="font-semibold text-zinc-900">
+                      {getStatusLabel(modalOrder.status)}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="text-zinc-500">Ghi chú:</span>{" "}
+                    <span className="font-semibold text-zinc-900">
+                      {modalOrder.note || "Không có"}
+                    </span>
+                  </p>
                 </div>
               </div>
 
@@ -2225,10 +2432,15 @@ function AdminDashboard() {
                 <h4 className="font-bold text-zinc-900 text-sm">🛒 Sản phẩm đã mua</h4>
                 <div className="bg-zinc-50 rounded-2xl ring-1 ring-black/5 p-3 space-y-2 text-xs">
                   {modalOrder.items.map((it, idx) => (
-                    <div key={idx} className="flex justify-between items-center border-b border-zinc-200/60 pb-2 last:border-0 last:pb-0">
+                    <div
+                      key={idx}
+                      className="flex justify-between items-center border-b border-zinc-200/60 pb-2 last:border-0 last:pb-0"
+                    >
                       <div>
                         <p className="font-semibold text-zinc-900">{it.name}</p>
-                        <p className="text-[11px] text-zinc-500">Đơn giá: {money(it.price)} x {it.qty}</p>
+                        <p className="text-[11px] text-zinc-500">
+                          Đơn giá: {money(it.price)} x {it.qty}
+                        </p>
                       </div>
                       <span className="font-bold text-zinc-900">{money(it.price * it.qty)}</span>
                     </div>
@@ -2240,15 +2452,22 @@ function AdminDashboard() {
               <div className="space-y-2">
                 <h4 className="font-bold text-zinc-900 text-sm flex items-center justify-between">
                   <span>🔑 Mã Key bản quyền của đơn này</span>
-                  {loadingModalKeys && <span className="text-xs text-zinc-400 font-normal">Đang tải key...</span>}
+                  {loadingModalKeys && (
+                    <span className="text-xs text-zinc-400 font-normal">Đang tải key...</span>
+                  )}
                 </h4>
                 <div className="bg-zinc-900 text-white rounded-2xl p-4 space-y-3">
                   {modalOrderKeys.length > 0 ? (
                     modalOrderKeys.map((k, idx) => (
-                      <div key={idx} className="bg-zinc-800 p-3 rounded-xl flex items-center justify-between gap-3 ring-1 ring-white/10">
+                      <div
+                        key={idx}
+                        className="bg-zinc-800 p-3 rounded-xl flex items-center justify-between gap-3 ring-1 ring-white/10"
+                      >
                         <div>
                           <p className="text-[11px] text-zinc-400 font-medium">{k.productName}</p>
-                          <p className="font-mono text-emerald-400 font-bold text-sm tracking-wider mt-0.5">{k.key}</p>
+                          <p className="font-mono text-emerald-400 font-bold text-sm tracking-wider mt-0.5">
+                            {k.key}
+                          </p>
                         </div>
                         <button
                           onClick={() => {
@@ -2327,11 +2546,15 @@ function AdminDashboard() {
               <div className="bg-zinc-50 p-4 rounded-2xl ring-1 ring-zinc-200 text-xs space-y-2 font-medium">
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Mã đơn hàng:</span>
-                  <span className="font-bold text-zinc-900">#{orderToConfirmPayment.orderNumber || orderToConfirmPayment.id.slice(0, 8)}</span>
+                  <span className="font-bold text-zinc-900">
+                    #{orderToConfirmPayment.orderNumber || orderToConfirmPayment.id.slice(0, 8)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Số tiền:</span>
-                  <span className="font-extrabold text-emerald-600 text-sm">{money(orderToConfirmPayment.total || 0)}</span>
+                  <span className="font-extrabold text-emerald-600 text-sm">
+                    {money(orderToConfirmPayment.total || 0)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Khách hàng:</span>
@@ -2339,7 +2562,9 @@ function AdminDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Nội dung chuyển khoản:</span>
-                  <span className="font-mono font-bold text-amber-800">CK {orderToConfirmPayment.orderNumber}</span>
+                  <span className="font-mono font-bold text-amber-800">
+                    CK {orderToConfirmPayment.orderNumber}
+                  </span>
                 </div>
               </div>
 
@@ -2432,7 +2657,9 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startOfWeek = new Date(startOfDay);
-    startOfWeek.setDate(startOfDay.getDate() - (startOfDay.getDay() === 0 ? 6 : startOfDay.getDay() - 1)); // Monday
+    startOfWeek.setDate(
+      startOfDay.getDate() - (startOfDay.getDay() === 0 ? 6 : startOfDay.getDay() - 1),
+    ); // Monday
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     // Filter by period
@@ -2455,7 +2682,10 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
     const totalRevenue = targetOrders.reduce((sum, o) => sum + (o.total || 0), 0);
     const orderCount = targetOrders.length;
     const avgOrderValue = orderCount > 0 ? totalRevenue / orderCount : 0;
-    const conversionRate = timeFiltered.length > 0 ? ((validPaidOrders.length / timeFiltered.length) * 100).toFixed(1) : "0";
+    const conversionRate =
+      timeFiltered.length > 0
+        ? ((validPaidOrders.length / timeFiltered.length) * 100).toFixed(1)
+        : "0";
 
     // Top selling products breakdown
     const productMap = new Map<string, { name: string; qty: number; revenue: number }>();
@@ -2490,7 +2720,9 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
       <div className="bg-white rounded-3xl p-6 ring-1 ring-zinc-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-zinc-900">Báo cáo & Thống kê doanh thu</h2>
-          <p className="text-xs text-zinc-500 mt-0.5">Dữ liệu doanh thu thực tế được tự động tổng hợp từ đơn hàng MySQL</p>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Dữ liệu doanh thu thực tế được tự động tổng hợp từ đơn hàng MySQL
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -2499,7 +2731,9 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
             <button
               onClick={() => setStatusFilter("paid_only")}
               className={`px-3 py-1.5 rounded-full transition cursor-pointer ${
-                statusFilter === "paid_only" ? "bg-emerald-600 text-white shadow" : "text-zinc-600 hover:text-zinc-900"
+                statusFilter === "paid_only"
+                  ? "bg-emerald-600 text-white shadow"
+                  : "text-zinc-600 hover:text-zinc-900"
               }`}
             >
               ✓ Thực nhận (Đã thanh toán)
@@ -2507,7 +2741,9 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
             <button
               onClick={() => setStatusFilter("all_orders")}
               className={`px-3 py-1.5 rounded-full transition cursor-pointer ${
-                statusFilter === "all_orders" ? "bg-zinc-900 text-white shadow" : "text-zinc-600 hover:text-zinc-900"
+                statusFilter === "all_orders"
+                  ? "bg-zinc-900 text-white shadow"
+                  : "text-zinc-600 hover:text-zinc-900"
               }`}
             >
               Tất cả đơn đặt
@@ -2526,7 +2762,9 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
                 key={t.id}
                 onClick={() => setPeriod(t.id as any)}
                 className={`px-3 py-1.5 rounded-full transition cursor-pointer ${
-                  period === t.id ? "bg-brand text-white shadow" : "text-zinc-600 hover:text-zinc-900"
+                  period === t.id
+                    ? "bg-brand text-white shadow"
+                    : "text-zinc-600 hover:text-zinc-900"
                 }`}
               >
                 {t.label}
@@ -2568,7 +2806,9 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
           <div className="size-10 rounded-2xl bg-purple-100 text-purple-700 grid place-items-center mb-3 font-bold text-lg">
             📈
           </div>
-          <span className="text-xs text-zinc-500 font-medium block">Giá Trị Đơn Trung Bình (AOV)</span>
+          <span className="text-xs text-zinc-500 font-medium block">
+            Giá Trị Đơn Trung Bình (AOV)
+          </span>
           <span className="text-2xl font-black text-zinc-900 tracking-tight mt-1 block">
             {money(analyticsData.avgOrderValue)}
           </span>
@@ -2579,7 +2819,9 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
           <div className="size-10 rounded-2xl bg-amber-100 text-amber-700 grid place-items-center mb-3 font-bold text-lg">
             🎯
           </div>
-          <span className="text-xs text-zinc-500 font-medium block">Tỷ Lệ Chuyển Đổi Thanh Toán</span>
+          <span className="text-xs text-zinc-500 font-medium block">
+            Tỷ Lệ Chuyển Đổi Thanh Toán
+          </span>
           <span className="text-2xl font-black text-amber-600 tracking-tight mt-1 block">
             {analyticsData.conversionRate}%
           </span>
@@ -2603,7 +2845,13 @@ function AnalyticsView({ orders }: { orders: OrderData[] }) {
                     <div className="flex items-center gap-2">
                       <span
                         className={`size-5 rounded-full grid place-items-center text-[10px] font-bold text-white ${
-                          idx === 0 ? "bg-amber-500" : idx === 1 ? "bg-zinc-400" : idx === 2 ? "bg-amber-700" : "bg-zinc-300 text-zinc-700"
+                          idx === 0
+                            ? "bg-amber-500"
+                            : idx === 1
+                              ? "bg-zinc-400"
+                              : idx === 2
+                                ? "bg-amber-700"
+                                : "bg-zinc-300 text-zinc-700"
                         }`}
                       >
                         {idx + 1}
@@ -2683,8 +2931,7 @@ function AdminCollection<T extends { id: string }>({
                 }
                 return (
                   <p key={field} className="text-sm text-zinc-600">
-                    <span className="font-semibold capitalize">{String(field)}:</span>{" "}
-                    {displayVal}
+                    <span className="font-semibold capitalize">{String(field)}:</span> {displayVal}
                   </p>
                 );
               })}
@@ -2727,27 +2974,29 @@ function FeaturedImagesAdminManager({
     (b) =>
       b.id === "promo-banner-windows" ||
       b.position === "promo_windows" ||
-      (b.title && typeof b.title === "string" && b.title.toLowerCase().includes("windows"))
+      (b.title && typeof b.title === "string" && b.title.toLowerCase().includes("windows")),
   );
 
   const antiBanner = safeBanners.find(
     (b) =>
       b.id === "promo-banner-antivirus" ||
       b.position === "promo_antivirus" ||
-      (b.title && typeof b.title === "string" && b.title.toLowerCase().includes("antivirus"))
+      (b.title && typeof b.title === "string" && b.title.toLowerCase().includes("antivirus")),
   );
 
   const parseImages = (imgStr?: string): ImageItem[] => {
     if (!imgStr || typeof imgStr !== "string") return [];
     return imgStr
       .split(",")
-      .map((s) => s.trim())
+      .map((s) => cleanImageUrl(s))
       .filter(Boolean)
       .map((url) => ({ url }));
   };
 
   const [winImages, setWinImages] = useState<ImageItem[]>(() => parseImages(winBanner?.imageUrl));
-  const [antiImages, setAntiImages] = useState<ImageItem[]>(() => parseImages(antiBanner?.imageUrl));
+  const [antiImages, setAntiImages] = useState<ImageItem[]>(() =>
+    parseImages(antiBanner?.imageUrl),
+  );
 
   const [savingWin, setSavingWin] = useState(false);
   const [savingAnti, setSavingAnti] = useState(false);
@@ -2762,7 +3011,10 @@ function FeaturedImagesAdminManager({
 
   const handleSaveWindows = async (customImgs?: ImageItem[]) => {
     const targetImgs = customImgs ?? winImages;
-    const imgStr = targetImgs.map((i) => i.url).filter(Boolean).join(",");
+    const imgStr = targetImgs
+      .map((i) => i.url)
+      .filter(Boolean)
+      .join(",");
     if (!imgStr) {
       toast.error("Vui lòng tải lên ít nhất 1 hình ảnh nổi bật cho Windows");
       return;
@@ -2790,7 +3042,10 @@ function FeaturedImagesAdminManager({
 
   const handleSaveAntivirus = async (customImgs?: ImageItem[]) => {
     const targetImgs = customImgs ?? antiImages;
-    const imgStr = targetImgs.map((i) => i.url).filter(Boolean).join(",");
+    const imgStr = targetImgs
+      .map((i) => i.url)
+      .filter(Boolean)
+      .join(",");
     if (!imgStr) {
       toast.error("Vui lòng tải lên ít nhất 1 hình ảnh nổi bật cho Antivirus");
       return;
@@ -2822,7 +3077,8 @@ function FeaturedImagesAdminManager({
         <div>
           <h2 className="text-xl font-bold text-zinc-900">🖼️ Quản lý 2 Ảnh Nổi Bật</h2>
           <p className="text-xs text-zinc-500 mt-1">
-            Quản lý và thay đổi 2 hình ảnh banner nổi bật nằm bên phải banner chính trên Trang Chủ. Ảnh được lưu bảo mật lên Cloudflare R2.
+            Quản lý và thay đổi 2 hình ảnh banner nổi bật nằm bên phải banner chính trên Trang Chủ.
+            Ảnh được lưu bảo mật lên Cloudflare R2.
           </p>
         </div>
       </div>
@@ -2875,7 +3131,9 @@ function FeaturedImagesAdminManager({
                 <span className="text-brand text-[10px] font-bold tracking-widest uppercase bg-brand/10 px-2.5 py-1 rounded-full">
                   VỊ TRÍ 2
                 </span>
-                <h3 className="text-lg font-bold text-zinc-900 mt-1.5">Ảnh nổi bật 2 (Antivirus)</h3>
+                <h3 className="text-lg font-bold text-zinc-900 mt-1.5">
+                  Ảnh nổi bật 2 (Antivirus)
+                </h3>
               </div>
               <span className="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full ring-1 ring-emerald-200">
                 ● Đang hiển thị
@@ -2933,7 +3191,7 @@ function HeroBannerAdminManager({
     (b) =>
       b.id === "hero-banner-main" ||
       b.position === "hero" ||
-      (b.title && typeof b.title === "string" && b.title.toLowerCase().includes("hero"))
+      (b.title && typeof b.title === "string" && b.title.toLowerCase().includes("hero")),
   );
 
   const parseImages = (imgStr?: string): ImageItem[] => {
@@ -2962,7 +3220,10 @@ function HeroBannerAdminManager({
   }, [images]);
 
   const handleSaveHero = async () => {
-    const imgStr = images.map((i) => i.url).filter(Boolean).join(",");
+    const imgStr = images
+      .map((i) => i.url)
+      .filter(Boolean)
+      .join(",");
     if (!imgStr) {
       toast.error("Vui lòng tải lên ít nhất 1 hình ảnh Banner Slide cho Trang Chủ");
       return;
@@ -3001,7 +3262,8 @@ function HeroBannerAdminManager({
           </span>
           <h2 className="text-xl font-bold text-zinc-900 mt-1.5">🖼️ Quản lý Banner Trang Chủ</h2>
           <p className="text-xs text-zinc-500 mt-1">
-            Thay đổi danh sách ảnh Banner Slide chuyển động, chỉnh sửa liên kết khi click và xem trước trực tiếp. Ảnh được lưu trên Cloudflare R2.
+            Thay đổi danh sách ảnh Banner Slide chuyển động, chỉnh sửa liên kết khi click và xem
+            trước trực tiếp. Ảnh được lưu trên Cloudflare R2.
           </p>
         </div>
         <div className="flex gap-2">
@@ -3066,11 +3328,7 @@ function HeroBannerAdminManager({
                 onClick={handleSaveHero}
                 className="bg-brand hover:bg-brand-hover text-white font-bold text-xs px-6 py-3 rounded-full transition shadow-lg cursor-pointer disabled:opacity-50 flex items-center gap-2"
               >
-                {saving ? (
-                  <span>Đang lưu lên R2 & DB...</span>
-                ) : (
-                  <span>✓ Lưu thay đổi Banner</span>
-                )}
+                {saving ? <span>Đang lưu lên R2 & DB...</span> : <span>✓ Lưu thay đổi Banner</span>}
               </button>
             </div>
           </div>
@@ -3081,9 +3339,7 @@ function HeroBannerAdminManager({
           <div className="bg-white rounded-3xl p-6 ring-1 ring-zinc-200 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-zinc-900">👁️ Xem trước Banner</h3>
-              <span className="text-[10px] text-zinc-400 font-mono">
-                {activeUrls.length} ảnh
-              </span>
+              <span className="text-[10px] text-zinc-400 font-mono">{activeUrls.length} ảnh</span>
             </div>
 
             {/* PREVIEW DISPLAY BOX */}
@@ -3126,7 +3382,8 @@ function HeroBannerAdminManager({
             <div className="p-3 bg-brand/5 rounded-2xl text-xs text-brand space-y-1">
               <p className="font-semibold">💡 Mẹo chuẩn kích thước:</p>
               <p className="text-[11px] text-zinc-600">
-                Kích thước khuyến nghị: <strong>1200 x 500 px</strong> (hoặc tỉ lệ 21:9). Ảnh định dạng JPG, PNG, WEBP được tối ưu tốt nhất trên Cloudflare R2.
+                Kích thước khuyến nghị: <strong>1200 x 500 px</strong> (hoặc tỉ lệ 21:9). Ảnh định
+                dạng JPG, PNG, WEBP được tối ưu tốt nhất trên Cloudflare R2.
               </p>
             </div>
           </div>

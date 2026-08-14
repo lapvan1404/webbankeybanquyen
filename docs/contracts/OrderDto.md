@@ -3,6 +3,7 @@
 Represents an order returned by the API.
 
 Fields:
+
 - `id` (string): Unique order identifier.
 - `userId` (string): Identifier for the user who placed the order.
 - `items` (array): Order items, each with `productId`, `quantity`, and `unitPrice`.

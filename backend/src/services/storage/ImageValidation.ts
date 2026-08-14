@@ -1,6 +1,15 @@
 import { extname } from 'node:path';
 
-const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.jfif', '.avif', '.svg']);
+const ALLOWED_EXTENSIONS = new Set([
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.webp',
+  '.gif',
+  '.jfif',
+  '.avif',
+  '.svg',
+]);
 
 export interface ImageValidationResult {
   isValid: boolean;
@@ -56,12 +65,7 @@ export const validateImageBuffer = (
   }
 
   // WEBP (RIFF...WEBP)
-  if (
-    buffer[0] === 0x52 &&
-    buffer[1] === 0x49 &&
-    buffer[2] === 0x46 &&
-    buffer[3] === 0x47
-  ) {
+  if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x47) {
     return { isValid: true, mimeType: 'image/webp', extension: normalizedExtension || '.webp' };
   }
 

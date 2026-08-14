@@ -76,7 +76,11 @@ export function ProductCard({
           : "bg-white ring-black/5 hover:ring-brand/30")
       }
     >
-      <Link to="/product/$slug" params={{ slug: product.slug }} className="flex-1 flex flex-col justify-between block">
+      <Link
+        to="/product/$slug"
+        params={{ slug: product.slug }}
+        className="flex-1 flex flex-col justify-between block"
+      >
         <div>
           <div
             className={

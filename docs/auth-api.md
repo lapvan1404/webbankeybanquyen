@@ -3,6 +3,7 @@
 ## Endpoints
 
 ### POST /api/auth/register
+
 Registers a new customer account.
 
 - Validates email format and password policy.
@@ -13,6 +14,7 @@ Registers a new customer account.
 - Never creates an admin account.
 
 ### POST /api/auth/login
+
 Authenticates a user and issues a session.
 
 - Validates credentials.
@@ -25,6 +27,7 @@ Authenticates a user and issues a session.
 - Uses rate limiting for brute-force protection.
 
 ### POST /api/auth/logout
+
 Invalidates the current refresh token and session.
 
 - Revokes the current refresh token.
@@ -32,6 +35,7 @@ Invalidates the current refresh token and session.
 - Clears the refresh cookie.
 
 ### POST /api/auth/refresh
+
 Refreshes the access token.
 
 - Reads the refresh token from the HttpOnly cookie.
@@ -41,6 +45,7 @@ Refreshes the access token.
 - Issues a new access token.
 
 ### GET /api/auth/me
+
 Returns the current authenticated user profile.
 
 - Returns: `id`, `email`, `fullName`, `avatar`, `role`, `emailVerified`

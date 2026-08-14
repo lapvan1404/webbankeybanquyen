@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `user` ADD COLUMN `avatarUrl` VARCHAR(191) NULL,
+ALTER TABLE `User` ADD COLUMN `avatarUrl` VARCHAR(191) NULL,
     ADD COLUMN `emailVerified` BOOLEAN NOT NULL DEFAULT false,
     ADD COLUMN `failedLoginCount` INTEGER NOT NULL DEFAULT 0,
     ADD COLUMN `lastLoginAt` DATETIME(3) NULL,

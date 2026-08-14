@@ -13,19 +13,19 @@
 
 */
 -- AlterTable
-ALTER TABLE `order` ADD COLUMN `orderNumber` VARCHAR(191) NOT NULL,
+ALTER TABLE `Order` ADD COLUMN `orderNumber` VARCHAR(191) NOT NULL,
     ADD COLUMN `paymentStatus` ENUM('UNPAID', 'PAID') NOT NULL DEFAULT 'UNPAID',
     MODIFY `status` ENUM('PENDING', 'PAID', 'CANCELLED') NOT NULL DEFAULT 'PENDING';
 
 -- AlterTable
-ALTER TABLE `orderitem` DROP COLUMN `price`,
+ALTER TABLE `OrderItem` DROP COLUMN `price`,
     ADD COLUMN `productName` VARCHAR(191) NOT NULL,
     ADD COLUMN `sku` VARCHAR(191) NOT NULL,
     ADD COLUMN `totalPrice` DECIMAL(65, 30) NOT NULL,
     ADD COLUMN `unitPrice` DECIMAL(65, 30) NOT NULL;
 
 -- AlterTable
-ALTER TABLE `payment` MODIFY `status` ENUM('UNPAID', 'PAID') NOT NULL DEFAULT 'UNPAID';
+ALTER TABLE `Payment` MODIFY `status` ENUM('UNPAID', 'PAID') NOT NULL DEFAULT 'UNPAID';
 
 -- CreateIndex
-CREATE UNIQUE INDEX `Order_orderNumber_key` ON `order`(`orderNumber`);
+CREATE UNIQUE INDEX `Order_orderNumber_key` ON `Order`(`orderNumber`);

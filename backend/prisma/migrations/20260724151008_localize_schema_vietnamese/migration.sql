@@ -39,85 +39,85 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `address` DROP FOREIGN KEY `Address_userId_fkey`;
+ALTER TABLE `Address` DROP FOREIGN KEY `Address_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `auditlog` DROP FOREIGN KEY `AuditLog_userId_fkey`;
+ALTER TABLE `AuditLog` DROP FOREIGN KEY `AuditLog_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `cart` DROP FOREIGN KEY `Cart_userId_fkey`;
+ALTER TABLE `Cart` DROP FOREIGN KEY `Cart_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `cartitem` DROP FOREIGN KEY `CartItem_cartId_fkey`;
+ALTER TABLE `CartItem` DROP FOREIGN KEY `CartItem_cartId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `cartitem` DROP FOREIGN KEY `CartItem_productId_fkey`;
+ALTER TABLE `CartItem` DROP FOREIGN KEY `CartItem_productId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `favorite` DROP FOREIGN KEY `Favorite_productId_fkey`;
+ALTER TABLE `Favorite` DROP FOREIGN KEY `Favorite_productId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `favorite` DROP FOREIGN KEY `Favorite_userId_fkey`;
+ALTER TABLE `Favorite` DROP FOREIGN KEY `Favorite_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `loginattempt` DROP FOREIGN KEY `LoginAttempt_userId_fkey`;
+ALTER TABLE `LoginAttempt` DROP FOREIGN KEY `LoginAttempt_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `notification` DROP FOREIGN KEY `Notification_userId_fkey`;
+ALTER TABLE `Notification` DROP FOREIGN KEY `Notification_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `order` DROP FOREIGN KEY `Order_userId_fkey`;
+ALTER TABLE `Order` DROP FOREIGN KEY `Order_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `orderitem` DROP FOREIGN KEY `OrderItem_orderId_fkey`;
+ALTER TABLE `OrderItem` DROP FOREIGN KEY `OrderItem_orderId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `orderitem` DROP FOREIGN KEY `OrderItem_productId_fkey`;
+ALTER TABLE `OrderItem` DROP FOREIGN KEY `OrderItem_productId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `passwordresettoken` DROP FOREIGN KEY `PasswordResetToken_userId_fkey`;
+ALTER TABLE `PasswordResetToken` DROP FOREIGN KEY `PasswordResetToken_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `payment` DROP FOREIGN KEY `Payment_orderId_fkey`;
+ALTER TABLE `Payment` DROP FOREIGN KEY `Payment_orderId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `paymenttransaction` DROP FOREIGN KEY `PaymentTransaction_paymentId_fkey`;
+ALTER TABLE `PaymentTransaction` DROP FOREIGN KEY `PaymentTransaction_paymentId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `product` DROP FOREIGN KEY `Product_brandId_fkey`;
+ALTER TABLE `Product` DROP FOREIGN KEY `Product_brandId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `product` DROP FOREIGN KEY `Product_categoryId_fkey`;
+ALTER TABLE `Product` DROP FOREIGN KEY `Product_categoryId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `productimage` DROP FOREIGN KEY `ProductImage_productId_fkey`;
+ALTER TABLE `ProductImage` DROP FOREIGN KEY `ProductImage_productId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `productkey` DROP FOREIGN KEY `ProductKey_orderItemId_fkey`;
+ALTER TABLE `ProductKey` DROP FOREIGN KEY `ProductKey_orderItemId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `productkey` DROP FOREIGN KEY `ProductKey_productId_fkey`;
+ALTER TABLE `ProductKey` DROP FOREIGN KEY `ProductKey_productId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `refreshtoken` DROP FOREIGN KEY `RefreshToken_userId_fkey`;
+ALTER TABLE `RefreshToken` DROP FOREIGN KEY `RefreshToken_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `review` DROP FOREIGN KEY `Review_productId_fkey`;
+ALTER TABLE `Review` DROP FOREIGN KEY `Review_productId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `review` DROP FOREIGN KEY `Review_userId_fkey`;
+ALTER TABLE `Review` DROP FOREIGN KEY `Review_userId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `uploadedfile` DROP FOREIGN KEY `UploadedFile_uploadedById_fkey`;
+ALTER TABLE `UploadedFile` DROP FOREIGN KEY `UploadedFile_uploadedById_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `user` DROP FOREIGN KEY `User_roleId_fkey`;
+ALTER TABLE `User` DROP FOREIGN KEY `User_roleId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `usersession` DROP FOREIGN KEY `UserSession_userId_fkey`;
+ALTER TABLE `UserSession` DROP FOREIGN KEY `UserSession_userId_fkey`;
 
 -- AlterTable
-ALTER TABLE `banner` DROP COLUMN `createdAt`,
+ALTER TABLE `Banner` DROP COLUMN `createdAt`,
     DROP COLUMN `deletedAt`,
     DROP COLUMN `imageUrl`,
     DROP COLUMN `isActive`,
@@ -135,76 +135,76 @@ ALTER TABLE `banner` DROP COLUMN `createdAt`,
     ADD COLUMN `url_lien_ket` VARCHAR(191) NULL;
 
 -- DropTable
-DROP TABLE `address`;
+DROP TABLE `Address`;
 
 -- DropTable
-DROP TABLE `auditlog`;
+DROP TABLE `AuditLog`;
 
 -- DropTable
-DROP TABLE `brand`;
+DROP TABLE `Brand`;
 
 -- DropTable
-DROP TABLE `cart`;
+DROP TABLE `Cart`;
 
 -- DropTable
-DROP TABLE `cartitem`;
+DROP TABLE `CartItem`;
 
 -- DropTable
-DROP TABLE `category`;
+DROP TABLE `Category`;
 
 -- DropTable
-DROP TABLE `favorite`;
+DROP TABLE `Favorite`;
 
 -- DropTable
-DROP TABLE `loginattempt`;
+DROP TABLE `LoginAttempt`;
 
 -- DropTable
-DROP TABLE `notification`;
+DROP TABLE `Notification`;
 
 -- DropTable
-DROP TABLE `order`;
+DROP TABLE `Order`;
 
 -- DropTable
-DROP TABLE `orderitem`;
+DROP TABLE `OrderItem`;
 
 -- DropTable
-DROP TABLE `passwordresettoken`;
+DROP TABLE `PasswordResetToken`;
 
 -- DropTable
-DROP TABLE `payment`;
+DROP TABLE `Payment`;
 
 -- DropTable
-DROP TABLE `paymenttransaction`;
+DROP TABLE `PaymentTransaction`;
 
 -- DropTable
-DROP TABLE `product`;
+DROP TABLE `Product`;
 
 -- DropTable
-DROP TABLE `productimage`;
+DROP TABLE `ProductImage`;
 
 -- DropTable
-DROP TABLE `productkey`;
+DROP TABLE `ProductKey`;
 
 -- DropTable
-DROP TABLE `refreshtoken`;
+DROP TABLE `RefreshToken`;
 
 -- DropTable
-DROP TABLE `review`;
+DROP TABLE `Review`;
 
 -- DropTable
-DROP TABLE `role`;
+DROP TABLE `Role`;
 
 -- DropTable
-DROP TABLE `systemsetting`;
+DROP TABLE `SystemSetting`;
 
 -- DropTable
-DROP TABLE `uploadedfile`;
+DROP TABLE `UploadedFile`;
 
 -- DropTable
-DROP TABLE `user`;
+DROP TABLE `User`;
 
 -- DropTable
-DROP TABLE `usersession`;
+DROP TABLE `UserSession`;
 
 -- CreateTable
 CREATE TABLE `DiaChi` (

@@ -17,19 +17,19 @@
 
 */
 -- DropIndex
-DROP INDEX `ProductKey_keyCode_key` ON `productkey`;
+DROP INDEX `ProductKey_keyCode_key` ON `ProductKey`;
 
 -- AlterTable
-ALTER TABLE `brand` ADD COLUMN `sortOrder` INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE `Brand` ADD COLUMN `sortOrder` INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable
-ALTER TABLE `product` ADD COLUMN `deliveryMethod` VARCHAR(191) NULL,
+ALTER TABLE `Product` ADD COLUMN `deliveryMethod` VARCHAR(191) NULL,
     ADD COLUMN `deviceLimit` INTEGER NULL,
     ADD COLUMN `licenseDuration` INTEGER NULL,
     ADD COLUMN `licenseType` VARCHAR(191) NULL;
 
 -- AlterTable
-ALTER TABLE `productkey` DROP COLUMN `activatedAt`,
+ALTER TABLE `ProductKey` DROP COLUMN `activatedAt`,
     DROP COLUMN `expiresAt`,
     DROP COLUMN `keyCode`,
     DROP COLUMN `soldAt`,
@@ -46,21 +46,21 @@ ALTER TABLE `productkey` DROP COLUMN `activatedAt`,
     MODIFY `status` ENUM('AVAILABLE', 'RESERVED', 'SOLD', 'DISABLED') NOT NULL DEFAULT 'AVAILABLE';
 
 -- AlterTable
-ALTER TABLE `uploadedfile` ADD COLUMN `bucket` VARCHAR(191) NOT NULL,
+ALTER TABLE `UploadedFile` ADD COLUMN `bucket` VARCHAR(191) NOT NULL,
     ADD COLUMN `objectKey` VARCHAR(191) NOT NULL,
     ADD COLUMN `originalName` VARCHAR(191) NOT NULL;
 
 -- CreateIndex
-CREATE INDEX `productkey_productId_status_idx` ON `productkey`(`productId`, `status`);
+CREATE INDEX `productkey_productId_status_idx` ON `ProductKey`(`productId`, `status`);
 
 -- CreateIndex
-CREATE INDEX `productkey_status_idx` ON `productkey`(`status`);
+CREATE INDEX `productkey_status_idx` ON `ProductKey`(`status`);
 
 -- CreateIndex
-CREATE INDEX `productkey_productId_keyHash_idx` ON `productkey`(`productId`, `keyHash`);
+CREATE INDEX `productkey_productId_keyHash_idx` ON `ProductKey`(`productId`, `keyHash`);
 
 -- CreateIndex
-CREATE UNIQUE INDEX `productkey_productId_keyHash_key` ON `productkey`(`productId`, `keyHash`);
+CREATE UNIQUE INDEX `productkey_productId_keyHash_key` ON `ProductKey`(`productId`, `keyHash`);
 
 -- AddForeignKey
-ALTER TABLE `productkey` ADD CONSTRAINT `ProductKey_orderItemId_fkey` FOREIGN KEY (`orderItemId`) REFERENCES `orderitem`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `ProductKey` ADD CONSTRAINT `ProductKey_orderItemId_fkey` FOREIGN KEY (`orderItemId`) REFERENCES `OrderItem`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

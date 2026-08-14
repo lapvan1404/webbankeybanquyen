@@ -9,7 +9,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `brand` ADD COLUMN `isActive` BOOLEAN NOT NULL DEFAULT true,
+ALTER TABLE `Brand` ADD COLUMN `isActive` BOOLEAN NOT NULL DEFAULT true,
     ADD COLUMN `logoUrl` VARCHAR(191) NULL,
     ADD COLUMN `seoDescription` VARCHAR(191) NULL,
     ADD COLUMN `seoKeywords` VARCHAR(191) NULL,
@@ -18,7 +18,7 @@ ALTER TABLE `brand` ADD COLUMN `isActive` BOOLEAN NOT NULL DEFAULT true,
     ADD COLUMN `website` VARCHAR(191) NULL;
 
 -- AlterTable
-ALTER TABLE `category` ADD COLUMN `imageUrl` VARCHAR(191) NULL,
+ALTER TABLE `Category` ADD COLUMN `imageUrl` VARCHAR(191) NULL,
     ADD COLUMN `isActive` BOOLEAN NOT NULL DEFAULT true,
     ADD COLUMN `seoDescription` VARCHAR(191) NULL,
     ADD COLUMN `seoKeywords` VARCHAR(191) NULL,
@@ -26,7 +26,7 @@ ALTER TABLE `category` ADD COLUMN `imageUrl` VARCHAR(191) NULL,
     ADD COLUMN `sortOrder` INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable
-ALTER TABLE `product` ADD COLUMN `costPrice` DECIMAL(65, 30) NULL,
+ALTER TABLE `Product` ADD COLUMN `costPrice` DECIMAL(65, 30) NULL,
     ADD COLUMN `isDigital` BOOLEAN NOT NULL DEFAULT false,
     ADD COLUMN `isFeatured` BOOLEAN NOT NULL DEFAULT false,
     ADD COLUMN `publishedAt` DATETIME(3) NULL,
@@ -41,7 +41,7 @@ ALTER TABLE `product` ADD COLUMN `costPrice` DECIMAL(65, 30) NULL,
     ADD COLUMN `viewCount` INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable
-ALTER TABLE `productkey` DROP COLUMN `key`,
+ALTER TABLE `ProductKey` DROP COLUMN `key`,
     ADD COLUMN `activatedAt` DATETIME(3) NULL,
     ADD COLUMN `expiresAt` DATETIME(3) NULL,
     ADD COLUMN `keyCode` VARCHAR(191) NOT NULL,
@@ -50,22 +50,22 @@ ALTER TABLE `productkey` DROP COLUMN `key`,
     ADD COLUMN `status` ENUM('AVAILABLE', 'ACTIVATED', 'SOLD', 'EXPIRED', 'REVOKED') NOT NULL DEFAULT 'AVAILABLE';
 
 -- CreateIndex
-CREATE UNIQUE INDEX `Brand_slug_key` ON `brand`(`slug`);
+CREATE UNIQUE INDEX `Brand_slug_key` ON `Brand`(`slug`);
 
 -- CreateIndex
-CREATE INDEX `Product_status_idx` ON `product`(`status`);
+CREATE INDEX `Product_status_idx` ON `Product`(`status`);
 
 -- CreateIndex
-CREATE INDEX `Product_price_idx` ON `product`(`price`);
+CREATE INDEX `Product_price_idx` ON `Product`(`price`);
 
 -- CreateIndex
-CREATE INDEX `Product_publishedAt_idx` ON `product`(`publishedAt`);
+CREATE INDEX `Product_publishedAt_idx` ON `Product`(`publishedAt`);
 
 -- CreateIndex
-CREATE INDEX `Product_isFeatured_idx` ON `product`(`isFeatured`);
+CREATE INDEX `Product_isFeatured_idx` ON `Product`(`isFeatured`);
 
 -- CreateIndex
-CREATE UNIQUE INDEX `ProductKey_keyCode_key` ON `productkey`(`keyCode`);
+CREATE UNIQUE INDEX `ProductKey_keyCode_key` ON `ProductKey`(`keyCode`);
 
 -- CreateIndex
-CREATE INDEX `ProductKey_orderItemId_idx` ON `productkey`(`orderItemId`);
+CREATE INDEX `ProductKey_orderItemId_idx` ON `ProductKey`(`orderItemId`);

@@ -1,3 +1,4 @@
+import env from "./env";
 import { apiFetch, apiPost } from "./apiClient";
 import type { Product } from "./products";
 
@@ -178,13 +179,15 @@ export function cleanImageUrl(url?: string | null): string {
 
   if (!clean || clean.includes("example.com")) return "";
 
+  const apiBase = env.apiBaseUrl.replace(/\/$/, "");
+
   if (clean.includes("/api/upload/object")) {
     const idx = clean.indexOf("/api/upload/object");
     let single = clean.slice(idx);
     if (single.includes(",")) {
       single = single.split(",")[0].trim();
     }
-    return single;
+    return `${apiBase}${single}`;
   }
 
   if (clean.includes("/api/admin/upload/object")) {
@@ -193,11 +196,15 @@ export function cleanImageUrl(url?: string | null): string {
     if (single.includes(",")) {
       single = single.split(",")[0].trim();
     }
-    return single;
+    return `${apiBase}${single}`;
   }
 
   if (clean.startsWith("uploads/")) {
-    return `/api/upload/object?key=${encodeURIComponent(clean)}`;
+    return `${apiBase}/api/upload/object?key=${encodeURIComponent(clean)}`;
+  }
+
+  if (clean.startsWith("/api/")) {
+    return `${apiBase}${clean}`;
   }
 
   return clean;

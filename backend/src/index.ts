@@ -31,9 +31,12 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 const corsOptions: cors.CorsOptions = {
-  origin: true,
+  origin: (_origin, callback) => {
+    callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'x-request-id', 'cache-control', 'pragma'],
 };
 
 app.use(cors(corsOptions));

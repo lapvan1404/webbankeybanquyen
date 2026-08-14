@@ -120,7 +120,7 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
     method: method ?? (body != null ? "POST" : "GET"),
     credentials: "include",
     headers: {
-      "Content-Type": "application/json",
+      ...(body != null ? { "Content-Type": "application/json" } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },

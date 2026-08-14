@@ -8,12 +8,13 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction,
 ): void => {
-  console.error(err);
+  console.error('[SERVER_ERROR]', err);
 
   if (err instanceof HttpError) {
-    res.status(err.status).json(createResponse(null, err.safeMessage, null));
+    res.status(err.status).json(createResponse(null, err.safeMessage, err.message, false));
     return;
   }
 
-  res.status(500).json(createResponse(null, 'Internal server error', null));
+  const errMsg = err instanceof Error ? err.message : 'Internal server error';
+  res.status(500).json(createResponse(null, 'Internal server error', errMsg, false));
 };

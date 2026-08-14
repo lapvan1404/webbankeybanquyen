@@ -4,9 +4,17 @@ export const createResponse = <T>(
   data: T | null = null,
   message = '',
   errors: unknown = null,
-): ApiResponse<T> => ({
-  success: errors === null,
-  message,
-  data,
-  errors,
-});
+  successOverride?: boolean,
+): ApiResponse<T> => {
+  const isErr =
+    errors !== null ||
+    message.toLowerCase().includes('error') ||
+    message.toLowerCase().includes('failed') ||
+    message.toLowerCase().includes('invalid');
+  return {
+    success: successOverride ?? !isErr,
+    message,
+    data,
+    errors,
+  };
+};
